@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/ThemeProvide'
 import { Toaster } from '@/components/ui/sonner'
+import HomeTopBar from '@/components/home/TopBar'
+import PageTransition from '@/components/PageTransition'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -35,6 +37,8 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <HomeTopBar />
+          <PageTransition />
           {children}
           <Toaster position="top-center" />
         </ThemeProvider>

@@ -28,3 +28,11 @@ export const RegisterAPI = (data: RegisterFormProps) => {
     data,
   })
 }
+
+// 获取用户数据信息
+export const GetUserDataAPI = () => {
+  return httpInstance({
+    method: 'GET',
+    url: '/user/data',
+  })
+}

@@ -21,6 +21,10 @@ const useUserStore = create<State & Actions>()(
         avatar: '',
         token: '',
         email: '',
+        codeAge: 0,
+        fans: 0,
+        following: 0,
+        articleLikes: 0,
       },
       setUserInfo: (user: LoginResponse) =>
         set({
@@ -31,6 +35,10 @@ const useUserStore = create<State & Actions>()(
             avatar: user.avatar,
             token: user.token,
             email: user.email,
+            codeAge: user.codeAge,
+            fans: user.fans,
+            following: user.following,
+            articleLikes: user.articleLikes,
           },
         }),
       updateUserEmail: (email: string) =>
@@ -49,6 +57,10 @@ const useUserStore = create<State & Actions>()(
             avatar: '',
             token: '',
             email: '',
+            codeAge: 0,
+            fans: 0,
+            following: 0,
+            articleLikes: 0,
           },
         }),
     }),

@@ -4,7 +4,7 @@ import useUserStore from '@/stores/UserStore'
 import Icon from '../Icon'
 import SearchInput from '../SearchInput'
 import ThemeToggle from '../ThemeToggle'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Avatar, AvatarFallback } from '../ui/avatar'
 import { Button } from '../ui/button'
 import {
   Dialog,
@@ -14,8 +14,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog'
+import Image from 'next/image'
 import LoginAndRegisterDialogContent from '../dialog/LoginAndRegisterDialogContent'
 import { useState } from 'react'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
+import AvatarHoverCardContent from './AvatarHoverCardContent'
 
 export default function Operate() {
   const { userInfo } = useUserStore()
@@ -23,26 +26,22 @@ export default function Operate() {
   return (
     <div className="flex items-center gap-5">
       <SearchInput />
-      <Button className="bg-[#fc5531] hover:bg-gray-400 dark:text-white">
-        <Icon
-          icon="streamline-ultimate:pen-write"
-          color="#fff"
-          className="mb-1 mr-1"
-        />
-        写文章
-      </Button>
-      <div className="dark:text-white text-[#212121]">
-        <Icon icon="tabler:message" size="26" className="text-inherit" />
-      </div>
-      <ThemeToggle />
       <div className="cursor-pointer">
         {userInfo.token ? (
-          <Avatar>
-            <AvatarImage
-              src={userInfo.avatar || 'https://github.com/shadcn.png'}
-            />
-            <AvatarFallback>{userInfo.username}</AvatarFallback>
-          </Avatar>
+          <HoverCard>
+            <HoverCardTrigger>
+              <Image
+                src={userInfo.avatar}
+                className="w-9 h-9 rounded-full"
+                alt=""
+                width={12}
+                height={12}
+              />
+            </HoverCardTrigger>
+            <HoverCardContent className="z-20">
+              <AvatarHoverCardContent userInfo={userInfo} />
+            </HoverCardContent>
+          </HoverCard>
         ) : (
           <Dialog open={open} onOpenChange={setopen}>
             <DialogTrigger>
@@ -64,6 +63,18 @@ export default function Operate() {
           </Dialog>
         )}
       </div>
+      <Button className="bg-[#fc5531] hover:bg-gray-400 dark:text-white">
+        <Icon
+          icon="streamline-ultimate:pen-write"
+          color="#fff"
+          className="mb-1 mr-1"
+        />
+        写文章
+      </Button>
+      <div className="dark:text-white text-[#212121]">
+        <Icon icon="tabler:message" size="26" className="text-inherit" />
+      </div>
+      <ThemeToggle />
     </div>
   )
 }

@@ -13,4 +13,8 @@ export interface LoginResponse {
   avatar: string
   token: string
   email: string
+  codeAge: number
+  fans: number
+  following: number
+  articleLikes: number
 }

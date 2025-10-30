@@ -13,7 +13,7 @@ httpInstance.interceptors.request.use(
     if (!urls.includes(config.url!)) {
       const token: string = useMemberStore.getState().userInfo.token || ''
       if (token) {
-        config.headers.Authorization = token
+        config.headers.Authorization = `Bearer ${token}`
       }
     }
     return config
@@ -25,7 +25,7 @@ httpInstance.interceptors.request.use(
 
 httpInstance.interceptors.response.use(
   config => {
-    toast.success(config.data.message || '请求成功')
+    if (config.data.message) toast.success(config.data.message)
     return config.data
   },
   error => {

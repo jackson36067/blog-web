@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LoginTypeTabs from '../login/LoginTypeTabs'
 import RegisterForm from '../register/RegisterForm'
+import { ShineBorder } from '../ui/shine-border'
 
 interface LoginAndRegisterDialogContentProps {
   // 关闭弹窗函数
@@ -17,6 +18,10 @@ export default function LoginAndRegisterDialogContent(
 
   return (
     <div className="p-6">
+      <ShineBorder
+        shineColor={['#A07CFE', '#FE8FB5', '#FFBE7B']}
+        className="rounded-[10px]"
+      />
       {/* 内容部分 */}
       <div className="relative flex items-center justify-center">
         <AnimatePresence mode="wait">
