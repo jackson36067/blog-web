@@ -25,7 +25,18 @@ export default function Operate() {
   const [open, setopen] = useState(false)
   return (
     <div className="flex items-center gap-5">
-      <SearchInput />
+      <Button className="bg-[#fc5531] hover:bg-gray-400 dark:text-white">
+        <Icon
+          icon="streamline-ultimate:pen-write"
+          color="#fff"
+          className="mb-1 mr-1"
+        />
+        写文章
+      </Button>
+      <div className="dark:text-white text-[#212121]">
+        <Icon icon="tabler:message" size="26" className="text-inherit" />
+      </div>
+      <ThemeToggle />
       <div className="cursor-pointer">
         {userInfo.token ? (
           <HoverCard>
@@ -63,18 +74,6 @@ export default function Operate() {
           </Dialog>
         )}
       </div>
-      <Button className="bg-[#fc5531] hover:bg-gray-400 dark:text-white">
-        <Icon
-          icon="streamline-ultimate:pen-write"
-          color="#fff"
-          className="mb-1 mr-1"
-        />
-        写文章
-      </Button>
-      <div className="dark:text-white text-[#212121]">
-        <Icon icon="tabler:message" size="26" className="text-inherit" />
-      </div>
-      <ThemeToggle />
     </div>
   )
 }

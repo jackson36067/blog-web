@@ -23,7 +23,7 @@ export default function AboutPage() {
     <div
       className="
         relative min-h-screen overflow-hidden 
-        bg-white text-gray-900
+        bg-[#f0eeee] text-gray-900
         dark:bg-[#0a0a0a] dark:text-white
         transition-colors duration-700 ease-in-out
       "

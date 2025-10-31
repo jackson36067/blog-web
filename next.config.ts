@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'jackson1.oss-cn-beijing.aliyuncs.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
     ],
   },
 }

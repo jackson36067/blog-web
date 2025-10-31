@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f0eeee] dark:bg-[#0a0a0a]`}
       >
         <ThemeProvider
           attribute="class"
@@ -39,7 +39,7 @@ export default function RootLayout({
         >
           <HomeTopBar className="fixed top-0 left-0 w-full z-40" />
           <PageTransition />
-          <div className="pt-20">{children}</div>
+          <div className="mt-20">{children}</div>
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>
