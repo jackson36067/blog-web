@@ -42,7 +42,7 @@ export default function PageTransition() {
 
   return (
     showOverlay && (
-      <div className="fixed inset-0 z-1030 bg-white/60 backdrop-blur-md flex items-center justify-center">
+      <div className="fixed inset-0 z-1030 bg-white/10 flex items-center justify-center">
         <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
       </div>
     )

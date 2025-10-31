@@ -37,9 +37,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <HomeTopBar />
+          <HomeTopBar className="fixed top-0 left-0 w-full z-40" />
           <PageTransition />
-          {children}
+          <div className="pt-20">{children}</div>
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>

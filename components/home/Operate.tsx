@@ -38,7 +38,7 @@ export default function Operate() {
                 height={12}
               />
             </HoverCardTrigger>
-            <HoverCardContent className="z-20">
+            <HoverCardContent>
               <AvatarHoverCardContent userInfo={userInfo} />
             </HoverCardContent>
           </HoverCard>
