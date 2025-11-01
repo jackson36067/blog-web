@@ -85,7 +85,7 @@ export default function AvatarHoverCardContent({
           onClick={() => handleExitLogin()}
         >
           <Icon icon="fluent:arrow-exit-48-regular" className="text-inherit" />
-          <p>退出</p>
+          <p>退出登录</p>
         </div>
       </div>
     </div>

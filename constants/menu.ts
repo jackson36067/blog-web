@@ -1,5 +1,5 @@
 export const menu = [
-  { icon: 'ic:round-home', label: '首页', link: '/' },
+  { icon: 'ic:round-home', label: '首页', link: '/home' },
   { icon: 'mingcute:classify-3-fill', label: '分类', link: '/category' },
   { icon: 'lsicon:label-filled', label: '标签', link: '/tag' },
   { icon: 'mdi:about', label: '关于', link: '/about' },

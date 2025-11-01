@@ -21,3 +21,14 @@ export interface ArtilceInfo {
   collectCount: number
   publicComment: boolean // 文章是否可以评论
 }
+
+export interface ArticleCategoryInfo {
+  id: number
+  title: string
+}
+
+export interface ArticleTagInfo {
+  id: number
+  title: string
+  browseCount: string
+}

@@ -2,7 +2,6 @@
 
 import useUserStore from '@/stores/UserStore'
 import Icon from '../Icon'
-import SearchInput from '../SearchInput'
 import ThemeToggle from '../ThemeToggle'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { Button } from '../ui/button'
@@ -16,13 +15,13 @@ import {
 } from '../ui/dialog'
 import Image from 'next/image'
 import LoginAndRegisterDialogContent from '../dialog/LoginAndRegisterDialogContent'
-import { useState } from 'react'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
 import AvatarHoverCardContent from './AvatarHoverCardContent'
+import useLoginPopupStatusStore from '@/stores/LoginPopupStatusStore'
 
 export default function Operate() {
   const { userInfo } = useUserStore()
-  const [open, setopen] = useState(false)
+  const { open, setOpen } = useLoginPopupStatusStore()
   return (
     <div className="flex items-center gap-5">
       <Button className="bg-[#fc5531] hover:bg-gray-400 dark:text-white">
@@ -54,7 +53,7 @@ export default function Operate() {
             </HoverCardContent>
           </HoverCard>
         ) : (
-          <Dialog open={open} onOpenChange={setopen}>
+          <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>
               <Avatar>
                 <AvatarFallback>登录</AvatarFallback>
@@ -68,7 +67,7 @@ export default function Operate() {
                 <DialogDescription></DialogDescription>
               </DialogHeader>
               <LoginAndRegisterDialogContent
-                onCloseDialog={() => setopen(false)}
+                onCloseDialog={() => setOpen(false)}
               />
             </DialogContent>
           </Dialog>

@@ -58,6 +58,9 @@ export default function HeroSection() {
           variant="outline"
           size="lg"
           className="border-cyan-400 text-cyan-400"
+          onClick={() => {
+            window.open('https://github.com/jackson36067', '_blank')
+          }}
         >
           联系我
         </Button>

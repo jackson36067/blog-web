@@ -3,7 +3,7 @@
 import { menu } from '@/constants/menu'
 import NavigationMenu from './NavigationMenu'
 import Operate from './Operate'
-import LovePointer from '../pointer'
+import LovePointer from '../Pointer'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
