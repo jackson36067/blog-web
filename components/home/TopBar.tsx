@@ -4,7 +4,7 @@ import { menu } from '@/constants/menu'
 import NavigationMenu from './NavigationMenu'
 import Operate from './Operate'
 import LovePointer from '../pointer'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 interface HomeTopBarProps {
@@ -13,6 +13,8 @@ interface HomeTopBarProps {
 
 export default function HomeTopBar({ className }: HomeTopBarProps) {
   const router = useRouter()
+  const path = usePathname()
+  if (path == '/') return null
   return (
     <div
       className={cn(

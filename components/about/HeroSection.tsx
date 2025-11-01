@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button'
 import { TypingAnimation } from '@/components/ui/typing-animation'
 import Glow from './glow'
 import { TextAnimate } from '../ui/text-animate'
+import { useRouter } from 'next/navigation'
 
 export default function HeroSection() {
+  const router = useRouter()
   return (
     <div className="text-center max-w-4xl">
       <Glow
@@ -43,8 +45,14 @@ export default function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.7 }}
       >
-        <Button variant="default" size="lg">
-          查看项目
+        <Button
+          variant="default"
+          size="lg"
+          onClick={() => {
+            router.push('/home')
+          }}
+        >
+          进入项目
         </Button>
         <Button
           variant="outline"
