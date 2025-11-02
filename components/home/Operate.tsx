@@ -18,12 +18,15 @@ import LoginAndRegisterDialogContent from '../dialog/LoginAndRegisterDialogConte
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
 import AvatarHoverCardContent from './AvatarHoverCardContent'
 import useLoginPopupStatusStore from '@/stores/LoginPopupStatusStore'
+import { useRouter } from 'next/navigation'
 
 export default function Operate() {
   const { userInfo } = useUserStore()
   const { open, setOpen } = useLoginPopupStatusStore()
+  const router = useRouter()
   return (
     <div className="flex items-center gap-5">
+      {open && <div className="fixed inset-0 bg-black/50 z-40" />}
       <Button className="bg-[#fc5531] hover:bg-gray-400 dark:text-white">
         <Icon
           icon="streamline-ultimate:pen-write"
@@ -41,11 +44,14 @@ export default function Operate() {
           <HoverCard>
             <HoverCardTrigger>
               <Image
-                src={userInfo.avatar}
+                src={userInfo.avatar || 'https://picsum.photos/120/80?random=1'}
                 className="w-9 h-9 rounded-full"
                 alt=""
                 width={12}
                 height={12}
+                onClick={() => {
+                  router.push('/my')
+                }}
               />
             </HoverCardTrigger>
             <HoverCardContent>
@@ -53,7 +59,7 @@ export default function Operate() {
             </HoverCardContent>
           </HoverCard>
         ) : (
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={open} onOpenChange={setOpen} modal={false}>
             <DialogTrigger>
               <Avatar>
                 <AvatarFallback>登录</AvatarFallback>

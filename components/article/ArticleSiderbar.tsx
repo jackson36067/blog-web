@@ -7,14 +7,14 @@ import useUserStore from '@/stores/UserStore'
 import {
   ArticleCategoryInfo,
   ArticleTagInfo,
-  ArtilceInfo,
+  ArticleInfo,
 } from '@/types/article'
 import { useEffect, useState } from 'react'
 
 export default function ArticleSiderbar() {
   const { setOpen } = useLoginPopupStatusStore()
   const { userInfo } = useUserStore()
-  const [topArtilceList, setTopArticleList] = useState<ArtilceInfo[]>([])
+  const [topArtilceList, setTopArticleList] = useState<ArticleInfo[]>([])
   const [tags, setTags] = useState<ArticleTagInfo[]>([])
   const [categorys, setCategorys] = useState<ArticleCategoryInfo[]>([])
   // 获取用户置顶文章

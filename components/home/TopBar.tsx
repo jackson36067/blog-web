@@ -18,7 +18,7 @@ export default function HomeTopBar({ className }: HomeTopBarProps) {
   return (
     <div
       className={cn(
-        'flex justify-between items-center px-26 py-2.5 bg-white dark:bg-[#212121]',
+        'flex justify-between items-center px-26 w-full py-2.5 bg-white dark:bg-[#212121]',
         className,
       )}
     >

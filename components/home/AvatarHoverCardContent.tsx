@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { ShineBorder } from '../ui/shine-border'
 import Icon from '../Icon'
 import useUserStore from '@/stores/UserStore'
+import { useRouter } from 'next/navigation'
 
 interface AvatarHoverCardContentProps {
   userInfo: {
@@ -20,10 +21,12 @@ export default function AvatarHoverCardContent({
   userInfo,
 }: AvatarHoverCardContentProps) {
   const { clearUserInfo } = useUserStore()
+  const router = useRouter()
 
   const handleExitLogin = () => {
     // 清除本地存储的用户信息
     clearUserInfo()
+    router.push('/home')
   }
 
   return (
@@ -34,7 +37,7 @@ export default function AvatarHoverCardContent({
       />
       <div className="flex gap-3 items-start">
         <Image
-          src={userInfo.avatar}
+          src={userInfo.avatar || 'https://picsum.photos/120/80?random=1'}
           className="w-12 h-12 rounded-full"
           alt=""
           width={12}
@@ -66,7 +69,12 @@ export default function AvatarHoverCardContent({
         </div>
       </div>
       <div className="flex flex-col gap-4 py-4 border-b-gray-200 border-solid border-b">
-        <div className="flex items-center gap-2 text-gray-600 dark:text-white">
+        <div
+          className="flex items-center gap-2 text-gray-600 dark:text-white"
+          onClick={() => {
+            router.push('/my')
+          }}
+        >
           <Icon icon="fluent:home-20-regular" className="text-inherit" />
           <p>我的主页</p>
         </div>

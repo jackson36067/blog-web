@@ -1,4 +1,4 @@
-import { GetArticleInfoParams } from '@/types/article'
+import { GetArticleInfoParams, GetMyArticleInfoParams } from '@/types/article'
 import httpInstance from '@/utils/http'
 
 // 根据条件分页获取文章列表
@@ -23,5 +23,22 @@ export const GetArticleHotTagsAndRandCategory = () => {
   return httpInstance({
     method: 'GET',
     url: '/article/meta',
+  })
+}
+
+// 获取用户个人文章
+export const GetMyArticleListAPI = (params: GetMyArticleInfoParams) => {
+  return httpInstance({
+    method: 'GET',
+    url: '/article/my',
+    params,
+  })
+}
+
+// 统计用户文章的创作历程
+export const GetMyArticleCreateProcessAPI = () => {
+  return httpInstance({
+    method: 'GET',
+    url: '/article/statistic',
   })
 }

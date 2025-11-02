@@ -1,5 +1,9 @@
 export interface UserData {
+  originArticle: number
   fans: number
   follow: number
-  likes: number
+  ip: string
+  joinTime: string
+  codeAge: number
+  avatar: string
 }
