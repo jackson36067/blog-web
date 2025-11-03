@@ -7,3 +7,9 @@ export interface UserData {
   codeAge: number
   avatar: string
 }
+
+export interface UsreAchievementResponse {
+  totalLikes: number
+  totalComments: number
+  totalCollects: number
+}

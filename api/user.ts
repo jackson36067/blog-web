@@ -36,3 +36,23 @@ export const GetUserDataAPI = () => {
     url: '/user/data',
   })
 }
+
+// 获取用户成就
+export const GetUserAchievementAPI = () => {
+  return httpInstance({
+    method: 'GET',
+    url: '/user/achievement',
+  })
+}
+
+// 获取用户点赞文章列表
+export const GetUserLikeArticleListAPI = (params: {
+  page: number
+  pageSize: number
+}) => {
+  return httpInstance({
+    method: 'GET',
+    url: '/user/likes',
+    params,
+  })
+}
