@@ -33,7 +33,7 @@ export default function MyLikeArticleTabContent() {
         </div>
       ) : (
         <a className="flex items-center justify-center px-2 py-4 mt-20 text-[14px] text-[#1d98d1] font-bold cursor-pointer">
-          暂无文章, 快去创作吧
+          暂无点赞文章, 点我去浏览
         </a>
       )}
     </div>

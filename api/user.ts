@@ -56,3 +56,11 @@ export const GetUserLikeArticleListAPI = (params: {
     params,
   })
 }
+
+// 获取用户浏览历史文章
+export const GetUserBrowseHistoryAPI = () => {
+  return httpInstance({
+    method: 'GET',
+    url: '/user/browse/history',
+  })
+}

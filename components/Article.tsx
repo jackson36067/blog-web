@@ -3,13 +3,15 @@
 import { ArticleInfo } from '@/types/article'
 import Image from 'next/image'
 import Icon from './Icon'
+import { cn } from '@/lib/utils'
 
 interface ArticleProps {
   articleInfo: ArticleInfo
+  className?: string
 }
-export default function Article({ articleInfo }: ArticleProps) {
+export default function Article({ articleInfo, className }: ArticleProps) {
   return (
-    <div className="flex gap-4 my-6">
+    <div className={cn('flex gap-4 my-6', className)}>
       <Image
         src={
           articleInfo.coverage

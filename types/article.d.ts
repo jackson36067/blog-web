@@ -71,3 +71,8 @@ export interface ArticleYearStatistic {
   totalCount: number // 该年发布文章数量
   months: ArticleMonthStatistic[]
 }
+
+export interface BrowseArticleHistoryGroup {
+  groupTime: string // 今日、昨天、MM-dd 或 yyyy-MM-dd
+  articles: ArticleInfo[]
+}

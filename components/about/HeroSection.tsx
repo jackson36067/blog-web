@@ -5,10 +5,11 @@ import { Button } from '@/components/ui/button'
 import { TypingAnimation } from '@/components/ui/typing-animation'
 import Glow from './glow'
 import { TextAnimate } from '../ui/text-animate'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export default function HeroSection() {
   const router = useRouter()
+  const path = usePathname()
   return (
     <div className="text-center max-w-4xl">
       <Glow
@@ -49,10 +50,14 @@ export default function HeroSection() {
           variant="default"
           size="lg"
           onClick={() => {
-            router.push('/home')
+            if (path === '/') {
+              router.push('/home')
+            } else {
+              window.open('https://github.com/jackson36067/blog-web', '_blank')
+            }
           }}
         >
-          进入项目
+          {path === '/' ? '进入项目' : '了解项目'}
         </Button>
         <Button
           variant="outline"

@@ -42,3 +42,11 @@ export const GetMyArticleCreateProcessAPI = () => {
     url: '/article/statistic',
   })
 }
+
+// 清除用户的浏览历史记录
+export const ClearUserBrowseHistoryAPI = () => {
+  return httpInstance({
+    method: 'DELETE',
+    url: '/article/remove/browse',
+  })
+}
