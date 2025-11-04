@@ -50,11 +50,11 @@ export default function MyPageTabs({
               transition={{ duration: 0.25, ease: 'easeInOut' }}
             >
               <Tabs.Content value={activeItem.title}>
-                {activeItem.title === '点赞' && <MyLikeArticleTabContent />}
+                {activeItem.title === '我的点赞' && <MyLikeArticleTabContent />}
                 {activeItem.title === '最近浏览' && <RecentBrowseTabContent />}
                 {activeItem.title === '我的文章' && <MyArticleTabContent />}
                 {activeItem.title === '关注/互动' && <InteractionTabContent />}
-                {activeItem.title === '收藏' && <MyCollectTabContent />}
+                {activeItem.title === '我的收藏' && <MyCollectTabContent />}
               </Tabs.Content>
             </motion.div>
           )}
