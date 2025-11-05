@@ -23,6 +23,7 @@ import {
   MoveFavoriteArticlesAPI,
   RemoveFavoriteArticleAPI,
 } from '@/api/favorite'
+import { useTheme } from 'next-themes'
 
 interface FavoriteArticleProps {
   favoriteList: FavoriteInfo[]
@@ -55,6 +56,7 @@ export default function FavoriteArticle({
   >([])
   // 博文移动到的目的地收藏夹id
   const [moveDestFavorite, setMoveDestFavorite] = useState<number>(0)
+  const { theme } = useTheme()
 
   // 如果切换了选择的收藏夹, 需要关闭多选框
   useEffect(() => {
@@ -115,8 +117,9 @@ export default function FavoriteArticle({
       targetFavoriteId: moveDestFavorite,
       articleIds: selectedFavoriteArticleIds,
     })
+    // 关闭批量移动弹窗
     setOpenMoveArticleDialog(false)
-    // 重置收藏夹
+    // 重置目的地收藏夹
     setMoveDestFavorite(0)
     // 重置选中的文章
     setSelectedFavoriteArticleIds([])
@@ -148,19 +151,77 @@ export default function FavoriteArticle({
     clearSelectedFavorite()
   }
 
+  // 拖动博文,传递博文id
+  function handleDragArticle(
+    e: React.DragEvent<HTMLDivElement>,
+    articleId: number,
+    title: string,
+  ) {
+    // 存储要传递的数据
+    e.dataTransfer.setData('text/plain', JSON.stringify({ articleId }))
+
+    // 创建预览卡片
+    const dragPreview = document.createElement('div')
+    dragPreview.style.position = 'absolute'
+    dragPreview.style.top = '-1000px'
+    dragPreview.style.pointerEvents = 'none'
+    dragPreview.style.padding = '10px 16px'
+    dragPreview.style.borderRadius = '12px'
+    dragPreview.style.display = 'flex'
+    dragPreview.style.alignItems = 'center'
+    dragPreview.style.gap = '10px'
+    dragPreview.style.width = '260px'
+    dragPreview.style.fontFamily = 'system-ui, sans-serif'
+    dragPreview.style.fontSize = '14px'
+    dragPreview.style.fontWeight = '500'
+    dragPreview.style.whiteSpace = 'nowrap'
+    dragPreview.style.overflow = 'hidden'
+    dragPreview.style.textOverflow = 'ellipsis'
+
+    // 判断是否为暗色模式
+
+    if (theme === 'dark') {
+      // 🌙 暗色模式样式
+      dragPreview.style.background = '#2d2d2de6' // 半透明深灰
+      dragPreview.style.color = '#f5f5f5'
+      dragPreview.style.border = '1px solid #ffffff1f' // 白色 12% 透明度
+      dragPreview.style.boxShadow = '0 8px 24px #00000066' // 40% 黑色阴影
+    } else {
+      // ☀️ 亮色模式样式
+      dragPreview.style.background = '#fffffff2' // 半透明白色
+      dragPreview.style.color = '#333333'
+      dragPreview.style.border = '1px solid #0000001f' // 黑色 12% 阴影
+      dragPreview.style.boxShadow = '0 8px 24px #0000001f' // 黑色 12% 阴影
+    }
+
+    dragPreview.innerHTML = `
+  <div style="
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    flex-shrink: 0;
+  "></div>
+  <div style="max-width: 220px;">${title}</div>
+`
+
+    document.body.appendChild(dragPreview)
+    e.dataTransfer.setDragImage(dragPreview, 20, 20)
+  }
+
   return (
     selectedFavorite && (
       <div className="flex flex-col gap-1 mt-2 flex-1">
         {(openUpdateInfoDialog || openMoveArticleDialog) && (
           <div className="fixed inset-0 bg-black/50 z-40" />
         )}
-        <div className="flex flex-col gap-3 pb-3 border-b border-solid border-gray-200">
+        <div className="flex flex-col gap-3 pb-3 border-b border-solid border-gray-200 dark:border-gray-200/10">
           <div className="flex justify-between">
             <div className="flex gap-2 items-center text-gray-500">
               <p>名称:</p>
               <p>{selectedFavorite.title}</p>
             </div>
-            <div className="flex items-center gap-1 text-[12px] text-[#F53F3F] border border-solid border-[#fbe3e4] rounded-xl py-1 px-2">
+            <div className="flex items-center gap-1 text-[12px] text-[#F53F3F] dark:text-[#C93C3C] border border-solid border-[#fbe3e4] rounded-xl py-1 px-2">
               <Icon icon="streamline:move-left" size={14} />
               <p>可拖拽博文至其他收藏夹进行分类修改</p>
             </div>
@@ -178,7 +239,7 @@ export default function FavoriteArticle({
                   modal={false}
                 >
                   <DialogTrigger asChild>
-                    <div className="border-r border-solid border-gray-200">
+                    <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
                       <Button variant="link" className="text-[#1d98d1]">
                         修改信息
                       </Button>
@@ -199,7 +260,7 @@ export default function FavoriteArticle({
                     />
                   </DialogContent>
                 </Dialog>
-                <div className="border-r border-solid border-gray-200">
+                <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
                   <Button
                     variant="link"
                     className="text-[#1d98d1]"
@@ -211,7 +272,7 @@ export default function FavoriteArticle({
                 <div
                   className={cn(
                     !selectedFavorite.isDefault &&
-                      'border-r border-solid border-gray-200',
+                      'border-r border-solid border-gray-200 dark:border-gray-200/10',
                   )}
                 >
                   <Button
@@ -232,7 +293,7 @@ export default function FavoriteArticle({
               </div>
             ) : (
               <div className="flex gap-2 items-center">
-                <div className="border-r border-solid border-gray-200">
+                <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
                   <Button
                     variant="link"
                     className="text-[#1d98d1]"
@@ -249,7 +310,7 @@ export default function FavoriteArticle({
                   modal={false}
                 >
                   <DialogTrigger asChild>
-                    <div className="border-r border-solid border-gray-200">
+                    <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
                       <Button variant="link" className="text-[#1d98d1]">
                         移至其他收藏夹
                       </Button>
@@ -316,7 +377,8 @@ export default function FavoriteArticle({
               return (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between mt-2 py-3 pl-2 pr-2 border border-[#ededed] border-solid rounded-[3px] hover:shadow hover:text-[#F53F3F] text-[#555666]"
+                  className="flex items-center justify-between mt-2 py-3 pl-2 pr-2 border border-[#ededed] dark:border-gray-200/10 border-solid rounded-[3px] hover:shadow hover:text-[#F53F3F] text-[#555666]"
+                  onDragStart={e => handleDragArticle(e, item.id, item.title)}
                 >
                   <div className="flex items-center gap-2">
                     {showCheckBox && (
@@ -328,7 +390,7 @@ export default function FavoriteArticle({
                         className="border-[#999]!"
                       />
                     )}
-                    <p className="px-[7px] border border-gray-200 border-solid text-[12px] rounded-[3px] text-gray-400">
+                    <p className="px-[7px] border border-gray-200 dark:border-gray-200/10 border-solid text-[12px] rounded-[3px] text-gray-400">
                       BLOG
                     </p>
                     <p className="text-inherit cursor-pointer text-[14px]">

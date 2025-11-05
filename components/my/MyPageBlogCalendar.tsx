@@ -26,7 +26,7 @@ export default function MyPageBlogCalendar() {
   }, [])
   return (
     <div className="w-[300px] h-[150px] bg-white dark:bg-[#212121] px-6 rounded-[3px]">
-      <div className="w-full py-3 border-b border-solid border-gray-200 font-bold text-gray-500 text-[14px]">
+      <div className="w-full py-3 border-b border-solid border-gray-200 dark:border-gray-200/10 font-bold text-gray-500 text-[14px]">
         本月创作历程
       </div>
       <UserContributionGraph data={data} />

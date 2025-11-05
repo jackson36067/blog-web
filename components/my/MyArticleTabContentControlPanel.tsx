@@ -50,7 +50,7 @@ export default function MyArticleTabContentControlPanel({
   }
   return (
     <div>
-      <div className="flex items-center gap-20 border-b border-solid border-gray-200 px-2 pt-1 pb-2">
+      <div className="flex items-center gap-20 border-b border-solid border-gray-200 dark:border-gray-200/10 px-2 pt-1 pb-2">
         <div>
           <DropdownMenu
             open={openVisibilityRange}

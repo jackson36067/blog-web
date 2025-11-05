@@ -25,7 +25,7 @@ export function Timeline({ groups }: TimelineProps) {
                 <Article
                   key={item.id}
                   articleInfo={item}
-                  className="border border-solid border-gray-200 py-2 pl-2"
+                  className="border border-solid border-gray-200 dark:border-gray-200/10 py-2 pl-2"
                 />
               )
             })}

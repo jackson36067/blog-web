@@ -29,9 +29,9 @@ export default function MyPageTabs({
           <Tabs.Trigger
             key={idx}
             value={item.title}
-            className="group outline-none py-1.5 border-b-2 border-white text-gray-500 data-[state=active]:border-indigo-600 data-[state=active]:text-indigo-600"
+            className="group outline-none py-1.5 border-b-2 border-gray-300 dark:border-white text-gray-500 data-[state=active]:border-[#1d98d1] data-[state=active]:text-[#1d98d1]"
           >
-            <div className="py-1.5 px-3 rounded-lg duration-150 group-hover:text-indigo-600 group-hover:bg-gray-50 group-active:bg-gray-100 font-medium">
+            <div className="py-1.5 px-3 rounded-lg duration-150 group-hover:text-[#1d98d1] font-medium">
               {item.title}
             </div>
           </Tabs.Trigger>

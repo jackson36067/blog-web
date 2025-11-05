@@ -38,11 +38,11 @@ export default function MyPageUserInfo({ setActiveTab }: MyPageUserInfoProps) {
               </div>
             </div>
             <div className="flex gap-4">
-              <div className="flex gap-1 items-center border border-gray-300 py-0.5 px-2 rounded-xl cursor-pointer">
+              <div className="flex gap-1 items-center border border-gray-300 dark:border-gray-200/10 py-0.5 px-2 rounded-xl cursor-pointer">
                 <Icon icon="basil:edit-outline" size={16} />
                 <p className="text-[14px]">编辑资料</p>
               </div>
-              <div className="flex gap-1 items-center border border-gray-300 py-0.5 px-2 rounded-xl cursor-pointer">
+              <div className="flex gap-1 items-center border border-gray-300 dark:border-gray-200/10 py-0.5 px-2 rounded-xl cursor-pointer">
                 <Icon icon="hugeicons:store-management-01" size={16} />
                 <p className="text-[14px]">管理博文</p>
               </div>
@@ -50,7 +50,7 @@ export default function MyPageUserInfo({ setActiveTab }: MyPageUserInfoProps) {
           </div>
           <div className="flex gap-4 text-[14px]">
             <p
-              className="cursor-pointer hover:text-[#fc5531] border-r border-solid border-gray-300 pr-4"
+              className="cursor-pointer hover:text-[#fc5531] border-r border-solid border-gray-300 dark:border-gray-200/10 pr-4"
               onClick={() => {
                 setActiveTab('我的文章')
               }}
@@ -61,7 +61,7 @@ export default function MyPageUserInfo({ setActiveTab }: MyPageUserInfoProps) {
               原创
             </p>
             <p
-              className="cursor-pointer hover:text-[#fc5531] border-r border-solid border-gray-300 pr-4"
+              className="cursor-pointer hover:text-[#fc5531] border-r border-solid border-gray-300 dark:border-gray-200/10 pr-4"
               onClick={() => {
                 setActiveTab('关注/互动')
               }}

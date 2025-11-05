@@ -19,6 +19,7 @@ export default function MyCollectTabContent() {
   const [favoriteArticles, setFavoriteArticles] = useState<
     FavoriteArticleInfo[]
   >([])
+
   // 获取用户收藏夹列表
   const getUserFavoriteList = useCallback(async () => {
     const res = await GetUserFavoriteListAPI()
@@ -32,6 +33,7 @@ export default function MyCollectTabContent() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     getUserFavoriteList()
   }, [getUserFavoriteList])
+
   // 获取收藏夹博文列表
   const getFavoriteArticleList = useCallback(async () => {
     if (!selectedFavorite) {
@@ -62,6 +64,7 @@ export default function MyCollectTabContent() {
         selectedFavorite={selectedFavorite}
         reGetFavoriteList={getUserFavoriteList}
         changeSelectedFavorite={handleChangeSelectedFavorite}
+        reGetFavoriteArticleList={getFavoriteArticleList}
       />
       <FavoriteArticle
         favoriteList={favoriteList}

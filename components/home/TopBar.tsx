@@ -18,19 +18,25 @@ export default function HomeTopBar({ className }: HomeTopBarProps) {
   return (
     <div
       className={cn(
-        'flex justify-between items-center px-62 w-full mx-auto py-2.5 bg-white dark:bg-[#212121]',
+        'w-full flex items-center bg-white dark:bg-[#212121] py-2.5',
         className,
       )}
     >
       <div
-        className="text-[#212121] dark:text-white font-bold text-[16px] p-2"
-        onClick={() => router.push('/')}
+        className={cn(
+          'flex justify-between items-center max-w-[1400px] w-[1400px] mx-auto',
+        )}
       >
-        ✨ MyBlog
-        <LovePointer />
+        <div
+          className="text-[#212121] dark:text-white font-bold text-[16px] p-2"
+          onClick={() => router.push('/')}
+        >
+          ✨ MyBlog
+          <LovePointer />
+        </div>
+        <NavigationMenu menu={menu} />
+        <Operate />
       </div>
-      <NavigationMenu menu={menu} />
-      <Operate />
     </div>
   )
 }
