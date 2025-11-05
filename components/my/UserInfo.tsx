@@ -5,20 +5,24 @@ import Icon from '../Icon'
 import { useEffect, useState } from 'react'
 import { UserData } from '@/types/user'
 import { GetUserDataAPI } from '@/api/user'
+import { useSearchParams } from 'next/navigation'
 
 interface MyPageUserInfoProps {
   setActiveTab: (title: string) => void
 }
 
 export default function MyPageUserInfo({ setActiveTab }: MyPageUserInfoProps) {
+  const pathParams = useSearchParams()
   const [userInfo, setUserInfo] = useState<UserData | null>(null)
   useEffect(() => {
     const getUserData = async () => {
-      const res = await GetUserDataAPI()
+      const res = await GetUserDataAPI({
+        username: pathParams.get('username') || '',
+      })
       setUserInfo(res.data)
     }
     getUserData()
-  }, [])
+  }, [pathParams])
   return (
     <div className="max-w-[1400px] mx-auto flex flex-col gap-6 bg-white dark:bg-[#212121] p-6 rounded-[3px]">
       <div className="flex gap-4 items-start w-full relative">

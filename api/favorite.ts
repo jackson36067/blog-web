@@ -7,10 +7,11 @@ import {
 import httpInstance from '@/utils/http'
 
 // 获取用户收藏夹列表
-export const GetUserFavoriteListAPI = () => {
+export const GetUserFavoriteListAPI = (params: { username: string }) => {
   return httpInstance({
     method: 'GET',
     url: '/favorite/list',
+    params,
   })
 }
 

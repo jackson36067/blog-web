@@ -99,11 +99,13 @@ export default function MyArticleTabContent() {
           {myArticleList.map(item => {
             return <Article key={item.id} articleInfo={item} />
           })}
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
+          )}
         </div>
       ) : (
         <a className="flex items-center justify-center px-2 py-4 mt-20 text-[14px] text-[#1d98d1] font-bold cursor-pointer">

@@ -50,7 +50,7 @@ export default function Operate() {
                 width={12}
                 height={12}
                 onClick={() => {
-                  router.push('/my')
+                  router.push(`/my?username=${userInfo.username}`)
                 }}
               />
             </HoverCardTrigger>

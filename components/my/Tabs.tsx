@@ -22,14 +22,14 @@ export default function MyPageTabs({
     <Tabs.Root value={activeTab} onValueChange={onTabChange} className="w-full">
       {/* Tab 列表 */}
       <Tabs.List
-        className="w-full border-b flex justify-between items-center overflow-x-auto text-[14px]"
+        className="w-full border-b flex justify-between items-center overflow-x-auto text-[16px]"
         aria-label="Manage your account"
       >
         {myPageTabItems.map((item, idx) => (
           <Tabs.Trigger
             key={idx}
             value={item.title}
-            className="group outline-none py-1.5 border-b-2 border-gray-300 dark:border-white text-gray-500 data-[state=active]:border-[#1d98d1] data-[state=active]:text-[#1d98d1]"
+            className="group outline-none py-1.5 text-gray-500 data-[state=active]:border-b-2 data-[state=active]:border-[#222226] data-[state=active]:text-[#222226]"
           >
             <div className="py-1.5 px-3 rounded-lg duration-150 group-hover:text-[#1d98d1] font-medium">
               {item.title}

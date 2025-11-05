@@ -188,10 +188,10 @@ export default function FavoriteArticle({
       dragPreview.style.boxShadow = '0 8px 24px #00000066' // 40% 黑色阴影
     } else {
       // ☀️ 亮色模式样式
-      dragPreview.style.background = '#fffffff2' // 半透明白色
+      dragPreview.style.background = '#fffffff6' // 半透明白色
       dragPreview.style.color = '#333333'
-      dragPreview.style.border = '1px solid #0000001f' // 黑色 12% 阴影
-      dragPreview.style.boxShadow = '0 8px 24px #0000001f' // 黑色 12% 阴影
+      // dragPreview.style.border = '1px solid #0000001f' // 黑色 12% 阴影
+      dragPreview.style.boxShadow = '0 8px 24px #ffffff' // 黑色 12% 阴影
     }
 
     dragPreview.innerHTML = `

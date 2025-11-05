@@ -3,18 +3,22 @@
 import { GetUserAchievementAPI } from '@/api/user'
 import { UsreAchievementResponse } from '@/types/user'
 import Image from 'next/image'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function MyPageAchievement() {
+  const pathParams = useSearchParams()
   const [userAchievement, setUserAchievement] =
     useState<UsreAchievementResponse | null>(null)
   useEffect(() => {
     const getUserAchievement = async () => {
-      const res = await GetUserAchievementAPI()
+      const res = await GetUserAchievementAPI({
+        username: pathParams.get('username') || '',
+      })
       setUserAchievement(res.data)
     }
     getUserAchievement()
-  }, [])
+  }, [pathParams])
   return (
     <div className="w-[300px] h-[180px] bg-white dark:bg-[#212121] px-6 rounded-[3px]">
       <div className="w-full py-3 border-b border-solid border-gray-200 dark:border-gray-200/10 font-bold text-gray-500 text-[14px]">

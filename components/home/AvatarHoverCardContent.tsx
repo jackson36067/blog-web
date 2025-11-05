@@ -72,7 +72,7 @@ export default function AvatarHoverCardContent({
         <div
           className="flex items-center gap-2 text-gray-600 dark:text-white"
           onClick={() => {
-            router.push('/my')
+            router.push(`/my?username=${userInfo.username}`)
           }}
         >
           <Icon icon="fluent:home-20-regular" className="text-inherit" />

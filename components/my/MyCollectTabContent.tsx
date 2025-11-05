@@ -8,8 +8,10 @@ import {
   GetUserFavoriteListAPI,
 } from '@/api/favorite'
 import FavoriteArticle from './FavoriteArticle'
+import { useSearchParams } from 'next/navigation'
 
 export default function MyCollectTabContent() {
+  const pathParams = useSearchParams()
   const [favoriteList, setFavoriteList] = useState<FavoriteInfo[]>([])
   // 保存选中的收藏夹, 刚开始为默认收藏夹
   const [selectedFavorite, setSelectedFavorite] = useState<
@@ -22,13 +24,16 @@ export default function MyCollectTabContent() {
 
   // 获取用户收藏夹列表
   const getUserFavoriteList = useCallback(async () => {
-    const res = await GetUserFavoriteListAPI()
+    const res = await GetUserFavoriteListAPI({
+      username: pathParams.get('username') || '',
+    })
     const favoriteList: FavoriteInfo[] = res.data
     setFavoriteList(favoriteList)
     if (!selectedFavorite) {
       setSelectedFavorite(favoriteList.find(item => item.isDefault))
     }
-  }, [selectedFavorite])
+  }, [selectedFavorite, pathParams])
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     getUserFavoriteList()

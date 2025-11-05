@@ -13,3 +13,11 @@ export interface UsreAchievementResponse {
   totalComments: number
   totalCollects: number
 }
+
+export interface UserListResponse {
+  followedId: number
+  avatar: string
+  username: string
+  abstract: string
+  isFollow: boolean
+}

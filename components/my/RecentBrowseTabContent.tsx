@@ -13,16 +13,20 @@ import {
   DialogDescription,
 } from '../ui/dialog'
 import { DialogHeader, DialogFooter } from '../ui/dialog'
+import { useSearchParams } from 'next/navigation'
 
 export default function RecentBrowseTabContent() {
+  const pathParams = useSearchParams()
   const [browseArticles, setBrowseArticles] = useState<
     BrowseArticleHistoryGroup[]
   >([])
   const [open, setOpen] = useState<boolean>(false)
   const getBrowseArticleHistory = useCallback(async () => {
-    const res = await GetUserBrowseHistoryAPI()
+    const res = await GetUserBrowseHistoryAPI({
+      username: pathParams.get('username') || '',
+    })
     setBrowseArticles(res.data)
-  }, [])
+  }, [pathParams])
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     getBrowseArticleHistory()

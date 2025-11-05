@@ -14,6 +14,7 @@ import {
 import NewFavoriteDialogContent from './NewFavoriteDialogContent'
 import { useState } from 'react'
 import { MoveFavoriteArticlesAPI } from '@/api/favorite'
+import { toast } from 'sonner'
 
 interface FavoriteListProps {
   favoriteList: FavoriteInfo[]
@@ -52,6 +53,10 @@ export default function FavoriteList({
   ) => {
     e.preventDefault()
     const data = JSON.parse(e.dataTransfer.getData('text/plain'))
+    if (targetFavoriteId === selectedFavorite!.id) {
+      toast.info('请选择其他收藏夹')
+      return
+    }
     // 调用移动收藏夹博文函数
     await MoveFavoriteArticlesAPI({
       sourceFavoriteId: selectedFavorite!.id,
