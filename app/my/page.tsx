@@ -4,10 +4,10 @@ import MyPageAchievement from '@/components/my/MyPageAchievement'
 import MyPageBlogCalendar from '@/components/my/MyPageBlogCalendar'
 import MyPageTabs from '@/components/my/Tabs'
 import MyPageUserInfo from '@/components/my/UserInfo'
-import { useState } from 'react'
+import useMyPageActiveTabStore from '@/stores/MyPageActiveTabStore'
 
 export default function MyPage() {
-  const [activeTab, setActiveTab] = useState('我的文章')
+  const { activeTab, setActiveTab } = useMyPageActiveTabStore()
   return (
     <div className="min-h-screen bg-[#f0eeee] dark:bg-[#0a0a0a] p-6">
       <MyPageUserInfo setActiveTab={setActiveTab} />

@@ -15,9 +15,17 @@ export interface UsreAchievementResponse {
 }
 
 export interface UserListResponse {
-  followedId: number
+  id: number // 关注者id/粉丝id
   avatar: string
   username: string
   abstract: string
   isFollow: boolean
+}
+
+export interface UserCommentResponse {
+  commentId: number
+  articleId: number
+  content: string
+  title: string
+  createdAt: string
 }

@@ -21,7 +21,7 @@ export default function UserCard({
       {userInfoList.map(userInfo => {
         return (
           <div
-            key={userInfo.followedId}
+            key={userInfo.id}
             className="w-full flex justify-between items-center px-2 py-6 border-b border-solid border-gray-200 dark:border-gray-200/20"
           >
             <div className="flex items-center gap-2">
@@ -45,7 +45,7 @@ export default function UserCard({
                 'text-[#999aaa] border border-solid border-[#ccccd8] rounded-[12px] cursor-pointer w-[74px] h-6 text-center leading-6 text-[14px]',
               )}
               onClick={() =>
-                handleUpdateFollowStatus(userInfo.followedId, userInfo.isFollow)
+                handleUpdateFollowStatus(userInfo.id, userInfo.isFollow)
               }
             >
               {userInfo.isFollow ? '已关注' : '关注'}

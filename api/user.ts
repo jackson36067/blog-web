@@ -92,3 +92,35 @@ export const UpdateFollowAPI = (followedId: number, isFollow: boolean) => {
     },
   })
 }
+
+// 获取用户粉丝列表
+export const GetUserFansListAPI = (params: {
+  username: string
+  page: number
+  pageSize: number
+}) => {
+  return httpInstance({
+    method: 'GET',
+    url: '/user/follower',
+    params,
+  })
+}
+
+/**
+ *
+ * @param type 'in' 获取用户收到的评论, 'out' 获取用户发出的评论
+ * @returns
+ */
+// 分页获取用户发布的评论/收到的评论
+export const GetUserCommentAPI = (params: {
+  page: number
+  pageSize: number
+  username: string
+  type: 'in' | 'out'
+}) => {
+  return httpInstance({
+    method: 'GET',
+    url: '/user/comment',
+    params,
+  })
+}
