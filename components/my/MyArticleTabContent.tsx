@@ -13,8 +13,10 @@ import {
 } from '@/api/article'
 import Pagination from '../Pagination'
 import MyArticleTabContentControlPanel from './MyArticleTabContentControlPanel'
+import { useSearchParams } from 'next/navigation'
 
 export default function MyArticleTabContent() {
+  const username = useSearchParams().get('username')
   const [myArticleList, setMyArticleList] = useState<ArticleInfo[]>([])
   const [totalPages, setTotalPages] = useState<number>(5)
   const [page, setPage] = useState<number>(1)
@@ -30,6 +32,7 @@ export default function MyArticleTabContent() {
   useEffect(() => {
     const getMyArticleList = async () => {
       const params: GetMyArticleInfoParams = {
+        username: username || '',
         page: page,
         pageSize: 4,
         visibility,

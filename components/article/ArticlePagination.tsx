@@ -4,8 +4,7 @@ import { GetArticleAPI } from '@/api/article'
 import { ArticleInfo, GetArticleInfoParams } from '@/types/article'
 import { useEffect, useState } from 'react'
 import SearchInput from '../SearchInput'
-import Pagination from '../Pagination'
-import Article from '../Article'
+import ArticleList from '../ArticleList'
 
 export default function ArticlePagination() {
   const [articleInfo, setArticleInfo] = useState<ArticleInfo[]>([])
@@ -32,17 +31,15 @@ export default function ArticlePagination() {
   return (
     <div className="flex-1 space-y-6">
       {/* 文章列表 */}
-      <div className="space-y-4 bg-white dark:bg-[#212121] shadow rounded-lg p-3">
+      <div className="bg-white dark:bg-[#212121] shadow rounded-lg p-3">
         <div className="flex justify-between items-center border-b border-solid border-b-gray-200 pb-4">
           <p className="font-bold text-[16px]">文章列表</p>
           <SearchInput value={title} onValueChange={setTitle} />
         </div>
-        {articleInfo.map(item => (
-          <Article key={item.id} articleInfo={item} />
-        ))}
-        <Pagination
-          currentPage={page}
-          totalPages={totalPages}
+        <ArticleList
+          articleList={articleInfo}
+          page={page}
+          totalPage={totalPages}
           onPageChange={setPage}
         />
       </div>

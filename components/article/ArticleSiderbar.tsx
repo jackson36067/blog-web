@@ -9,6 +9,7 @@ import {
   ArticleTagInfo,
   ArticleInfo,
 } from '@/types/article'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function ArticleSiderbar() {
@@ -17,6 +18,7 @@ export default function ArticleSiderbar() {
   const [topArtilceList, setTopArticleList] = useState<ArticleInfo[]>([])
   const [tags, setTags] = useState<ArticleTagInfo[]>([])
   const [categorys, setCategorys] = useState<ArticleCategoryInfo[]>([])
+  const router = useRouter()
   // 获取用户置顶文章
   useEffect(() => {
     // 没有登录不要发送请求
@@ -103,12 +105,15 @@ export default function ArticleSiderbar() {
           分类
         </h3>
         <div className="flex flex-wrap gap-2">
-          {categorys.map(tag => (
+          {categorys.map(category => (
             <span
-              key={tag.id}
+              key={category.id}
               className="px-2 py-1 bg-[#FFECE8] dark:bg-gray-500/50 rounded text-sm text-[#F53F3F] dark:text-gray-100"
+              onClick={() => {
+                router.push(`/category?title=${category.title}`)
+              }}
             >
-              {tag.title}
+              {category.title}
             </span>
           ))}
         </div>

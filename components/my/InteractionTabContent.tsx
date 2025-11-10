@@ -6,7 +6,6 @@ import { useState } from 'react'
 import Pagination from '../Pagination'
 import FollowedTabContent from './follow/FollowedTabContent'
 import FansTabContent from './follow/FansTabContent'
-import CommentCard from './comment/CommentCard'
 import CommentTabContent from './comment/CommentTabContent'
 
 export default function InteractionTabContent() {

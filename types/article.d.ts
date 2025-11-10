@@ -2,7 +2,7 @@ export interface GetArticleInfoParams {
   page: number
   pageSize: number
   title?: string
-  categoryId?: number
+  categoryTitle?: string
   tags?: string[]
   userId?: number
 }
@@ -50,6 +50,7 @@ export enum OrderType {
 }
 
 export interface GetMyArticleInfoParams {
+  username: string
   page: number
   pageSize: number
   visibility: number
