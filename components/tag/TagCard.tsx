@@ -4,6 +4,7 @@ import { GetArticleTagListAPI } from '@/api/tag'
 import { ArticleTagResponse } from '@/types/tag'
 import { useEffect, useState } from 'react'
 import { Button } from '../ui/button'
+import Icon from '../Icon'
 
 interface TagCardProps {
   selectedTags: string[]
@@ -32,14 +33,22 @@ export default function TagCard({
       {allTags.map(tag => {
         const isActive = selectedTags.includes(tag.title)
         return (
-          <Button
-            key={tag.id}
-            variant={isActive ? 'default' : 'outline'}
-            onClick={() => toggleTag(tag.title)}
-            className="rounded-full px-4 transition"
-          >
-            {tag.title}
-          </Button>
+          <div key={tag.id} className="relative">
+            <Button
+              variant={isActive ? 'default' : 'outline'}
+              onClick={() => toggleTag(tag.title)}
+              className="rounded-full px-4 transition cursor-pointer"
+            >
+              {tag.title}
+            </Button>
+            {tag.browseCount > 10000 && (
+              <Icon
+                icon="noto:fire"
+                className="absolute right-0 -top-1.5"
+                size={18}
+              />
+            )}
+          </div>
         )
       })}
       {selectedTags.length > 0 && (
