@@ -10,6 +10,7 @@ export default function TagPage() {
   const handleSelectedTags = (tag: string) => {
     if (tag === '') {
       setSelectedTags([])
+      return
     }
     setSelectedTags(prev =>
       prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag],

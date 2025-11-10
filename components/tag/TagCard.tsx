@@ -45,7 +45,7 @@ export default function TagCard({
       {selectedTags.length > 0 && (
         <Button
           variant="ghost"
-          onClick={() => changeSelectedTags('')}
+          onClick={() => toggleTag('')}
           className="text-muted-foreground"
         >
           清空

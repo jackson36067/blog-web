@@ -1,7 +1,7 @@
 'use client'
 
 import { GetArticleAPI } from '@/api/article'
-import { ArticleInfo } from '@/types/article'
+import { ArticleInfo, GetArticleInfoParams } from '@/types/article'
 import { useEffect, useState } from 'react'
 import ArticleList from '../ArticleList'
 
@@ -16,11 +16,14 @@ export default function TagArticleCard({ selectedTags }: TagArticleCardProps) {
   const pageSize = 4
   useEffect(() => {
     const getTagArticleList = async () => {
-      const res = await GetArticleAPI({
+      const param: GetArticleInfoParams = {
         page: page,
         pageSize: pageSize,
-        tags: selectedTags,
-      })
+      }
+      if (selectedTags.length > 0) {
+        param.tags = selectedTags
+      }
+      const res = await GetArticleAPI(param)
       setTagArticles(res.data.data)
       setTotalPages(res.data.totalPages)
     }
