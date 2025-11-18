@@ -1,38 +1,25 @@
 'use client'
 
-import { GetArticleAPI } from '@/api/article'
-import { ArticleInfo, GetArticleInfoParams } from '@/types/article'
-import { useEffect, useState } from 'react'
+import { ArticleInfo } from '@/types/article'
 import ArticleList from '../ArticleList'
 
 interface TagArticleCardProps {
-  selectedTags: string[]
+  tagArticleList: ArticleInfo[]
+  page: number
+  totalPages: number
+  setPage: (page: number) => void
 }
 
-export default function TagArticleCard({ selectedTags }: TagArticleCardProps) {
-  const [tagArticles, setTagArticles] = useState<ArticleInfo[]>([])
-  const [page, setPage] = useState<number>(1)
-  const [totalPages, setTotalPages] = useState<number>(0)
-  const pageSize = 4
-  useEffect(() => {
-    const getTagArticleList = async () => {
-      const param: GetArticleInfoParams = {
-        page: page,
-        pageSize: pageSize,
-      }
-      if (selectedTags.length > 0) {
-        param.tags = selectedTags
-      }
-      const res = await GetArticleAPI(param)
-      setTagArticles(res.data.data)
-      setTotalPages(res.data.totalPages)
-    }
-    getTagArticleList()
-  }, [page, selectedTags])
+export default function TagArticleCard({
+  tagArticleList,
+  page,
+  totalPages,
+  setPage,
+}: TagArticleCardProps) {
   return (
-    <div className="py-2 px-4 bg-white dark:bg-[#212121] ">
+    <div className="py-2 px-4 bg-white dark:bg-[#212121]">
       <ArticleList
-        articleList={tagArticles}
+        articleList={tagArticleList}
         page={page}
         totalPage={totalPages}
         onPageChange={setPage}

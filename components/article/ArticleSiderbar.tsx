@@ -92,6 +92,9 @@ export default function ArticleSiderbar() {
             <span
               key={tag.id}
               className="px-2 py-1 bg-[#FFECE8] dark:bg-gray-500/50 rounded text-sm text-[#F53F3F] dark:text-gray-100"
+              onClick={() => {
+                router.push(`/tag?title=${tag.title}`)
+              }}
             >
               {tag.title}
             </span>

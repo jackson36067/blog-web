@@ -9,9 +9,9 @@ import useMyPageActiveTabStore from '@/stores/MyPageActiveTabStore'
 export default function MyPage() {
   const { activeTab, setActiveTab } = useMyPageActiveTabStore()
   return (
-    <div className="min-h-screen bg-[#f0eeee] dark:bg-[#0a0a0a] p-6">
+    <div className="py-6">
       <MyPageUserInfo setActiveTab={setActiveTab} />
-      <div className="flex gap-10 max-w-[1400px] mx-auto mt-4">
+      <div className="flex gap-10 mt-4">
         <div className="flex flex-col gap-4">
           <MyPageAchievement />
           <MyPageBlogCalendar />

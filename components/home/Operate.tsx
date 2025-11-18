@@ -27,14 +27,14 @@ export default function Operate() {
   return (
     <div className="flex items-center gap-5">
       {open && <div className="fixed inset-0 bg-black/50 z-40" />}
-      <Button className="bg-[#fc5531] hover:bg-gray-400 dark:text-white">
+      <button className="flex gap-2 text-white bg-[#fc5531] rounded-[20px] py-1 px-3 cursor-pointer outline-none">
         <Icon
           icon="streamline-ultimate:pen-write"
           color="#fff"
           className="mb-1 mr-1"
         />
         写文章
-      </Button>
+      </button>
       <div className="dark:text-white text-[#212121]">
         <Icon icon="tabler:message" size="26" className="text-inherit" />
       </div>

@@ -34,7 +34,7 @@ export default function PageTransition() {
 
   useEffect(() => {
     // 监听 userInfo 中某个字段变化时触发动画
-    if (userInfo && userInfo.token) {
+    if (userInfo.token) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       triggerLoading()
     }

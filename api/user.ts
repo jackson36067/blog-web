@@ -1,5 +1,6 @@
 import { LoginFormProps } from '@/types/login'
 import { RegisterFormProps } from '@/types/register'
+import { UpdateUserInfoParams } from '@/types/user'
 import httpInstance from '@/utils/http'
 
 // 登录接口
@@ -30,7 +31,7 @@ export const RegisterAPI = (data: RegisterFormProps) => {
 }
 
 // 获取用户数据信息
-export const GetUserDataAPI = (params: { username: string }) => {
+export const GetUserDataAPI = (params?: { username?: string }) => {
   return httpInstance({
     method: 'GET',
     url: '/user/data',
@@ -122,5 +123,40 @@ export const GetUserCommentAPI = (params: {
     method: 'GET',
     url: '/user/comment',
     params,
+  })
+}
+
+// 文件上传
+export const UploadFileAPI = (file: File) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return httpInstance({
+    method: 'POST',
+    url: '/user/upload',
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+}
+
+/**
+ * 通用修改用户字段函数
+ * @param field 要修改的字段名，例如 'nickname'、'phone'、'birthday'
+ * @param value 修改的值
+ */
+export const updateUserFieldAPI = async (
+  userId: number,
+  field: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: any,
+) => {
+  return httpInstance({
+    method: 'PUT',
+    url: '/user/update',
+    data: {
+      userId,
+      [field]: value,
+    },
   })
 }

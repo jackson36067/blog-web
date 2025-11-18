@@ -1,6 +1,6 @@
 'use client'
 
-import { menu } from '@/constants/menu'
+import { HomeMenu } from '@/constants/menu'
 import NavigationMenu from './NavigationMenu'
 import Operate from './Operate'
 import LovePointer from '../Pointer'
@@ -27,14 +27,14 @@ export default function HomeTopBar({ className }: HomeTopBarProps) {
           'flex justify-between items-center max-w-[1400px] w-[1400px] mx-auto',
         )}
       >
-        <div
+        <h1
           className="text-[#212121] dark:text-white font-bold text-[16px] p-2"
           onClick={() => router.push('/')}
         >
           ✨ MyBlog
           <LovePointer />
-        </div>
-        <NavigationMenu menu={menu} />
+        </h1>
+        <NavigationMenu menu={HomeMenu} />
         <Operate />
       </div>
     </div>

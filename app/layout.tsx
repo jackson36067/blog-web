@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvide'
 import { Toaster } from '@/components/ui/sonner'
 import HomeTopBar from '@/components/home/TopBar'
 import PageTransition from '@/components/PageTransition'
+import { SidebarProvider } from '@/components/ui/sidebar'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -39,7 +40,11 @@ export default function RootLayout({
         >
           <HomeTopBar className="fixed top-0 left-0 w-full z-40" />
           <PageTransition />
-          <div className="mt-18">{children}</div>
+          <SidebarProvider className="w-full">
+            <div className="mt-18 max-w-[1400px] w-[1400px] mx-auto">
+              {children}
+            </div>
+          </SidebarProvider>
           <Toaster position="top-center" />
         </ThemeProvider>
       </body>

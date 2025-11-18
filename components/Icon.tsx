@@ -10,6 +10,7 @@ interface IconProps {
   color?: string // 图标颜色
   className?: string // 自定义类名
   darkColor?: string // 深色模式下的颜色
+  hanldeOnClick?: () => void // 点击事件处理函数
 }
 
 /**
@@ -23,6 +24,7 @@ const Icon: React.FC<IconProps> = ({
   color,
   className,
   darkColor,
+  hanldeOnClick,
 }) => {
   const iconSize = typeof size === 'number' ? `${size}px` : size || '20px'
   const { resolvedTheme } = useTheme()
@@ -35,7 +37,14 @@ const Icon: React.FC<IconProps> = ({
     verticalAlign: 'middle',
   }
 
-  return <IconifyIcon icon={icon} style={style} className={className} />
+  return (
+    <IconifyIcon
+      icon={icon}
+      style={style}
+      className={className}
+      onClick={hanldeOnClick}
+    />
+  )
 }
 
 export default Icon

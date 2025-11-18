@@ -5,7 +5,15 @@ export interface UserData {
   ip: string
   joinTime: string
   codeAge: number
+  username: string
   avatar: string
+  sex: number
+  abstract: string
+  birthday: string
+  hobbyTags: string[]
+  publicFanList: boolean
+  publicCollectList: boolean
+  publicFollowList: boolean
 }
 
 export interface UsreAchievementResponse {
@@ -28,4 +36,17 @@ export interface UserCommentResponse {
   content: string
   title: string
   createdAt: string
+}
+
+export interface UpdateUserInfoParams {
+  userId: number
+  username?: string
+  avatar?: string
+  sex?: number
+  abstract?: string
+  birthday?: string
+  hobbyTags?: string[]
+  publicFanList?: boolean
+  publicCollectList?: boolean
+  publicFollowList?: boolean
 }

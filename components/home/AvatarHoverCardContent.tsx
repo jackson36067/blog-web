@@ -78,7 +78,12 @@ export default function AvatarHoverCardContent({
           <Icon icon="fluent:home-20-regular" className="text-inherit" />
           <p>我的主页</p>
         </div>
-        <div className="flex items-center gap-2 text-gray-600 dark:text-white">
+        <div
+          className="flex items-center gap-2 text-gray-600 dark:text-white"
+          onClick={() => {
+            router.push(`/center`)
+          }}
+        >
           <Icon icon="f7:person" className="text-inherit" />
           <p>个人中心</p>
         </div>
