@@ -6,7 +6,7 @@ import Icon from '../Icon'
 import { useRouter } from 'next/navigation'
 import { Camera, ChevronDownIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { GetUserDataAPI, updateUserFieldAPI, UploadFileAPI } from '@/api/user'
+import { updateUserFieldAPI, UploadFileAPI } from '@/api/user'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
@@ -19,35 +19,46 @@ import { zhCN } from 'date-fns/locale'
 import { formatDate } from '@/utils/date'
 import InterestSelector from './InterestCategory'
 
-export default function UserProfile() {
-  const { userInfo, setUserInfo } = useUserStore()
-  const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const [showEditUsernameButton, setShowEditUsernameButton] =
-    useState<boolean>(false)
-  const [openCalendar, setOpenCalendar] = useState(false)
+interface UserProfileProps {
+  _birthday: string
+  _username: string
+  _sex: number
+  _abstract: string
+  sinceLastUpdateUsernameDays: number
+  _hobbyTags: string[]
+}
+
+export default function UserProfile({
+  _birthday,
+  _username,
+  _sex,
+  _abstract,
+  sinceLastUpdateUsernameDays,
+  _hobbyTags,
+}: UserProfileProps) {
   const [birthday, setBirthday] = useState<string>('')
   const [username, setUsername] = useState<string>('')
   const [sex, setSex] = useState<number>(0)
   const [abstract, setAbstract] = useState<string>('')
-  const [sinceLastUpdateUsernameDays, setSinceLastUpdateUsernameDays] =
-    useState<number>(0)
   const [hobbyTags, setHobbyTags] = useState<string[]>([])
 
-  // 获取用户初始信息
-  const getUserInfo = async () => {
-    const res = await GetUserDataAPI()
-    setUsername(res.data.username)
-    setSex(res.data.sex)
-    setAbstract(res.data.abstract)
-    setBirthday(res.data.birthday)
-    setSinceLastUpdateUsernameDays(res.data.sinceLastUpdateUsernameDays)
-    setHobbyTags(res.data.hobbyTags)
-  }
+  const { userInfo, setUserInfo } = useUserStore()
+  const router = useRouter()
+  // 上传文件ref,用于吊起文件选择框
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  // 展示编辑用户名按钮
+  const [showEditUsernameButton, setShowEditUsernameButton] =
+    useState<boolean>(false)
+  // 日历弹窗状态
+  const [openCalendar, setOpenCalendar] = useState(false)
 
   useEffect(() => {
-    getUserInfo()
-  }, [])
+    setBirthday(_birthday)
+    setUsername(_username)
+    setSex(_sex)
+    setAbstract(_abstract)
+    setHobbyTags(_hobbyTags)
+  }, [_birthday, _username, _sex, _abstract, _hobbyTags])
 
   // 点击头像区域，触发文件上传
   const handleAvatarClick = () => {

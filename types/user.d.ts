@@ -14,6 +14,10 @@ export interface UserData {
   publicFanList: boolean
   publicCollectList: boolean
   publicFollowList: boolean
+  publicLikeList: boolean
+  publicBrowseHistory: boolean
+  publicPersonalList: boolean
+  sinceLastUpdateUsernameDays: number
 }
 
 export interface UsreAchievementResponse {
