@@ -50,3 +50,10 @@ export interface UpdateUserInfoParams {
   publicCollectList?: boolean
   publicFollowList?: boolean
 }
+
+export interface UserLoginLogResponse {
+  id: number
+  ip: string
+  addr: string
+  createdAt: string
+}

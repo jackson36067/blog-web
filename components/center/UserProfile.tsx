@@ -69,7 +69,9 @@ export default function UserProfile() {
         ...userInfo,
         avatar: res.data,
       })
-      await updateUserFieldAPI(userInfo.userId, 'avatar', res.data)
+      await updateUserFieldAPI(userInfo.userId, [
+        { field: 'avatar', value: res.data },
+      ])
     } catch (err) {
       console.error('上传失败:', err)
     } finally {
@@ -81,7 +83,7 @@ export default function UserProfile() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const UpdateUserInfo = async (field: string, value: any) => {
     try {
-      await updateUserFieldAPI(userInfo.userId, field, value)
+      await updateUserFieldAPI(userInfo.userId, [{ field, value }])
     } catch (err) {
       console.error(err)
       return
@@ -102,7 +104,9 @@ export default function UserProfile() {
       newTags.push(tag)
     }
     setHobbyTags(newTags)
-    await updateUserFieldAPI(userInfo.userId, 'hobbyTags', newTags)
+    await updateUserFieldAPI(userInfo.userId, [
+      { field: 'hobbyTags', value: newTags },
+    ])
     toast.info(type === 0 ? '标签已删除' : '标签已添加')
   }
 
@@ -250,7 +254,7 @@ export default function UserProfile() {
                         确认
                       </button>
                       <button
-                        className="text-[#88807f] border border-solid border-[#fc5531] outline-none px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
+                        className="text-[#fc5531] border border-solid border-[#fc5531] outline-none px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {
                           setEditing(false)
                         }}
@@ -308,13 +312,13 @@ export default function UserProfile() {
             >
               {({ setEditing }) => {
                 return (
-                  <div className="flex gap-6">
+                  <div className="flex gap-6 items-center">
                     <Popover open={openCalendar} onOpenChange={setOpenCalendar}>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
                           id="date"
-                          className="w-[360px] justify-between font-normal"
+                          className="w-[360px] justify-between font-normal h-8"
                         >
                           {birthday ? birthday : '请设置您的出生日期'}
                           <ChevronDownIcon />
@@ -336,7 +340,7 @@ export default function UserProfile() {
                         />
                       </PopoverContent>
                     </Popover>
-                    <div className="flex justify-end gap-4">
+                    <div className="flex gap-4">
                       <button
                         className="bg-[#fc5531] border border-solid border-[#fc5531] outline-none text-white px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {

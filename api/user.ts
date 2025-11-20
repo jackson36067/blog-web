@@ -1,6 +1,5 @@
 import { LoginFormProps } from '@/types/login'
 import { RegisterFormProps } from '@/types/register'
-import { UpdateUserInfoParams } from '@/types/user'
 import httpInstance from '@/utils/http'
 
 // 登录接口
@@ -145,18 +144,40 @@ export const UploadFileAPI = (file: File) => {
  * @param field 要修改的字段名，例如 'nickname'、'phone'、'birthday'
  * @param value 修改的值
  */
+interface UpdateUserFieldParams {
+  field: string
+  value: string | number | boolean | string[]
+}
 export const updateUserFieldAPI = async (
   userId: number,
-  field: string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any,
+  updateUserFieldParams: UpdateUserFieldParams[],
 ) => {
+  const updatedFields = updateUserFieldParams.reduce((acc, currentItem) => {
+    acc[currentItem.field] = currentItem.value
+    return acc
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }, {} as Record<string, any>)
+
+  const data = {
+    userId,
+    ...updatedFields,
+  }
+
   return httpInstance({
     method: 'PUT',
     url: '/user/update',
-    data: {
-      userId,
-      [field]: value,
+    data,
+  })
+}
+
+// 获取用户登录日志
+export const GetUserLoginLogAPI = (page: number, pageSize: number) => {
+  return httpInstance({
+    method: 'GET',
+    url: '/user/login/log',
+    params: {
+      page,
+      pageSize,
     },
   })
 }
