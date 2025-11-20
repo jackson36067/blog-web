@@ -20,6 +20,8 @@ export interface ArticleInfo {
   commentCount: number
   collectCount: number
   publicComment: boolean // 文章是否可以评论
+  username: string
+  avatar: string
 }
 
 export interface ArticleCategoryInfo {

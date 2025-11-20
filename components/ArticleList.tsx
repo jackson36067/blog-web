@@ -27,6 +27,7 @@ export default function ArticleList({
                 articleInfo={item}
                 key={item.id}
                 className="border border-solid border-gray-200 dark:border-gray-200/20 p-2"
+                showAuthor
               />
             )
           })}
