@@ -1,3 +1,5 @@
+import { CommentResponse } from './comment'
+
 export interface GetArticleInfoParams {
   page: number
   pageSize: number
@@ -20,8 +22,14 @@ export interface ArticleInfo {
   commentCount: number
   collectCount: number
   publicComment: boolean // 文章是否可以评论
+  userId: number
   username: string
   avatar: string
+  isLike: boolean
+  isCollect: boolean
+  isFollow: boolean
+  comments: CommentResponse[]
+  totalComment: number
 }
 
 export interface ArticleCategoryInfo {

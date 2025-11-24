@@ -18,7 +18,12 @@ export default function Article({
 }: ArticleProps) {
   const router = useRouter()
   return (
-    <div className={cn('flex gap-4 my-6 cursor-pointer', className)}>
+    <div
+      className={cn('flex gap-4 my-6 cursor-pointer', className)}
+      onClick={() => {
+        router.push(`/article/detail?articleId=${articleInfo.id}`)
+      }}
+    >
       {/* 封面图 */}
       <Image
         src={

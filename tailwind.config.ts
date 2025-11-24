@@ -12,4 +12,5 @@ module.exports = {
     extend: {},
   },
   plugins: [lineClamp],
+  safelist: ['bg-[#212121]', 'dark:bg-white', 'text-white', 'dark:text-black'],
 }

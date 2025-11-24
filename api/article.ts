@@ -50,3 +50,33 @@ export const ClearUserBrowseHistoryAPI = () => {
     url: '/article/remove/browse',
   })
 }
+
+// 获取文章详情信息
+export const GetArticleDetailAPI = (articleId: number) => {
+  return httpInstance({
+    method: 'GET',
+    url: `/article/detail/${articleId}`,
+  })
+}
+
+// 点赞/取消点赞文章
+export const LikeArticleAPI = (articleId: number, isLike: boolean) => {
+  return httpInstance({
+    method: 'POST',
+    url: `/article/like/${articleId}`,
+    data: {
+      isLike,
+    },
+  })
+}
+
+// 收藏文章
+export const CollectArticleAPI = (articleId: number, favoriteId: number) => {
+  return httpInstance({
+    method: 'POST',
+    url: `/article/collect/${articleId}`,
+    data: {
+      favoriteId,
+    },
+  })
+}

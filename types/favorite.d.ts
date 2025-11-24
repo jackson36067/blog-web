@@ -1,11 +1,10 @@
-import { title } from 'process'
-
 export interface FavoriteInfo {
   id: number
   title: string
   abstract: string
   isDefault: boolean
   articleCount: number
+  collectArticleIdList: number[]
 }
 
 export interface NewFavoriteParams {

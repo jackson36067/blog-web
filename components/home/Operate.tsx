@@ -4,7 +4,6 @@ import useUserStore from '@/stores/UserStore'
 import Icon from '../Icon'
 import ThemeToggle from '../ThemeToggle'
 import { Avatar, AvatarFallback } from '../ui/avatar'
-import { Button } from '../ui/button'
 import {
   Dialog,
   DialogContent,
