@@ -14,28 +14,61 @@ import {
 } from '@/components/ui/hover-card'
 import useUserStore from '@/stores/UserStore'
 import { cn } from '@/lib/utils'
+import { ArticleInfo } from '@/types/article'
+import { toast } from 'sonner'
+import {
+  DeleteCommentAPI,
+  LikeCommentAPI,
+  PublishCommentAPI,
+} from '@/api/comment'
+import { useRouter } from 'next/navigation'
 
 export default function CommentDrawerContent({
-  articleUserId,
+  articleInfo,
   comments,
+  reFreshArticleCommentAction,
+  getMoreCommentsAction,
+  clearCommentsAction,
 }: {
-  articleUserId: number
+  articleInfo: ArticleInfo | null
   comments: CommentResponse[]
+  reFreshArticleCommentAction: () => void
+  getMoreCommentsAction: () => void
+  clearCommentsAction: () => void
 }) {
   return (
     <div>
-      <CommentInput inputPlaceholder="欢迎高质量评论，低质量评论会被折叠" />
-      <CommentList comments={comments} articleUserId={articleUserId} />
+      <CommentInput
+        inputPlaceholder="欢迎高质量评论，低质量评论会被折叠"
+        articleId={articleInfo?.id || 0}
+        reFreshArticleCommentAction={reFreshArticleCommentAction}
+      />
+      <CommentList
+        comments={comments}
+        articleInfo={articleInfo}
+        totalComment={articleInfo?.totalRootComment || 0}
+        reFreshArticleCommentAction={reFreshArticleCommentAction}
+        getMoreCommentsAction={getMoreCommentsAction}
+        clearComments={clearCommentsAction}
+      />
     </div>
   )
 }
 
 function CommentList({
   comments,
-  articleUserId,
+  articleInfo,
+  totalComment,
+  reFreshArticleCommentAction,
+  getMoreCommentsAction,
+  clearComments,
 }: {
   comments: CommentResponse[]
-  articleUserId: number
+  articleInfo: ArticleInfo | null
+  totalComment: number
+  reFreshArticleCommentAction: () => void
+  getMoreCommentsAction: () => void
+  clearComments: () => void
 }) {
   // 用 Set 存已展开的顶级评论 id
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set())
@@ -56,6 +89,11 @@ function CommentList({
     })
   }
 
+  // 获取更多评论
+  const handleGetMoreComments = () => {
+    getMoreCommentsAction()
+  }
+
   return (
     <div className="mt-6">
       {comments.length > 0 && (
@@ -66,7 +104,13 @@ function CommentList({
 
             return (
               <div key={comment.id} className="mt-4">
-                <CommentItem item={comment} articleUserId={articleUserId} />
+                <CommentItem
+                  item={comment}
+                  articleUserId={articleInfo?.userId || 0}
+                  articleId={articleInfo?.id || 0}
+                  reFreshArticleCommentAction={reFreshArticleCommentAction}
+                  clearComments={clearComments}
+                />
 
                 <div className="pl-8">
                   {/* 展示子评论：展开则全部，否则只展示第一个 */}
@@ -77,8 +121,13 @@ function CommentList({
                           <div key={child.id} className="mt-3">
                             <CommentItem
                               item={child}
-                              articleUserId={articleUserId}
+                              articleId={articleInfo?.id || 0}
+                              articleUserId={articleInfo?.userId || 0}
                               replyTo={child.replyToUsername}
+                              reFreshArticleCommentAction={
+                                reFreshArticleCommentAction
+                              }
+                              clearComments={clearComments}
                             />
                           </div>
                         ),
@@ -109,6 +158,16 @@ function CommentList({
               </div>
             )
           })}
+
+          {comments.length < totalComment && (
+            <div
+              className="flex items-center justify-center gap-px bg-[#f5f6f7] w-46 h-8 mx-auto mt-3 rounded-2xl text-[#555666] text-[14px] cursor-pointer"
+              onClick={handleGetMoreComments}
+            >
+              <p>查看更多评论</p>
+              <Icon icon="ep:arrow-down" size={16} />
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -117,26 +176,70 @@ function CommentList({
 
 function CommentItem({
   item,
+  articleId,
   articleUserId,
   replyTo,
+  reFreshArticleCommentAction,
+  clearComments,
 }: {
   item: CommentResponse
+  articleId: number
   articleUserId: number
   replyTo?: string
+  reFreshArticleCommentAction: () => void
+  clearComments: () => void
 }) {
   const [showReply, setShowReply] = useState(false)
+  const [replyComment, setReplyComment] = useState<CommentResponse | null>(null)
   const ref = useRef<HTMLDivElement>(null)
+  const [isLike, setIsLike] = useState<boolean>(false)
+  const [likeCount, setLikeCount] = useState<number>(0)
   const { userInfo } = useUserStore()
 
   useEffect(() => {
     const handle = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setShowReply(false)
+        setReplyComment(null)
       }
     }
     document.addEventListener('click', handle)
     return () => document.removeEventListener('click', handle)
   }, [])
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsLike(item.isLike || false)
+    setLikeCount(item.likeCount)
+  }, [item.isLike, item.likeCount])
+
+  // 点击回复/收起执行的函数
+  const handelReplyComment = (comment: CommentResponse) => {
+    setShowReply(!showReply)
+    setReplyComment(comment)
+  }
+
+  // 点赞评论
+  const handleLiekComment = async (commentId: number) => {
+    if (userInfo.username === null || userInfo.username === '') {
+      toast.info('请先登录!')
+      return
+    }
+    await LikeCommentAPI(commentId, isLike)
+    setIsLike(!isLike)
+    if (isLike) {
+      setLikeCount(likeCount - 1)
+    } else {
+      setLikeCount(likeCount + 1)
+    }
+    clearComments()
+  }
+
+  // 删除评论
+  const handleDeleteComment = async (commentId: number, isRoot: boolean) => {
+    await DeleteCommentAPI(commentId, isRoot)
+    reFreshArticleCommentAction()
+  }
 
   return (
     <div key={item.id} className="flex items-start gap-2 group" ref={ref}>
@@ -145,12 +248,29 @@ function CommentItem({
         alt=""
         width={8}
         height={8}
-        className="w-8 h-8 rounded-full"
+        className="w-8 h-8 rounded-full cursor-pointer"
+        onClick={() => {
+          window.open(`/my?username=${item.username}`, '_blank')
+        }}
       />
-      <div className="flex flex-col gap-1">
+      <div className="flex-1 flex flex-col gap-1">
         <div className="flex justify-between items-center text-[#777888]">
           <div className="flex items-end gap-2">
-            <p>{item.username}</p>
+            <div>
+              {item.username}{' '}
+              {articleUserId === item.userId &&
+                articleUserId !== userInfo.userId && (
+                  <div className="px-1 text-[#fc5531] bg-[#FC55311A] text-[12px] inline-block">
+                    作者
+                  </div>
+                )}
+              {userInfo.userId === item.userId && (
+                <div className="px-1 text-[#fc5531] bg-[#FC55311A] text-[12px] inline-block">
+                  本人
+                </div>
+              )}
+            </div>
+
             {replyTo != null && replyTo != '' && (
               <div className="flex items-end gap-2">
                 <p>回复</p>
@@ -159,7 +279,7 @@ function CommentItem({
             )}
             <p className="text-[14px]">{item.createTime}</p>
           </div>
-          <div className="flex gap-6 items-center">
+          <div className="flex items-center gap-6">
             <div className="flex gap-3 items-center opacity-0 group-hover:opacity-100">
               <HoverCard>
                 <HoverCardTrigger>
@@ -168,11 +288,25 @@ function CommentItem({
                 <HoverCardContent className="w-24! px-0! py-0">
                   <div className="py-1 bg-white dark:bg-[#212121]">
                     {articleUserId === userInfo.userId && (
-                      <p className="py-1 text-center hover:bg-[#f7f7fc] dark:hover:bg-[#2a2d34] cursor-pointer">
+                      <p
+                        className="py-1 text-center hover:bg-[#f7f7fc] dark:hover:bg-[#2a2d34] cursor-pointer"
+                        onClick={() =>
+                          handleDeleteComment(
+                            item.id,
+                            item.rootCommentId === null,
+                          )
+                        }
+                      >
                         删除
                       </p>
                     )}
-                    <p className="py-1 text-center hover:bg-[#f7f7fc] dark:hover:bg-[#2a2d34] cursor-pointer">
+                    <p
+                      className="py-1 text-center hover:bg-[#f7f7fc] dark:hover:bg-[#2a2d34] cursor-pointer"
+                      onClick={() => {
+                        navigator.clipboard.writeText(item.content)
+                        toast.info('复制成功')
+                      }}
+                    >
                       复制
                     </p>
                   </div>
@@ -180,16 +314,25 @@ function CommentItem({
               </HoverCard>
               <div className="flex items-center cursor-pointer text-[14px]">
                 <Icon icon="iconamoon:comment-thin" size={18} />
-                <p onClick={() => setShowReply(!showReply)}>
+                <p onClick={() => handelReplyComment(item)}>
                   {showReply ? '收起' : '回复'}
                 </p>
               </div>
             </div>
-            <Icon
-              icon="streamline:like-1"
-              className="cursor-pointer"
-              size={18}
-            />
+            <div
+              className={cn(
+                'flex gap-1 items-center',
+                isLike && 'text-[#fc5531]',
+              )}
+            >
+              {likeCount > 0 && <p>{likeCount}</p>}
+              <Icon
+                icon="streamline:like-1"
+                className="cursor-pointer"
+                size={18}
+                hanldeOnClick={() => handleLiekComment(item.id)}
+              />
+            </div>
           </div>
         </div>
         <p className="">{item.content}</p>
@@ -197,6 +340,9 @@ function CommentItem({
           <CommentInput
             inputPlaceholder={`回复：${item.username}`}
             inputHeight={30}
+            replyComment={replyComment}
+            articleId={articleId}
+            reFreshArticleCommentAction={reFreshArticleCommentAction}
           />
         )}
       </div>
@@ -207,14 +353,22 @@ function CommentItem({
 function CommentInput({
   inputPlaceholder,
   inputHeight,
+  replyComment,
+  articleId,
+  reFreshArticleCommentAction,
 }: {
   inputPlaceholder: string
   inputHeight?: number
+  replyComment?: CommentResponse | null
+  articleId: number
+  reFreshArticleCommentAction: () => void
 }) {
   // 控制是否展示表情选择器
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [comment, setComment] = useState<string>('')
   const emojiRef = useRef<HTMLDivElement>(null)
+  const { userInfo } = useUserStore()
+  // 监听输入框失去焦点, 关闭输入框
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -236,9 +390,27 @@ function CommentInput({
     setComment(comment + emoji)
     setShowEmojiPicker(false)
   }
+
+  // 发布评论
+  const handlePublishComment = async () => {
+    if (userInfo.username === null || userInfo.username === '') {
+      toast.info('登录后才能评论')
+      return
+    }
+    await PublishCommentAPI({
+      content: comment,
+      commentArticleId: articleId,
+      parentCommentId: replyComment?.id,
+      rootCommentId: replyComment?.rootCommentId || replyComment?.id, // 没有根评论的id,那么设置根评论为父评论
+      replyToUserId: replyComment?.userId,
+    })
+    reFreshArticleCommentAction()
+    setComment('')
+  }
   return (
     <div className="bg-[#f7f9fb] dark:bg-[#1e1e1e] px-1 pt-2 pb-4 rounded-lg">
       <Textarea
+        autoFocus
         className={cn(
           'h-40 border-none! shadow-none! bg-[#f7f9fb] dark:bg-[#1e1e1e]',
           `h-[${inputHeight}]!`,
@@ -280,7 +452,10 @@ function CommentInput({
               )}
             </AnimatePresence>
           </div>
-          <div className="px-4 py-px text-white bg-[#fc5531] dark:bg-[#e04728] rounded-2xl text-[14px] cursor-pointer">
+          <div
+            className="px-4 py-px text-white bg-[#fc5531] dark:bg-[#e04728] rounded-2xl text-[14px] cursor-pointer"
+            onClick={handlePublishComment}
+          >
             评论
           </div>
         </div>

@@ -13,7 +13,11 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import Icon from '@/components/Icon'
 import useUserStore from '@/stores/UserStore'
-import { CollectArticleAPI, LikeArticleAPI } from '@/api/article'
+import {
+  CollectArticleAPI,
+  GetArticleCommentAPI,
+  LikeArticleAPI,
+} from '@/api/article'
 import {
   Dialog,
   DialogContent,
@@ -35,6 +39,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import CommentDrawerContent from './CommentDrawerContent'
+import { CommentResponse } from '@/types/comment'
 
 export default function ArticleDetailCard({
   articleInfo,
@@ -51,6 +56,12 @@ export default function ArticleDetailCard({
   const [userFavorites, setUserFavorites] = useState<FavoriteInfo[]>([])
   const [openDialog, setOpenDialog] = useState(false)
   const [openDrawer, setOpenDrawer] = useState(false)
+  // 文章评论列表
+  const [comments, setComments] = useState<CommentResponse[]>([])
+  // 文章评论分页
+  const [page, setPage] = useState<number>(1)
+  // 用于点赞评论后的重新打开评论列表获取新的评论列表
+  const needRefreshRef = useRef(false)
 
   // 高亮显示代码
   useEffect(() => {
@@ -79,6 +90,7 @@ export default function ArticleDetailCard({
     setUserFavorites(res.data)
   }, [userInfo.username])
 
+  // 打开弹窗获取收藏夹(不刷新页面下次开启弹窗不会重新获取)
   useEffect(() => {
     if (userFavorites.length !== 0) {
       return
@@ -104,6 +116,7 @@ export default function ArticleDetailCard({
     reFreshArticleInfoAction()
   }
 
+  // 新建收藏夹, 重新获取收藏夹列表
   const handleNewFavorite = () => {
     getUserFavorites()
   }
@@ -116,6 +129,51 @@ export default function ArticleDetailCard({
     await UpdateFollowAPI(followedId, isFollow)
     reFreshArticleInfoAction()
   }
+
+  // 获取文章评论
+  const fetchComments = useCallback(
+    async (reset = false, specifyPage?: number) => {
+      const currentPage = reset ? 1 : specifyPage ?? page
+
+      const res = await GetArticleCommentAPI(
+        currentPage,
+        10,
+        articleInfo?.id || 0,
+      )
+
+      if (reset) {
+        setComments(res.data)
+        setPage(1)
+      } else {
+        setComments(prev => [...prev, ...res.data])
+      }
+    },
+    [articleInfo?.id, page],
+  )
+
+  // 打开抽屉时加载第一页
+  useEffect(() => {
+    if (!openDrawer) return
+
+    // 刷新评论信息
+    if (needRefreshRef.current) {
+      fetchComments(true)
+      needRefreshRef.current = false
+      return
+    }
+
+    if (comments.length === 0) {
+      fetchComments(true)
+    }
+  }, [comments.length, fetchComments, openDrawer])
+
+  // page变化后重新获取文章评论
+  useEffect(() => {
+    if (!openDrawer) return
+    if (page === 1) return // 已在首次加载时处理
+
+    fetchComments()
+  }, [fetchComments, openDrawer, page])
 
   return (
     <div className="flex gap-4">
@@ -245,7 +303,10 @@ export default function ArticleDetailCard({
               alt=""
               width={8}
               height={8}
-              className="w-8 h-8 rounded-full"
+              className="w-8 h-8 rounded-full cursor-pointer"
+              onClick={() =>
+                router.push(`/my?username=${articleInfo?.username}`)
+              }
             />
             <h2 className="font-bold">{articleInfo?.username}</h2>
             {articleInfo?.userId != userInfo.userId && (
@@ -312,18 +373,28 @@ export default function ArticleDetailCard({
               <DrawerTrigger>
                 <div className="flex items-center gap-1 cursor-pointer">
                   <Icon icon="ic:baseline-comment" />
-                  <p>{articleInfo?.commentCount}</p>
+                  <p>{articleInfo?.totalComment || 0}</p>
                 </div>
               </DrawerTrigger>
-              <DrawerContent className="max-w-130!">
+              <DrawerContent className="max-w-130! overflow-y-auto overflow-x-hidden">
                 <DrawerHeader>
                   <DrawerTitle>评论</DrawerTitle>
                   <DrawerDescription></DrawerDescription>
                 </DrawerHeader>
-                <div className="px-4">
+                <div className="px-4 pb-8">
                   <CommentDrawerContent
-                    articleUserId={articleInfo?.userId || 0}
-                    comments={articleInfo?.comments || []}
+                    articleInfo={articleInfo}
+                    comments={comments}
+                    reFreshArticleCommentAction={() => {
+                      fetchComments(true)
+                      reFreshArticleInfoAction()
+                    }}
+                    getMoreCommentsAction={() => {
+                      setPage(prev => prev + 1)
+                    }}
+                    clearCommentsAction={() => {
+                      needRefreshRef.current = true
+                    }}
                   />
                 </div>
               </DrawerContent>
@@ -339,28 +410,27 @@ export default function ArticleDetailCard({
                 setOpenDrawer(true)
               }}
             >
-              <p>{articleInfo?.commentCount} 条评论</p>
+              <p>{articleInfo?.totalComment || 0} 条评论</p>
               <Icon icon="iconamoon:arrow-right-2-thin" size={22} />
             </div>
-            {articleInfo?.comments != null &&
-              articleInfo.comments.length > 0 && (
-                <div className="flex-1 flex gap-2 items-center text-[14px] w-200">
-                  <Image
-                    src={
-                      articleInfo.comments[0].avatar ||
-                      'https://picsum.photos/120/80?random=1'
-                    }
-                    alt=""
-                    width={8}
-                    height={8}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <p>{articleInfo.comments[0].username}</p>
-                  <p className="flex-1 text-black dark:text-white truncate">
-                    {articleInfo.comments[0].content}
-                  </p>
-                </div>
-              )}
+            {articleInfo?.comment != null && (
+              <div className="flex-1 flex gap-2 items-center text-[14px] w-200">
+                <Image
+                  src={
+                    articleInfo.comment.avatar ||
+                    'https://picsum.photos/120/80?random=1'
+                  }
+                  alt=""
+                  width={8}
+                  height={8}
+                  className="w-8 h-8 rounded-full"
+                />
+                <p>{articleInfo.comment.username}</p>
+                <p className="flex-1 text-black dark:text-white truncate">
+                  {articleInfo.comment.content}
+                </p>
+              </div>
+            )}
           </div>
 
           {articleInfo?.publicComment && (

@@ -80,3 +80,19 @@ export const CollectArticleAPI = (articleId: number, favoriteId: number) => {
     },
   })
 }
+
+// 分页获取文章评论
+export const GetArticleCommentAPI = (
+  page: number,
+  pageSize: number,
+  articleId: number,
+) => {
+  return httpInstance({
+    method: 'GET',
+    url: `article/comment/${articleId}`,
+    params: {
+      page,
+      pageSize,
+    },
+  })
+}

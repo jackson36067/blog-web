@@ -15,6 +15,8 @@ import NewFavoriteDialogContent from './NewFavoriteDialogContent'
 import { useState } from 'react'
 import { MoveFavoriteArticlesAPI } from '@/api/favorite'
 import { toast } from 'sonner'
+import useUserStore from '@/stores/UserStore'
+import { useSearchParams } from 'next/navigation'
 
 interface FavoriteListProps {
   favoriteList: FavoriteInfo[]
@@ -32,6 +34,8 @@ export default function FavoriteList({
   reGetFavoriteArticleList,
 }: FavoriteListProps) {
   const [open, setOpen] = useState<boolean>(false)
+  const { userInfo } = useUserStore()
+  const pathParams = useSearchParams().get('username')
   // 关闭新建收藏夹弹窗
   const handleCloseNewFavoriteDialog = () => {
     setOpen(false)
@@ -73,10 +77,12 @@ export default function FavoriteList({
       {open && <div className="fixed inset-0 bg-black/50 z-40" />}
       <Dialog open={open} onOpenChange={setOpen} modal={false}>
         <DialogTrigger className="w-full">
-          <div className="flex gap-2 items-center w-full py-5 px-2 hover:bg-[#f6f7f8] dark:hover:bg-[#0a0a0a]/40 hover:rounded-[2px] text-gray-500 border-b border-solid border-gray-200 dark:border-gray-200/10 text-[16px] cursor-pointer">
-            <Icon icon="mingcute:new-folder-line" size={14} />
-            <p>新建收藏夹</p>
-          </div>
+          {userInfo.username === pathParams && (
+            <div className="flex gap-2 items-center w-full py-5 px-2 hover:bg-[#f6f7f8] dark:hover:bg-[#0a0a0a]/40 hover:rounded-[2px] text-gray-500 border-b border-solid border-gray-200 dark:border-gray-200/10 text-[16px] cursor-pointer">
+              <Icon icon="mingcute:new-folder-line" size={14} />
+              <p>新建收藏夹</p>
+            </div>
+          )}
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

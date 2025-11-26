@@ -24,6 +24,8 @@ import {
   RemoveFavoriteArticleAPI,
 } from '@/api/favorite'
 import { useTheme } from 'next-themes'
+import useUserStore from '@/stores/UserStore'
+import { useSearchParams } from 'next/navigation'
 
 interface FavoriteArticleProps {
   favoriteList: FavoriteInfo[]
@@ -57,6 +59,8 @@ export default function FavoriteArticle({
   // 博文移动到的目的地收藏夹id
   const [moveDestFavorite, setMoveDestFavorite] = useState<number>(0)
   const { theme } = useTheme()
+  const { userInfo } = useUserStore()
+  const pathParam = useSearchParams().get('username')
 
   // 如果切换了选择的收藏夹, 需要关闭多选框
   useEffect(() => {
@@ -157,6 +161,9 @@ export default function FavoriteArticle({
     articleId: number,
     title: string,
   ) {
+    if (userInfo.username !== pathParam) {
+      return
+    }
     // 存储要传递的数据
     e.dataTransfer.setData('text/plain', JSON.stringify({ articleId }))
 
@@ -221,142 +228,145 @@ export default function FavoriteArticle({
               <p>名称:</p>
               <p>{selectedFavorite.title}</p>
             </div>
-            <div className="flex items-center gap-1 text-[12px] text-[#F53F3F] dark:text-[#C93C3C] border border-solid border-[#fbe3e4] rounded-xl py-1 px-2">
-              <Icon icon="streamline:move-left" size={14} />
-              <p>可拖拽博文至其他收藏夹进行分类修改</p>
-            </div>
+            {userInfo.username === pathParam && (
+              <div className="flex items-center gap-1 text-[12px] text-[#F53F3F] dark:text-[#C93C3C] border border-solid border-[#fbe3e4] rounded-xl py-1 px-2">
+                <Icon icon="streamline:move-left" size={14} />
+                <p>可拖拽博文至其他收藏夹进行分类修改</p>
+              </div>
+            )}
           </div>
           <div className="flex justify-between">
             <div className="flex gap-2 items-center text-gray-500">
               <p>描述:</p>
               <p>{selectedFavorite.abstract}</p>
             </div>
-            {!showCheckBox ? (
-              <div className="flex gap-2 items-center">
-                <Dialog
-                  open={openUpdateInfoDialog}
-                  onOpenChange={setOpenUpdateInfoDialog}
-                  modal={false}
-                >
-                  <DialogTrigger asChild>
-                    <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
-                      <Button variant="link" className="text-[#1d98d1]">
-                        修改信息
-                      </Button>
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>更新收藏夹信息</DialogTitle>
-                      <DialogDescription></DialogDescription>
-                    </DialogHeader>
-                    <NewFavoriteDialogContent
-                      closeNewFavoriteDialog={handleCloseDialog}
-                      title={selectedFavorite.title}
-                      abstarct={selectedFavorite.abstract}
-                      isDefault={selectedFavorite.isDefault}
-                      operateType="update"
-                      favoriteId={selectedFavorite.id}
-                    />
-                  </DialogContent>
-                </Dialog>
-                <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
-                  <Button
-                    variant="link"
-                    className="text-[#1d98d1]"
-                    onClick={() => handleDeleteFavorite()}
+            {userInfo.username === pathParam &&
+              (!showCheckBox ? (
+                <div className="flex gap-2 items-center">
+                  <Dialog
+                    open={openUpdateInfoDialog}
+                    onOpenChange={setOpenUpdateInfoDialog}
+                    modal={false}
                   >
-                    删除收藏夹
-                  </Button>
-                </div>
-                <div
-                  className={cn(
-                    !selectedFavorite.isDefault &&
-                      'border-r border-solid border-gray-200 dark:border-gray-200/10',
+                    <DialogTrigger asChild>
+                      <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
+                        <Button variant="link" className="text-[#1d98d1]">
+                          修改信息
+                        </Button>
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>更新收藏夹信息</DialogTitle>
+                        <DialogDescription></DialogDescription>
+                      </DialogHeader>
+                      <NewFavoriteDialogContent
+                        closeNewFavoriteDialog={handleCloseDialog}
+                        title={selectedFavorite.title}
+                        abstarct={selectedFavorite.abstract}
+                        isDefault={selectedFavorite.isDefault}
+                        operateType="update"
+                        favoriteId={selectedFavorite.id}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                  <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
+                    <Button
+                      variant="link"
+                      className="text-[#1d98d1]"
+                      onClick={() => handleDeleteFavorite()}
+                    >
+                      删除收藏夹
+                    </Button>
+                  </div>
+                  <div
+                    className={cn(
+                      !selectedFavorite.isDefault &&
+                        'border-r border-solid border-gray-200 dark:border-gray-200/10',
+                    )}
+                  >
+                    <Button
+                      variant="link"
+                      className="text-[#1d98d1]"
+                      onClick={() => {
+                        setShowCheckBox(true)
+                      }}
+                    >
+                      批量移动
+                    </Button>
+                  </div>
+                  {!selectedFavorite.isDefault && (
+                    <Button variant="link" className="text-[#1d98d1]">
+                      设为默认
+                    </Button>
                   )}
-                >
-                  <Button
-                    variant="link"
-                    className="text-[#1d98d1]"
-                    onClick={() => {
-                      setShowCheckBox(true)
-                    }}
-                  >
-                    批量移动
-                  </Button>
                 </div>
-                {!selectedFavorite.isDefault && (
-                  <Button variant="link" className="text-[#1d98d1]">
-                    设为默认
-                  </Button>
-                )}
-              </div>
-            ) : (
-              <div className="flex gap-2 items-center">
-                <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
-                  <Button
-                    variant="link"
-                    className="text-[#1d98d1]"
-                    onClick={() =>
-                      handleRemoveFavoriteArticle(selectedFavoriteArticleIds)
-                    }
+              ) : (
+                <div className="flex gap-2 items-center">
+                  <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
+                    <Button
+                      variant="link"
+                      className="text-[#1d98d1]"
+                      onClick={() =>
+                        handleRemoveFavoriteArticle(selectedFavoriteArticleIds)
+                      }
+                    >
+                      取消收藏
+                    </Button>
+                  </div>
+                  <Dialog
+                    open={openMoveArticleDialog}
+                    onOpenChange={setOpenMoveArticleDialog}
+                    modal={false}
                   >
-                    取消收藏
-                  </Button>
-                </div>
-                <Dialog
-                  open={openMoveArticleDialog}
-                  onOpenChange={setOpenMoveArticleDialog}
-                  modal={false}
-                >
-                  <DialogTrigger asChild>
-                    <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
-                      <Button variant="link" className="text-[#1d98d1]">
-                        移至其他收藏夹
-                      </Button>
-                    </div>
-                  </DialogTrigger>
-                  <DialogContent className="w-[400px]">
-                    <DialogHeader>
-                      <DialogTitle>移动至其他收藏夹</DialogTitle>
-                      <DialogDescription></DialogDescription>
-                    </DialogHeader>
-                    <MoveArticleDialogContent
-                      favoriteList={favoriteList}
-                      selectMoveFavorite={setMoveDestFavorite}
-                    />
-                    <DialogFooter>
-                      <button
-                        className="border px-3 py-1 rounded"
-                        onClick={() => setOpenMoveArticleDialog(false)}
-                      >
-                        取消
-                      </button>
-                      <button
-                        className="bg-[#fc5531] text-white px-3 py-1 rounded"
-                        onClick={handleMoveArticle}
-                      >
-                        确定
-                      </button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                    <DialogTrigger asChild>
+                      <div className="border-r border-solid border-gray-200 dark:border-gray-200/10">
+                        <Button variant="link" className="text-[#1d98d1]">
+                          移至其他收藏夹
+                        </Button>
+                      </div>
+                    </DialogTrigger>
+                    <DialogContent className="w-[400px]">
+                      <DialogHeader>
+                        <DialogTitle>移动至其他收藏夹</DialogTitle>
+                        <DialogDescription></DialogDescription>
+                      </DialogHeader>
+                      <MoveArticleDialogContent
+                        favoriteList={favoriteList}
+                        selectMoveFavorite={setMoveDestFavorite}
+                      />
+                      <DialogFooter>
+                        <button
+                          className="border px-3 py-1 rounded"
+                          onClick={() => setOpenMoveArticleDialog(false)}
+                        >
+                          取消
+                        </button>
+                        <button
+                          className="bg-[#fc5531] text-white px-3 py-1 rounded"
+                          onClick={handleMoveArticle}
+                        >
+                          确定
+                        </button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
 
-                <div>
-                  <Button
-                    variant="link"
-                    className="text-[#1d98d1]"
-                    onClick={() => {
-                      setShowCheckBox(false)
-                      // 退出清空选择收藏夹博文
-                      setSelectedFavoriteArticleIds([])
-                    }}
-                  >
-                    退出
-                  </Button>
+                  <div>
+                    <Button
+                      variant="link"
+                      className="text-[#1d98d1]"
+                      onClick={() => {
+                        setShowCheckBox(false)
+                        // 退出清空选择收藏夹博文
+                        setSelectedFavoriteArticleIds([])
+                      }}
+                    >
+                      退出
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
+              ))}
           </div>
         </div>
         {showCheckBox && (
@@ -397,7 +407,7 @@ export default function FavoriteArticle({
                       {item.title}
                     </p>
                   </div>
-                  {!showCheckBox && (
+                  {!showCheckBox && userInfo.username === pathParam && (
                     <div className="cursor-pointer">
                       <Button
                         variant="link"

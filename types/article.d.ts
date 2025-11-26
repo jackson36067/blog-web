@@ -28,8 +28,9 @@ export interface ArticleInfo {
   isLike: boolean
   isCollect: boolean
   isFollow: boolean
-  comments: CommentResponse[]
+  comment: CommentResponse
   totalComment: number
+  totalRootComment: number
 }
 
 export interface ArticleCategoryInfo {

@@ -22,10 +22,10 @@ export default function MyPage() {
       setUserData(res.data)
       // 字段 -> tab 映射
       const tabMap = [
-        ['publicLikeList', '我的点赞'],
-        ['publicBrowseHistory', '最近浏览'],
-        ['publicPersonalList', '我的文章'],
-        ['publicCollectList', '我的收藏'],
+        ['publicLikeList', '点赞'],
+        ['publicBrowseHistory', '最近'],
+        ['publicPersonalList', '文章'],
+        ['publicCollectList', '收藏'],
       ] as const
 
       const matched = tabMap.find(([key]) => res.data[key])
