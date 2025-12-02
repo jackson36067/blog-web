@@ -147,3 +147,14 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 改变MDEditor的宽度 */
+.w-md-editor {
+  width: 100% !important;
+}
+
+/* 让 MDEditor 内的图片按原图大小显示 */
+.w-md-editor img,
+.wmde-markdown img {
+  max-width: none !important;
+}

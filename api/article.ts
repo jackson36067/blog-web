@@ -1,4 +1,8 @@
-import { GetArticleInfoParams, GetMyArticleInfoParams } from '@/types/article'
+import {
+  CreateArticleParams,
+  GetArticleInfoParams,
+  GetMyArticleInfoParams,
+} from '@/types/article'
 import httpInstance from '@/utils/http'
 
 // 根据条件分页获取文章列表
@@ -94,5 +98,13 @@ export const GetArticleCommentAPI = (
       page,
       pageSize,
     },
+  })
+}
+
+export const PublishArticleAPI = (data: CreateArticleParams) => {
+  return httpInstance({
+    method: 'POST',
+    url: '/article/publish',
+    data,
   })
 }

@@ -88,3 +88,22 @@ export interface BrowseArticleHistoryGroup {
   groupTime: string // 今日、昨天、MM-dd 或 yyyy-MM-dd
   articles: ArticleInfo[]
 }
+
+export interface CreateArticleParams {
+  title: string
+  abstract: string
+  content: string
+  categoryName: string
+  tags: string[]
+  coverage?: string
+  status: number // 1.草稿 2.审核中 3.发布
+  visibility: 0 | 1 | 2 // 0.所有人可见 1.仅粉丝可见 2.仅自己可见
+  publicComment: boolean // 0.公开评论 1.不允许评论
+}
+
+export interface TocItem {
+  id: string
+  text: string
+  level: number
+  children?: TocItem[]
+}
