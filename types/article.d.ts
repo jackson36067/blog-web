@@ -31,6 +31,9 @@ export interface ArticleInfo {
   comment: CommentResponse
   totalComment: number
   totalRootComment: number
+  visibility: number
+  categoryName: string
+  status: nubmer
 }
 
 export interface ArticleCategoryInfo {
@@ -69,6 +72,7 @@ export interface GetMyArticleInfoParams {
   orderType: string
   startTime?: string
   endTime?: string
+  status: number
 }
 
 export interface ArticleMonthStatistic {

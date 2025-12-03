@@ -9,6 +9,7 @@ interface ArticleListProps {
   totalPage: number
   onPageChange: (page: number) => void
   articleList: ArticleInfo[]
+  showEdit?: boolean
 }
 
 export default function ArticleList({
@@ -16,6 +17,7 @@ export default function ArticleList({
   page,
   totalPage,
   onPageChange,
+  showEdit,
 }: ArticleListProps) {
   return (
     <div className="w-full">
@@ -28,6 +30,7 @@ export default function ArticleList({
                 key={item.id}
                 className="border border-solid border-gray-200 dark:border-gray-200/20 p-2"
                 showAuthor
+                showEdit={showEdit}
               />
             )
           })}

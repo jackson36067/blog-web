@@ -10,16 +10,18 @@ interface ArticleProps {
   articleInfo: ArticleInfo
   className?: string
   showAuthor?: boolean
+  showEdit?: boolean
 }
 export default function Article({
   articleInfo,
   className,
   showAuthor,
+  showEdit,
 }: ArticleProps) {
   const router = useRouter()
   return (
     <div
-      className={cn('flex gap-4 my-6 cursor-pointer', className)}
+      className={cn('flex gap-4 my-6 cursor-pointer relative group', className)}
       onClick={() => {
         router.push(`/article/detail?articleId=${articleInfo.id}`)
       }}
@@ -111,6 +113,18 @@ export default function Article({
           </div>
         </div>
       </div>
+      {showEdit && (
+        <div
+          className="opacity-0 group-hover:opacity-100 absolute right-4 bottom-2 text-[12px] text-gray-500 dark:text-gray-400"
+          onClick={e => {
+            // 防止冒泡进入文章详情页
+            e.stopPropagation()
+            window.open(`/creation/editor?id=${articleInfo.id}`, '_blank')
+          }}
+        >
+          编辑
+        </div>
+      )}
     </div>
   )
 }

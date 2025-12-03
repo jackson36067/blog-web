@@ -14,6 +14,7 @@ export default function CreationTemplate({
   handleUpdateArticleInfoAction,
   handleUpdateArticleContentAction,
   handlePublishArticleAction,
+  showDraftButton,
 }: {
   articleInfo: CreateArticleParams
   articleTags: ArticleTagResponse[]
@@ -28,6 +29,7 @@ export default function CreationTemplate({
   ) => void
   handleUpdateArticleContentAction: (conten: string, type: number) => void
   handlePublishArticleAction: (status: number) => void
+  showDraftButton: boolean
 }) {
   const [currentStep, setCurrentStep] = useState<number>(1)
   return (
@@ -71,6 +73,7 @@ export default function CreationTemplate({
             currentStep={currentStep}
             changeStepAction={setCurrentStep}
             handlePublishArticleAction={handlePublishArticleAction}
+            showDraftButton={showDraftButton}
           />
         </div>
       )}

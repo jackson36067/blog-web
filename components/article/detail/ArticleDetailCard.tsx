@@ -39,6 +39,11 @@ import { CommentResponse } from '@/types/comment'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import MDEditor from '@uiw/react-md-editor'
 import { useTheme } from 'next-themes'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 
 export default function ArticleDetailCard({
   articleInfo,
@@ -174,7 +179,6 @@ export default function ArticleDetailCard({
 
   // 分页获取文章评论
   const fetchComments = useCallback(
-    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     async (reset = false, specifyPage?: number) => {
       const currentPage = reset ? 1 : specifyPage ?? page
       const res = await GetArticleCommentAPI(
@@ -225,19 +229,58 @@ export default function ArticleDetailCard({
       {/* 文章内容 */}
       <div className="max-w-[1150px] min-w-[1050px] bg-white dark:bg-[#212121] pt-4 rounded-lg relative">
         <div className="px-6">
-          <h1 className="text-3xl font-bold">{articleInfo?.title}</h1>
-          <div className="flex justify-between items-center my-4 text-[12px] text-gray-500 dark:text-gray-400">
-            <div className="flex items-center gap-2">
-              <p>于{articleInfo?.createdAt}发布</p>
-              <p>·</p>
-              <p>{articleInfo?.username}</p>
-              <p>·</p>
-              <p>{articleInfo?.browseCount}阅读</p>
-            </div>
-            {articleInfo?.userId === userInfo.userId && (
-              <p className="cursor-pointer hover:text-[#fc5531]">编辑</p>
+          <h1 className="text-3xl font-bold flex items-end gap-2">
+            {articleInfo?.title}
+            {articleInfo?.status === 1 && (
+              <div>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <span className="px-2 py-0.5 text-xs bg-yellow-100 text-yellow-700 rounded">
+                      草稿
+                    </span>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="py-1 text-[14px] text-gray-500 text-center w-auto!">
+                    点击编辑按钮发布文章
+                  </HoverCardContent>
+                </HoverCard>
+                <span
+                  className="px-2 py-0.5 text-xs bg-[#ffece8] text-[#F53F3F] rounded ml-2 cursor-pointer"
+                  onClick={() =>
+                    window.open(
+                      `/creation/editor?id=${articleInfo.id}`,
+                      '_blank',
+                    )
+                  }
+                >
+                  编辑
+                </span>
+              </div>
             )}
-          </div>
+          </h1>
+          {articleInfo?.status !== 1 && (
+            <div className="flex justify-between items-center my-4 text-[12px] text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-2">
+                <p>于{articleInfo?.createdAt}发布</p>
+                <p>·</p>
+                <p>{articleInfo?.username}</p>
+                <p>·</p>
+                <p>{articleInfo?.browseCount}阅读</p>
+              </div>
+              {articleInfo?.userId === userInfo.userId && (
+                <p
+                  className="cursor-pointer hover:text-[#fc5531]"
+                  onClick={() =>
+                    window.open(
+                      `/creation/editor?id=${articleInfo.id}`,
+                      '_blank',
+                    )
+                  }
+                >
+                  编辑
+                </p>
+              )}
+            </div>
+          )}
           <div className="flex my-4 text-[14px] text-[#999aaa]">
             文章标签：
             <ul className="flex gap-3">
@@ -280,152 +323,163 @@ export default function ArticleDetailCard({
           )}
         </div>
 
-        {/* 文章其他信息 */}
-        <div className="flex justify-between sticky left-0 bottom-0 px-6 py-[17px] z-20 bg-white dark:bg-[#212121] w-full border-y border-y-solid border-y-gray-300 dark:border-y-gray-300/20">
-          <div className="flex items-center gap-3">
-            <Image
-              src={
-                articleInfo?.avatar || 'https://picsum.photos/120/80?random=1'
-              }
-              alt=""
-              width={8}
-              height={8}
-              className="w-8 h-8 rounded-full cursor-pointer"
-              onClick={() =>
-                router.push(`/my?username=${articleInfo?.username}`)
-              }
-            />
-            <h2 className="font-bold">{articleInfo?.username}</h2>
-            {articleInfo?.userId != userInfo.userId && (
-              <p
-                className="text-[14px] text-[#555666] dark:text-white rounded-2xl px-4 py-1 border border-solid border-[#ccccd8] cursor-pointer"
+        {/* 文章其他信息, 文章为草稿隐藏 */}
+        {articleInfo?.status !== 1 && (
+          <div className="flex justify-between sticky left-0 bottom-0 px-6 py-[17px] z-20 bg-white dark:bg-[#212121] w-full border-y border-y-solid border-y-gray-300 dark:border-y-gray-300/20">
+            <div className="flex items-center gap-3">
+              <Image
+                src={
+                  articleInfo?.avatar || 'https://picsum.photos/120/80?random=1'
+                }
+                alt=""
+                width={8}
+                height={8}
+                className="w-8 h-8 rounded-full cursor-pointer"
                 onClick={() =>
-                  handleUpdateFollowUser(
-                    articleInfo!.userId,
-                    articleInfo!.isFollow,
-                  )
+                  router.push(`/my?username=${articleInfo?.username}`)
+                }
+              />
+              <h2 className="font-bold">{articleInfo?.username}</h2>
+              {articleInfo?.userId != userInfo.userId && (
+                <p
+                  className="text-[14px] text-[#555666] dark:text-white rounded-2xl px-4 py-1 border border-solid border-[#ccccd8] cursor-pointer"
+                  onClick={() =>
+                    handleUpdateFollowUser(
+                      articleInfo!.userId,
+                      articleInfo!.isFollow,
+                    )
+                  }
+                >
+                  {articleInfo?.isFollow ? '已关注' : '关注'}
+                </p>
+              )}
+            </div>
+            <div className="flex items-center gap-4 text-[#989aa9]">
+              <div
+                className={cn(
+                  'flex items-center gap-1 cursor-pointer',
+                  articleInfo?.isLike && 'text-[#fc5531]!',
+                )}
+                onClick={() =>
+                  handleLikeArticle(articleInfo!.id, articleInfo!.isLike)
                 }
               >
-                {articleInfo?.isFollow ? '已关注' : '关注'}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center gap-4 text-[#989aa9]">
-            <div
-              className={cn(
-                'flex items-center gap-1 cursor-pointer',
-                articleInfo?.isLike && 'text-[#fc5531]!',
-              )}
-              onClick={() =>
-                handleLikeArticle(articleInfo!.id, articleInfo!.isLike)
-              }
-            >
-              <Icon icon="mdi:like" />
-              <p>{articleInfo?.likeCount}</p>
-            </div>
-            <Dialog
-              modal={false}
-              open={openDialog}
-              onOpenChange={setOpenDialog}
-            >
-              <DialogTrigger>
-                <div
-                  className={cn(
-                    'flex items-center gap-1 cursor-pointer',
-                    articleInfo?.isCollect && 'text-[#fc5531]!',
-                  )}
-                >
-                  <Icon icon="solar:star-bold" />
-                  <p>{articleInfo?.collectCount}</p>
-                </div>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="text-center">添加收藏夹</DialogTitle>
-                  <DialogDescription></DialogDescription>
-                </DialogHeader>
-                <CollectFavoriteDialogContent
-                  articleId={articleInfo?.id || 0}
-                  userFavorites={userFavorites}
-                  handleCollectArticleAction={handleCollectArticle}
-                  handelNewFavoriteAction={handleNewFavorite}
-                />
-              </DialogContent>
-            </Dialog>
-            <Drawer
-              direction="right"
-              open={openDrawer}
-              onOpenChange={setOpenDrawer}
-            >
-              <DrawerTrigger>
-                <div className="flex items-center gap-1 cursor-pointer">
-                  <Icon icon="ic:baseline-comment" />
-                  <p>{articleInfo?.totalComment || 0}</p>
-                </div>
-              </DrawerTrigger>
-              <DrawerContent className="max-w-130! overflow-y-auto overflow-x-hidden">
-                <DrawerHeader>
-                  <DrawerTitle>评论</DrawerTitle>
-                  <DrawerDescription></DrawerDescription>
-                </DrawerHeader>
-                <div className="px-4 pb-8">
-                  <CommentDrawerContent
-                    articleInfo={articleInfo}
-                    comments={comments}
-                    reFreshArticleCommentAction={() => {
-                      fetchComments(true)
-                      reFreshArticleInfoAction()
-                    }}
-                    getMoreCommentsAction={() => setPage(prev => prev + 1)}
-                    clearCommentsAction={() => {
-                      needRefreshRef.current = true
-                    }}
-                  />
-                </div>
-              </DrawerContent>
-            </Drawer>
-          </div>
-        </div>
-
-        {/* 文章评论 */}
-        <div className="flex gap-6 px-6 py-[17px] text-[#989aa9]">
-          <div className="flex-1 flex gap-4 items-center">
-            <div
-              className="flex items-center gap-1 cursor-pointer"
-              onClick={() => setOpenDrawer(true)}
-            >
-              <p>{articleInfo?.totalComment || 0} 条评论</p>
-              <Icon icon="iconamoon:arrow-right-2-thin" size={22} />
-            </div>
-            {articleInfo?.comment != null && (
-              <div className="flex-1 flex gap-2 items-center text-[14px] w-200">
-                <Image
-                  src={
-                    articleInfo.comment.avatar ||
-                    'https://picsum.photos/120/80?random=1'
-                  }
-                  alt=""
-                  width={8}
-                  height={8}
-                  className="w-8 h-8 rounded-full"
-                />
-                <p>{articleInfo.comment.username}</p>
-                <p className="flex-1 text-black dark:text-white truncate">
-                  {articleInfo.comment.content}
-                </p>
+                <Icon icon="mdi:like" />
+                <p>{articleInfo?.likeCount}</p>
               </div>
+              <Dialog
+                modal={false}
+                open={openDialog}
+                onOpenChange={setOpenDialog}
+              >
+                <DialogTrigger>
+                  <div
+                    className={cn(
+                      'flex items-center gap-1 cursor-pointer',
+                      articleInfo?.isCollect && 'text-[#fc5531]!',
+                    )}
+                  >
+                    <Icon icon="solar:star-bold" />
+                    <p>{articleInfo?.collectCount}</p>
+                  </div>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle className="text-center">
+                      添加收藏夹
+                    </DialogTitle>
+                    <DialogDescription></DialogDescription>
+                  </DialogHeader>
+                  <CollectFavoriteDialogContent
+                    articleId={articleInfo?.id || 0}
+                    userFavorites={userFavorites}
+                    handleCollectArticleAction={handleCollectArticle}
+                    handelNewFavoriteAction={handleNewFavorite}
+                  />
+                </DialogContent>
+              </Dialog>
+              <Drawer
+                direction="right"
+                open={openDrawer}
+                onOpenChange={open => {
+                  if (!articleInfo?.publicComment) {
+                    return
+                  }
+                  setOpenDrawer(open)
+                }}
+              >
+                <DrawerTrigger>
+                  <div className="flex items-center gap-1 cursor-pointer">
+                    <Icon icon="ic:baseline-comment" />
+                    <p>{articleInfo?.totalComment || 0}</p>
+                  </div>
+                </DrawerTrigger>
+                <DrawerContent className="max-w-130! overflow-y-auto overflow-x-hidden">
+                  <DrawerHeader>
+                    <DrawerTitle>评论</DrawerTitle>
+                    <DrawerDescription></DrawerDescription>
+                  </DrawerHeader>
+                  <div className="px-4 pb-8">
+                    <CommentDrawerContent
+                      articleInfo={articleInfo}
+                      comments={comments}
+                      reFreshArticleCommentAction={() => {
+                        fetchComments(true)
+                        reFreshArticleInfoAction()
+                      }}
+                      getMoreCommentsAction={() => setPage(prev => prev + 1)}
+                      clearCommentsAction={() => {
+                        needRefreshRef.current = true
+                      }}
+                    />
+                  </div>
+                </DrawerContent>
+              </Drawer>
+            </div>
+          </div>
+        )}
+
+        {/* 文章评论, 文章为草稿隐藏 */}
+        {articleInfo?.status !== 1 && (
+          <div className="flex gap-6 px-6 py-[17px] text-[#989aa9]">
+            <div className="flex-1 flex gap-4 items-center">
+              <div
+                className="flex items-center gap-1 cursor-pointer"
+                onClick={() => setOpenDrawer(true)}
+              >
+                <p>{articleInfo?.totalComment || 0} 条评论</p>
+                <Icon icon="iconamoon:arrow-right-2-thin" size={22} />
+              </div>
+              {articleInfo?.comment != null && (
+                <div className="flex-1 flex gap-2 items-center text-[14px] w-200">
+                  <Image
+                    src={
+                      articleInfo.comment.avatar ||
+                      'https://picsum.photos/120/80?random=1'
+                    }
+                    alt=""
+                    width={8}
+                    height={8}
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <p>{articleInfo.comment.username}</p>
+                  <p className="flex-1 text-black dark:text-white truncate">
+                    {articleInfo.comment.content}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {articleInfo?.publicComment && (
+              <button
+                className="w-20 h-8 text-[14px] bg-[#fc5531] text-white rounded-2xl cursor-pointer"
+                onClick={() => setOpenDrawer(true)}
+              >
+                写评论
+              </button>
             )}
           </div>
-
-          {articleInfo?.publicComment && (
-            <button
-              className="w-20 h-8 text-[14px] bg-[#fc5531] text-white rounded-2xl cursor-pointer"
-              onClick={() => setOpenDrawer(true)}
-            >
-              写评论
-            </button>
-          )}
-        </div>
+        )}
       </div>
     </div>
   )

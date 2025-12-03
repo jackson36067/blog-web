@@ -14,7 +14,9 @@ import { ArticleYearStatistic } from '@/types/article'
 
 interface MyArticleTabContentControlPanelProps {
   visibility: number
+  stauts: number
   setVibility: (visibility: number) => void
+  setStatus: (status: number) => void
   orderBy: string
   setOrderBy: (orderBy: string) => void
   articleStatistic: ArticleYearStatistic[]
@@ -23,7 +25,9 @@ interface MyArticleTabContentControlPanelProps {
 
 export default function MyArticleTabContentControlPanel({
   visibility,
+  stauts,
   setVibility,
+  setStatus,
   orderBy,
   setOrderBy,
   articleStatistic,
@@ -59,7 +63,13 @@ export default function MyArticleTabContentControlPanel({
           >
             <DropdownMenuTrigger>
               <div className="flex items-center text-[14px] text-[#FC5531]">
-                <p>{visibility === 0 ? '全部可见' : '仅我可见'}</p>
+                <p>
+                  {stauts === 1
+                    ? '草稿'
+                    : visibility === 0
+                    ? '全部可见'
+                    : '仅我可见'}
+                </p>
                 <Icon
                   icon={
                     openVisibilityRange
@@ -75,6 +85,7 @@ export default function MyArticleTabContentControlPanel({
                 <DropdownMenuItem
                   onClick={() => {
                     setVibility(0)
+                    setStatus(3)
                   }}
                 >
                   全部可见
@@ -82,9 +93,18 @@ export default function MyArticleTabContentControlPanel({
                 <DropdownMenuItem
                   onClick={() => {
                     setVibility(2)
+                    setStatus(3)
                   }}
                 >
                   仅我可见
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    setVibility(0)
+                    setStatus(1)
+                  }}
+                >
+                  草稿
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>

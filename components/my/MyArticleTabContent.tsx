@@ -6,14 +6,13 @@ import {
   GetMyArticleInfoParams,
 } from '@/types/article'
 import { useEffect, useState } from 'react'
-import Article from '../Article'
 import {
   GetMyArticleCreateProcessAPI,
   GetMyArticleListAPI,
 } from '@/api/article'
-import Pagination from '../Pagination'
 import MyArticleTabContentControlPanel from './MyArticleTabContentControlPanel'
 import { useSearchParams } from 'next/navigation'
+import ArticleList from '../ArticleList'
 
 export default function MyArticleTabContent() {
   const username = useSearchParams().get('username')
@@ -21,6 +20,7 @@ export default function MyArticleTabContent() {
   const [totalPages, setTotalPages] = useState<number>(5)
   const [page, setPage] = useState<number>(1)
   const [visibility, setVisiblity] = useState(0)
+  const [status, setStatus] = useState(3)
   const [orderBy, setOrderBy] = useState('created_at')
   const [orderType, setOrderType] = useState('desc')
   const [articleStatistic, setArticleStatistic] = useState<
@@ -38,6 +38,7 @@ export default function MyArticleTabContent() {
         visibility,
         orderBy,
         orderType,
+        status,
       }
       if (articleCreatedStartTime != '' && articleCreatedEndTime != '') {
         params.startTime = articleCreatedStartTime
@@ -54,6 +55,8 @@ export default function MyArticleTabContent() {
     orderBy,
     orderType,
     page,
+    status,
+    username,
     visibility,
   ])
   useEffect(() => {
@@ -87,34 +90,25 @@ export default function MyArticleTabContent() {
 
   return (
     <div>
-      {myArticleList.length > 0 ? (
-        <div>
-          <MyArticleTabContentControlPanel
-            visibility={visibility}
-            setVibility={setVisiblity}
-            orderBy={orderBy}
-            setOrderBy={orderBy => handleChangeOrderBy(orderBy)}
-            articleStatistic={articleStatistic}
-            setArticleCreateTimeRange={(startTime, endTime) =>
-              handleSelectArticleMonthRange(startTime, endTime)
-            }
-          />
-          {myArticleList.map(item => {
-            return <Article key={item.id} articleInfo={item} />
-          })}
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={setPage}
-            />
-          )}
-        </div>
-      ) : (
-        <a className="flex items-center justify-center px-2 py-4 mt-20 text-[14px] text-[#1d98d1] font-bold cursor-pointer">
-          暂无文章, 快去创作吧
-        </a>
-      )}
+      <MyArticleTabContentControlPanel
+        visibility={visibility}
+        stauts={status}
+        setVibility={setVisiblity}
+        setStatus={setStatus}
+        orderBy={orderBy}
+        setOrderBy={orderBy => handleChangeOrderBy(orderBy)}
+        articleStatistic={articleStatistic}
+        setArticleCreateTimeRange={(startTime, endTime) =>
+          handleSelectArticleMonthRange(startTime, endTime)
+        }
+      />
+      <ArticleList
+        articleList={myArticleList}
+        page={page}
+        totalPage={totalPages}
+        onPageChange={setPage}
+        showEdit={true}
+      />
     </div>
   )
 }

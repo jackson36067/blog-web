@@ -78,6 +78,7 @@ export default function CreationPage() {
           })
         }
         handlePublishArticleAction={publishArticle}
+        showDraftButton={true}
       />
     </div>
   )

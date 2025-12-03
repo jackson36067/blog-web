@@ -101,10 +101,23 @@ export const GetArticleCommentAPI = (
   })
 }
 
+// 发布文章接口
 export const PublishArticleAPI = (data: CreateArticleParams) => {
   return httpInstance({
     method: 'POST',
     url: '/article/publish',
+    data,
+  })
+}
+
+// 更新文章基础信息
+export const UpdateArticleAPI = (
+  artilceId: number,
+  data: CreateArticleParams,
+) => {
+  return httpInstance({
+    method: 'PUT',
+    url: `/article/update/${artilceId}`,
     data,
   })
 }

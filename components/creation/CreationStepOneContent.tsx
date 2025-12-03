@@ -17,7 +17,7 @@ import { CreateArticleParams } from '@/types/article'
 import { ArticleTagResponse } from '@/types/tag'
 import MultiTagSelect from './MultiTagSelect'
 import Icon from '../Icon'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AutoWidthInput from '../AutoWidthInput'
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
 import { Label } from '../ui/label'
@@ -77,8 +77,20 @@ export default function CreationStepOneContent({
       publicComment: createArticleInfo.publicComment ? '0' : '1',
     },
   })
+  // 后期渲染props
+  useEffect(() => {
+    form.reset({
+      title: createArticleInfo.title,
+      abstract: createArticleInfo.abstract,
+      tags: createArticleInfo.tags,
+      categoryName: createArticleInfo.categoryName,
+      visibility: String(createArticleInfo.visibility) as '0' | '1' | '2',
+      coverage: createArticleInfo.coverage,
+      publicComment: createArticleInfo.publicComment ? '0' : '1',
+    })
+  }, [createArticleInfo, form])
+
   const submit = form.handleSubmit((values: z.infer<typeof formSchema>) => {
-    console.log(values)
     transmitDataAction(
       values.title,
       values.abstract,

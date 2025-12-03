@@ -20,10 +20,10 @@ export function Timeline({ groups }: TimelineProps) {
 
           {/* 文章列表 */}
           <div className="ml-4">
-            {group.articles.map(item => {
+            {group.articles.map((item, index) => {
               return (
                 <Article
-                  key={item.id}
+                  key={index}
                   articleInfo={item}
                   className="border border-solid border-gray-200 dark:border-gray-200/10 py-2 pl-2"
                 />
