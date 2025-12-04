@@ -21,7 +21,17 @@ export default function Article({
   const router = useRouter()
   return (
     <div
-      className={cn('flex gap-4 my-6 cursor-pointer relative group', className)}
+      className={cn(
+        `flex gap-4 my-6 cursor-pointer relative group rounded-xl p-3
+     transition-all duration-300 ease-out
+     bg-white/60 dark:bg-white/5 backdrop-blur-sm
+     hover:-translate-y-1 hover:scale-[1.015]
+     hover:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.15)]
+     dark:hover:shadow-[0_0_25px_-2px_rgba(0,255,255,0.25)]
+     hover:bg-white/80 dark:hover:bg-white/10
+    `,
+        className,
+      )}
       onClick={() => {
         router.push(`/article/detail?articleId=${articleInfo.id}`)
       }}
@@ -36,10 +46,9 @@ export default function Article({
         alt=""
         width={20}
         height={20}
-        className="w-32 h-25 rounded-lg object-cover"
+        className="w-32 h-25 rounded-lg object-cover transition-transform duration-300 group-hover:scale-105"
         loading="eager"
       />
-
       {/* 内容 */}
       <div className="flex flex-col flex-1 space-y-2">
         {/* 用户头像 + 名字（放最上面，信息权重最高） */}
@@ -64,7 +73,12 @@ export default function Article({
         )}
 
         {/* 标题（视觉主角） */}
-        <h3 className="font-bold text-lg text-gray-900 dark:text-gray-100 leading-tight">
+        <h3
+          className="font-semibold text-lg leading-tight
+    text-gray-900 dark:text-gray-100
+    transition-colors duration-300
+    group-hover:text-[#F53F3F] dark:group-hover:text-cyan-400"
+        >
           {articleInfo.title}
         </h3>
 
@@ -78,7 +92,10 @@ export default function Article({
           {articleInfo.tags.map((item, index) => (
             <span
               key={index}
-              className="px-2 py-0.5 bg-[#FFF2F2] dark:bg-gray-500/40 rounded-full text-[#FF4D4F] dark:text-gray-100 text-xs"
+              className="px-2 py-0.5 bg-[#FFF2F2] dark:bg-gray-500/40 rounded-full 
+           text-[#FF4D4F] dark:text-gray-100 text-xs
+           transition-all duration-300
+           group-hover:scale-[1.05] group-hover:bg-[#ffe8e8]"
             >
               #{item}
             </span>
@@ -86,7 +103,7 @@ export default function Article({
         </div>
 
         {/* 底部所有统计信息 */}
-        <div className="flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400 pt-1">
+        <div className="flex flex-wrap gap-4 text-xs transition-all duration-300 group-hover:text-[#F53F3F] dark:group-hover:text-cyan-300 pt-1">
           <div className="flex items-center gap-1">
             <Icon icon="iconoir:clock" size={14} />
             <span>{articleInfo.createdAt}</span>
