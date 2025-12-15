@@ -1,10 +1,6 @@
 'use client'
 
-import {
-  GetUserFansListAPI,
-  GetUserFollowedListAPI,
-  UpdateFollowAPI,
-} from '@/api/user'
+import { GetUserFansListAPI, UpdateFollowAPI } from '@/api/user'
 import UserCard from '@/components/UserCard'
 import { UserListResponse } from '@/types/user'
 import { useSearchParams } from 'next/navigation'

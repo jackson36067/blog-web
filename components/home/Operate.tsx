@@ -37,7 +37,12 @@ export default function Operate() {
         />
         写文章
       </button>
-      <div className="dark:text-white text-[#212121]">
+      <div
+        className="dark:text-white text-[#212121] cursor-pointer"
+        onClick={() => {
+          router.push(`/message`)
+        }}
+      >
         <Icon icon="tabler:message" size="26" className="text-inherit" />
       </div>
       <ThemeToggle />

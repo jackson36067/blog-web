@@ -158,3 +158,17 @@
 .wmde-markdown img {
   max-width: none !important;
 }
+
+/* 默认隐藏滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: transparent;
+}
+
+/* 滚动/悬浮时显示 */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}

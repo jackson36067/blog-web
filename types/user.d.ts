@@ -1,4 +1,5 @@
 export interface UserData {
+  id: number
   originArticle: number
   fans: number
   follow: number
@@ -18,6 +19,7 @@ export interface UserData {
   publicBrowseHistory: boolean
   publicPersonalList: boolean
   sinceLastUpdateUsernameDays: number
+  isFollow: boolean
 }
 
 export interface UsreAchievementResponse {

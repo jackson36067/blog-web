@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import VerifyCodeInput from '../input/VerifyCodeInput'
 import { LoginAPI } from '@/api/user'
 import useUserStore from '@/stores/UserStore'
+import { WS } from '@/utils/connectWebSocket'
 
 interface LoginTypeTabsProps {
   // 关闭弹窗函数
@@ -38,7 +39,7 @@ const emailSchema = z.object({
 
 export default function LoginTabs(props: LoginTypeTabsProps) {
   const [activeTab, setActiveTab] = useState<'account' | 'email'>('account')
-  const { setUserInfo } = useUserStore()
+  const { setUserInfo, userInfo } = useUserStore()
 
   // 用户名密码登录表单
   const accountForm = useForm<z.infer<typeof accountSchema>>({
@@ -68,6 +69,12 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
     })
     // 本地存储用户信息
     setUserInfo(res.data)
+    const userId = res.data.userId || userInfo.userId
+    // 发送连接WebSocket请求
+    WS.connect({
+      userId,
+      url: 'ws://127.0.0.1:8080/ws?userId=' + userId,
+    })
     // 关闭弹窗
     props.onCloseDialog()
   }
@@ -82,6 +89,12 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
     })
     // 本地存储用户信息
     setUserInfo(res.data)
+    const userId = res.data.userId || userInfo.userId
+    // 发送连接WebSocket请求
+    WS.connect({
+      userId,
+      url: 'ws://127.0.0.1:8080/ws?userId=' + userId,
+    })
     // 关闭弹窗
     props.onCloseDialog()
   }

@@ -341,17 +341,23 @@ export default function ArticleDetailCard({
               />
               <h2 className="font-bold">{articleInfo?.username}</h2>
               {articleInfo?.userId != userInfo.userId && (
-                <p
-                  className="text-[14px] text-[#555666] dark:text-white rounded-2xl px-4 py-1 border border-solid border-[#ccccd8] cursor-pointer"
-                  onClick={() =>
-                    handleUpdateFollowUser(
-                      articleInfo!.userId,
-                      articleInfo!.isFollow,
-                    )
-                  }
-                >
-                  {articleInfo?.isFollow ? '已关注' : '关注'}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p
+                    className="text-[14px] text-[#555666] dark:text-white rounded-2xl px-4 py-1 border border-solid border-[#ccccd8] cursor-pointer hover:border hover:border-solid hover:border-gray-600"
+                    onClick={() =>
+                      handleUpdateFollowUser(
+                        articleInfo!.userId,
+                        articleInfo!.isFollow,
+                      )
+                    }
+                  >
+                    {articleInfo?.isFollow ? '已关注' : '关注'}
+                  </p>
+                  <div className="flex items-center gap-1 text-[14px] text-[#555666] dark:text-white rounded-2xl px-4 py-1 border border-solid border-[#ccccd8] cursor-pointer hover:border hover:border-solid hover:border-gray-600">
+                    <Icon icon="uil:message" size={16} />
+                    <p>私信</p>
+                  </div>
+                </div>
               )}
             </div>
             <div className="flex items-center gap-4 text-[#989aa9]">

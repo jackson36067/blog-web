@@ -14,6 +14,7 @@ export default function MyPage() {
   const pathParams = useSearchParams()
   const { activeTab, setActiveTab } = useMyPageActiveTabStore()
   const [userData, setUserData] = useState<UserData | null>(null)
+
   useEffect(() => {
     const getUserData = async () => {
       const res = await GetUserDataAPI({
@@ -36,7 +37,15 @@ export default function MyPage() {
   }, [pathParams, setActiveTab])
   return (
     <div className="py-6">
-      <MyPageUserInfo setActiveTab={setActiveTab} userData={userData} />
+      <MyPageUserInfo
+        setActiveTab={setActiveTab}
+        userData={userData}
+        refreshUserDataAction={() => {
+          setUserData(prev =>
+            prev ? { ...prev, isFollow: !prev.isFollow } : null,
+          )
+        }}
+      />
       <div className="flex gap-10 mt-4">
         <div className="flex flex-col gap-4">
           <MyPageAchievement />

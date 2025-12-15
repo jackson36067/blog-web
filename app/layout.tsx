@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/sonner'
 import HomeTopBar from '@/components/home/TopBar'
 import PageTransition from '@/components/PageTransition'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import { WSInitializer } from './ws-init-client'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,6 +39,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <WSInitializer />
           <HomeTopBar className="fixed top-0 left-0 w-full z-40" />
           <PageTransition />
           <SidebarProvider className="w-full">
