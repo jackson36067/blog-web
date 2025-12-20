@@ -1,25 +1,25 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import LoginTypeTabs from '../login/LoginTypeTabs'
-import RegisterForm from '../register/RegisterForm'
-import { ShineBorder } from '../ui/shine-border'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import LoginTypeTabs from "../login/LoginTypeTabs";
+import RegisterForm from "../register/RegisterForm";
+import { ShineBorder } from "../ui/shine-border";
 
 interface LoginAndRegisterDialogContentProps {
   // 关闭弹窗函数
-  onCloseDialog: () => void
+  onCloseDialog: () => void;
 }
 
 export default function LoginAndRegisterDialogContent(
   props: LoginAndRegisterDialogContentProps,
 ) {
-  const [isLogin, setIsLogin] = useState(true)
+  const [isLogin, setIsLogin] = useState(true);
 
   return (
     <div className="p-6">
       <ShineBorder
-        shineColor={['#A07CFE', '#FE8FB5', '#FFBE7B']}
+        shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
         className="rounded-[10px]"
       />
       {/* 内容部分 */}
@@ -57,11 +57,11 @@ export default function LoginAndRegisterDialogContent(
         className="absolute bottom-0 right-0 w-22 h-22 rounded-br-[10px] bg-[#0a0a0a] dark:bg-white text-white dark:text-[#0a0a0a] font-semibold
                    flex items-end justify-end pb-3 pr-4 text-sm shadow-md hover:bg-primary/90 transition-all duration-300"
         style={{
-          clipPath: 'polygon(100% 0, 0 100%, 100% 100%)',
+          clipPath: "polygon(100% 0, 0 100%, 100% 100%)",
         }}
       >
-        {isLogin ? '注册' : '登录'}
+        {isLogin ? "注册" : "登录"}
       </button>
     </div>
-  )
+  );
 }

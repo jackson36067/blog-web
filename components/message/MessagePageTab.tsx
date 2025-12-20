@@ -5,9 +5,8 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import MyMessageTabContent from "./MyMessageTabContent";
-import CommentMessageTabContent from "./CommentMessageTabContent";
-import LikeOrCollectMessageTabContent from "./LikeOrCollectMessageTabContent";
 import FanMessageTabContent from "./FanMessageTabContent";
+import MessageContentTemplate from "./MessageContentTemplate";
 export default function MessagePageTab() {
   const [activeTab, setActiveTab] = useState<string>("我的消息");
   const activeItem = MessagePageTabs.find((item) => item.title === activeTab);
@@ -53,12 +52,14 @@ export default function MessagePageTab() {
                 <Tabs.Content value={activeItem.title}>
                   {activeItem.title === "我的消息" && <MyMessageTabContent />}
                   {activeItem.title === "评论和@" && (
-                    <CommentMessageTabContent />
+                    <MessageContentTemplate type={2} />
                   )}
                   {activeItem.title === "赞和收藏" && (
-                    <LikeOrCollectMessageTabContent />
+                    <MessageContentTemplate type={3} />
                   )}
-                  {activeItem.title === "新增粉丝" && <FanMessageTabContent />}
+                  {activeItem.title === "新增粉丝" && (
+                    <FanMessageTabContent type={0} />
+                  )}
                 </Tabs.Content>
               </motion.div>
             )}

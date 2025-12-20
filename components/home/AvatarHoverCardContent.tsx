@@ -1,43 +1,46 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import { ShineBorder } from '../ui/shine-border'
-import Icon from '../Icon'
-import useUserStore from '@/stores/UserStore'
-import { useRouter } from 'next/navigation'
+import Image from "next/image";
+import { ShineBorder } from "../ui/shine-border";
+import Icon from "../Icon";
+import useUserStore from "@/stores/UserStore";
+import { useRouter } from "next/navigation";
+import useSelectSessionStore from "@/stores/SelectSessionStore";
 
 interface AvatarHoverCardContentProps {
   userInfo: {
-    avatar: string
-    username: string
-    codeAge: number
-    fans: number
-    following: number
-    articleLikes: number
-  }
+    avatar: string;
+    username: string;
+    codeAge: number;
+    fans: number;
+    following: number;
+    articleLikes: number;
+  };
 }
 
 export default function AvatarHoverCardContent({
   userInfo,
 }: AvatarHoverCardContentProps) {
-  const { clearUserInfo } = useUserStore()
-  const router = useRouter()
+  const { clearUserInfo } = useUserStore();
+  const router = useRouter();
+  const { clearSelectSession } = useSelectSessionStore();
 
   const handleExitLogin = () => {
     // 清除本地存储的用户信息
-    clearUserInfo()
-    router.push('/home')
-  }
+    clearUserInfo();
+    clearSelectSession();
+    router.push("/home");
+  };
 
   return (
     <div className="flex flex-col gap-1.5 cursor-pointer">
       <ShineBorder
-        shineColor={['#A07CFE', '#FE8FB5', '#FFBE7B']}
+        shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
         className="rounded-[10px]"
       />
       <div className="flex gap-3 items-start">
         <Image
-          src={userInfo.avatar || 'https://picsum.photos/120/80?random=1'}
+          src={userInfo.avatar || "https://picsum.photos/120/80?random=1"}
           className="w-12 h-12 rounded-full"
           alt=""
           width={12}
@@ -72,7 +75,7 @@ export default function AvatarHoverCardContent({
         <div
           className="flex items-center gap-2 text-gray-600 dark:text-white"
           onClick={() => {
-            router.push(`/my?username=${userInfo.username}`)
+            router.push(`/my?username=${userInfo.username}`);
           }}
         >
           <Icon icon="fluent:home-20-regular" className="text-inherit" />
@@ -81,7 +84,7 @@ export default function AvatarHoverCardContent({
         <div
           className="flex items-center gap-2 text-gray-600 dark:text-white"
           onClick={() => {
-            router.push(`/center`)
+            router.push(`/center`);
           }}
         >
           <Icon icon="f7:person" className="text-inherit" />
@@ -102,5 +105,5 @@ export default function AvatarHoverCardContent({
         </div>
       </div>
     </div>
-  )
+  );
 }

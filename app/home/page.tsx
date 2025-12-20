@@ -2,7 +2,7 @@
 
 import ArticlePagination from '@/components/article/ArticlePagination'
 import ArticleSiderbar from '@/components/article/ArticleSiderbar'
-import LovePointer from '@/components/Pointer'
+import LovePointer from '@/components/pointer'
 
 export default function ArticlePage() {
   return (
