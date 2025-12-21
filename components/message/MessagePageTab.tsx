@@ -57,9 +57,7 @@ export default function MessagePageTab() {
                   {activeItem.title === "赞和收藏" && (
                     <MessageContentTemplate type={3} />
                   )}
-                  {activeItem.title === "新增粉丝" && (
-                    <FanMessageTabContent type={0} />
-                  )}
+                  {activeItem.title === "新增粉丝" && <FanMessageTabContent />}
                 </Tabs.Content>
               </motion.div>
             )}

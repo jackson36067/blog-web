@@ -35,7 +35,7 @@ export default function MessageContentTemplate({
         <p className="text-gray-400">共{totalElements}条内容</p>
         <div className="flex gap-px items-center text-[#277ccc] hover:text-[#277ccc]/80 cursor-pointer">
           <Icon icon="material-symbols-light:delete-outline" />
-          <p>清除所有消息</p>
+          <p>清空所有消息</p>
         </div>
       </div>
       <div>
