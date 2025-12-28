@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { cn } from '@/lib/utils'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Form,
@@ -14,50 +14,49 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import VerifyCodeInput from '../input/VerifyCodeInput'
-import { LoginAPI } from '@/api/user'
-import useUserStore from '@/stores/UserStore'
-import { WS } from '@/utils/connectWebSocket'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import VerifyCodeInput from "../input/VerifyCodeInput";
+import { LoginAPI } from "@/api/user";
+import useUserStore from "@/stores/UserStore";
 
 interface LoginTypeTabsProps {
   // 关闭弹窗函数
-  onCloseDialog: () => void
+  onCloseDialog: () => void;
 }
 
 const accountSchema = z.object({
-  username: z.string().min(1, { message: '请输入用户名' }),
-  password: z.string().min(6, { message: '密码至少 6 位' }),
-})
+  username: z.string().min(1, { message: "请输入用户名" }),
+  password: z.string().min(6, { message: "密码至少 6 位" }),
+});
 
 const emailSchema = z.object({
-  email: z.email({ message: '请输入有效的邮箱地址' }),
-  emailCode: z.string().length(6, { message: '验证码为6 位字符' }),
-})
+  email: z.email({ message: "请输入有效的邮箱地址" }),
+  emailCode: z.string().length(6, { message: "验证码为6 位字符" }),
+});
 
 export default function LoginTabs(props: LoginTypeTabsProps) {
-  const [activeTab, setActiveTab] = useState<'account' | 'email'>('account')
-  const { setUserInfo, userInfo } = useUserStore()
+  const [activeTab, setActiveTab] = useState<"account" | "email">("account");
+  const { setUserInfo } = useUserStore();
 
   // 用户名密码登录表单
   const accountForm = useForm<z.infer<typeof accountSchema>>({
     resolver: zodResolver(accountSchema),
     defaultValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
-  })
+  });
 
   // 邮箱登录表单
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
     defaultValues: {
-      email: '',
-      emailCode: '',
+      email: "",
+      emailCode: "",
     },
-  })
+  });
 
   // 提交使用用户名密码登录事件
   const onSubmitAccount = async (values: z.infer<typeof accountSchema>) => {
@@ -66,18 +65,12 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
       loginType: 1,
       username: values.username,
       password: values.password,
-    })
+    });
     // 本地存储用户信息
-    setUserInfo(res.data)
-    const userId = res.data.userId || userInfo.userId
-    // 发送连接WebSocket请求
-    WS.connect({
-      userId,
-      url: 'ws://127.0.0.1:8080/ws?userId=' + userId,
-    })
+    setUserInfo(res.data);
     // 关闭弹窗
-    props.onCloseDialog()
-  }
+    props.onCloseDialog();
+  };
 
   // 提交使用邮箱登录事件
   const onSubmitEmail = async (values: z.infer<typeof emailSchema>) => {
@@ -86,34 +79,28 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
       loginType: 2,
       email: values.email,
       emailCode: values.emailCode,
-    })
+    });
     // 本地存储用户信息
-    setUserInfo(res.data)
-    const userId = res.data.userId || userInfo.userId
-    // 发送连接WebSocket请求
-    WS.connect({
-      userId,
-      url: 'ws://127.0.0.1:8080/ws?userId=' + userId,
-    })
+    setUserInfo(res.data);
     // 关闭弹窗
-    props.onCloseDialog()
-  }
+    props.onCloseDialog();
+  };
 
   return (
     <div className="w-full">
       {/* Tabs Header */}
       <div className="flex justify-between border-b border-gray-200 dark:border-gray-700">
         <button
-          onClick={() => setActiveTab('account')}
+          onClick={() => setActiveTab("account")}
           className={cn(
-            'w-1/2 py-3 text-center text-sm relative transition-all',
-            activeTab === 'account'
-              ? 'font-semibold text-primary'
-              : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200',
+            "w-1/2 py-3 text-center text-sm relative transition-all",
+            activeTab === "account"
+              ? "font-semibold text-primary"
+              : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200",
           )}
         >
           用户名密码登录
-          {activeTab === 'account' && (
+          {activeTab === "account" && (
             <motion.div
               layoutId="underline"
               className="absolute left-0 bottom-0 w-full h-0.5 bg-primary"
@@ -122,16 +109,16 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
         </button>
 
         <button
-          onClick={() => setActiveTab('email')}
+          onClick={() => setActiveTab("email")}
           className={cn(
-            'w-1/2 py-3 text-center text-sm relative transition-all',
-            activeTab === 'email'
-              ? 'font-semibold text-primary'
-              : 'text-gray-500 hover:text-gray-800 dark:hover:text-gray-200',
+            "w-1/2 py-3 text-center text-sm relative transition-all",
+            activeTab === "email"
+              ? "font-semibold text-primary"
+              : "text-gray-500 hover:text-gray-800 dark:hover:text-gray-200",
           )}
         >
           邮箱登录
-          {activeTab === 'email' && (
+          {activeTab === "email" && (
             <motion.div
               layoutId="underline"
               className="absolute left-0 bottom-0 w-full h-0.5 bg-primary"
@@ -144,7 +131,7 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
       <div className="relative min-h-[300px]">
         <AnimatePresence mode="wait">
           {/* 用户名密码登录 */}
-          {activeTab === 'account' && (
+          {activeTab === "account" && (
             <motion.div
               key="account"
               initial={{ x: -50, opacity: 0 }}
@@ -199,7 +186,7 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
           )}
 
           {/* 邮箱登录 */}
-          {activeTab === 'email' && (
+          {activeTab === "email" && (
             <motion.div
               key="email"
               initial={{ x: 50, opacity: 0 }}
@@ -241,7 +228,7 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
                           value={field.value}
                           onChange={field.onChange}
                           // eslint-disable-next-line react-hooks/incompatible-library
-                          email={emailForm.watch('email')}
+                          email={emailForm.watch("email")}
                         />
                         <FormMessage />
                       </FormItem>
@@ -258,5 +245,5 @@ export default function LoginTabs(props: LoginTypeTabsProps) {
         </AnimatePresence>
       </div>
     </div>
-  )
+  );
 }

@@ -1,15 +1,19 @@
 "use client";
 
+import { SendMessageAPI } from "@/api/message";
 import EmojiPicker from "@/components/EmojiPicker";
 import Icon from "@/components/Icon";
 import { Textarea } from "@/components/ui/textarea";
+import useSelectSessionStore from "@/stores/SelectSessionStore";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export default function MessageInputPane() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState("");
+  const { selectedSession } = useSelectSessionStore();
 
   // 监听表情选择器失去焦点, 关闭表情选择器
   useEffect(() => {
@@ -27,6 +31,21 @@ export default function MessageInputPane() {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  // 发送消息
+  const handleSendMessage = async () => {
+    if (message.trim() === "") {
+      toast.error("请输入内容");
+      return;
+    }
+    await SendMessageAPI({
+      sessionId: selectedSession.sessionId,
+      userId: selectedSession.chatUserId,
+      content: message,
+      contentType: 1,
+    });
+    setMessage("");
+  };
 
   return (
     <div className="w-full px-3 py-2 border-t border-solid border-t-gray-200 dark:border-t-gray-200/20">
@@ -66,13 +85,17 @@ export default function MessageInputPane() {
         className="w-full h-28! mt-2 border-none resize-none shadow-none p-0 text-[14px] dark:bg-[#212121]!"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        autoFocus
       />
       <div className="flex justify-between items-center py-1">
         <div className="text-[12px] text-gray-400">
-          <span>0</span>
+          <span>{message.length}</span>
           <span>/500</span>
         </div>
-        <div className="px-4 py-px text-white bg-[#fc5531] dark:bg-[#e04728] rounded-2xl text-[14px] cursor-pointer">
+        <div
+          className="px-4 py-px text-white bg-[#fc5531] dark:bg-[#e04728] rounded-2xl text-[14px] cursor-pointer"
+          onClick={handleSendMessage}
+        >
           发送
         </div>
       </div>

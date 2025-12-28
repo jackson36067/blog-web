@@ -44,3 +44,45 @@ export const GetOtherMessageAPI = (params: {
     params,
   });
 };
+
+// 删除消息
+export const DeleteMessageAPI = (id: number[]) => {
+  return httpInstance({
+    method: "DELETE",
+    url: `/message/remove`,
+    data: {
+      messageIdList: id,
+    },
+  });
+};
+
+// 删除会话
+export const DeleteSessionAPI = (sessionId: number) => {
+  return httpInstance({
+    method: "DELETE",
+    url: `/session/delete/${sessionId}`,
+  });
+};
+
+// 获取或创建会话
+export const GetOrCreateSessionAPI = (params: { username: string }) => {
+  return httpInstance({
+    method: "GET",
+    url: `/session/create`,
+    params,
+  });
+};
+
+// 发送消息
+export const SendMessageAPI = (data: {
+  sessionId: number;
+  userId: number;
+  content: string;
+  contentType: number;
+}) => {
+  return httpInstance({
+    method: "POST",
+    url: `/message/send`,
+    data,
+  });
+};

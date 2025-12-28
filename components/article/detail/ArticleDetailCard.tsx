@@ -1,19 +1,19 @@
-'use client'
+"use client";
 
-import 'highlight.js/styles/github-dark.css'
-import { ArticleInfo, TocItem } from '@/types/article'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import Icon from '@/components/Icon'
-import useUserStore from '@/stores/UserStore'
+import "highlight.js/styles/github-dark.css";
+import { ArticleInfo, TocItem } from "@/types/article";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import Icon from "@/components/Icon";
+import useUserStore from "@/stores/UserStore";
 import {
   CollectArticleAPI,
   GetArticleCommentAPI,
   LikeArticleAPI,
-} from '@/api/article'
+} from "@/api/article";
 import {
   Dialog,
   DialogContent,
@@ -21,11 +21,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import CollectFavoriteDialogContent from './CollectFavoriteDialogContent'
-import { FavoriteInfo } from '@/types/favorite'
-import { GetUserFavoriteListAPI } from '@/api/favorite'
-import { UpdateFollowAPI } from '@/api/user'
+} from "@/components/ui/dialog";
+import CollectFavoriteDialogContent from "./CollectFavoriteDialogContent";
+import { FavoriteInfo } from "@/types/favorite";
+import { GetUserFavoriteListAPI } from "@/api/favorite";
+import { UpdateFollowAPI } from "@/api/user";
 import {
   Drawer,
   DrawerContent,
@@ -33,42 +33,42 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer'
-import CommentDrawerContent from './CommentDrawerContent'
-import { CommentResponse } from '@/types/comment'
-import { ChevronDown, ChevronRight } from 'lucide-react'
-import MDEditor from '@uiw/react-md-editor'
-import { useTheme } from 'next-themes'
+} from "@/components/ui/drawer";
+import CommentDrawerContent from "./CommentDrawerContent";
+import { CommentResponse } from "@/types/comment";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import MDEditor from "@uiw/react-md-editor";
+import { useTheme } from "next-themes";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from '@/components/ui/hover-card'
+} from "@/components/ui/hover-card";
 
 export default function ArticleDetailCard({
   articleInfo,
   reFreshArticleInfoAction,
 }: {
-  articleInfo: ArticleInfo | null
-  reFreshArticleInfoAction: () => void
+  articleInfo: ArticleInfo | null;
+  reFreshArticleInfoAction: () => void;
 }) {
-  const { userInfo } = useUserStore()
-  const router = useRouter()
-  const { resolvedTheme } = useTheme()
-  const [userFavorites, setUserFavorites] = useState<FavoriteInfo[]>([])
-  const [openDialog, setOpenDialog] = useState(false)
-  const [openDrawer, setOpenDrawer] = useState(false)
-  const [comments, setComments] = useState<CommentResponse[]>([])
-  const [page, setPage] = useState<number>(1)
-  const needRefreshRef = useRef(false)
-  const [toc, setToc] = useState<TocItem[]>([])
-  const [mounted, setMounted] = useState(false)
+  const { userInfo } = useUserStore();
+  const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const [userFavorites, setUserFavorites] = useState<FavoriteInfo[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [comments, setComments] = useState<CommentResponse[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const needRefreshRef = useRef(false);
+  const [toc, setToc] = useState<TocItem[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   // 避免首次 hydration 主题不一致
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   // 匹配MDEditor.Markdown解析器的标题锚点
   function slugify(text: string) {
@@ -76,146 +76,147 @@ export default function ArticleDetailCard({
       .toString()
       .trim()
       .toLowerCase()
-      .replace(/[^\u4e00-\u9fa5a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
+      .replace(/[^\u4e00-\u9fa5a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
   }
 
   // 匹配文章目录
   useEffect(() => {
-    if (!articleInfo?.content) return
+    if (!articleInfo?.content) return;
 
-    const tempToc: TocItem[] = []
-    const content = articleInfo.content
+    const tempToc: TocItem[] = [];
+    const content = articleInfo.content;
 
     // 1. 找出所有 fenced code block
-    const codeBlockRanges: Array<[number, number]> = []
-    const codeBlockRegex = /```[\s\S]*?```/gm
-    let cbMatch
+    const codeBlockRanges: Array<[number, number]> = [];
+    const codeBlockRegex = /```[\s\S]*?```/gm;
+    let cbMatch;
     // 获取所有代码块内容
     while ((cbMatch = codeBlockRegex.exec(content)) !== null) {
-      codeBlockRanges.push([cbMatch.index, cbMatch.index + cbMatch[0].length])
+      codeBlockRanges.push([cbMatch.index, cbMatch.index + cbMatch[0].length]);
     }
 
     const isInCodeBlock = (index: number) =>
-      codeBlockRanges.some(([start, end]) => index >= start && index <= end)
+      codeBlockRanges.some(([start, end]) => index >= start && index <= end);
 
     // 2. 匹配标题
-    const headingRegex = /^#{1,6}\s+(.+)$/gm
-    let match
+    const headingRegex = /^#{1,6}\s+(.+)$/gm;
+    let match;
 
     while ((match = headingRegex.exec(content)) !== null) {
-      const rawLine = match[0]
-      const text = match[1].trim()
-      const index = match.index
+      const rawLine = match[0];
+      const text = match[1].trim();
+      const index = match.index;
 
       // 排除代码块内容
-      if (isInCodeBlock(index)) continue
+      if (isInCodeBlock(index)) continue;
 
       // 排除 shell 注释（# 开头，后面跟非字母数字中文）
-      if (/^#\s*[-/*.+]/.test(rawLine)) continue
+      if (/^#\s*[-/*.+]/.test(rawLine)) continue;
 
-      const level = rawLine.match(/^#+/)![0].length
-      const id = slugify(text)
-      tempToc.push({ id, text, level })
+      const level = rawLine.match(/^#+/)![0].length;
+      const id = slugify(text);
+      tempToc.push({ id, text, level });
     }
     // 生成目录数据
-    const tocData = generateToc(tempToc)
+    const tocData = generateToc(tempToc);
+
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setToc(tocData)
-  }, [articleInfo?.content])
+    setToc(tocData);
+  }, [articleInfo?.content]);
 
   // 点赞文章
   const handleLikeArticle = async (articleId: number, isLike: boolean) => {
     if (userInfo.userId == 0) {
-      toast.info('请先登录!')
-      return
+      toast.info("请先登录!");
+      return;
     }
-    await LikeArticleAPI(articleId, isLike)
-    reFreshArticleInfoAction()
-  }
+    await LikeArticleAPI(articleId, isLike);
+    reFreshArticleInfoAction();
+  };
 
   // 获取用户收藏夹列表
   const getUserFavorites = useCallback(async () => {
-    const res = await GetUserFavoriteListAPI({ username: userInfo.username })
-    setUserFavorites(res.data)
-  }, [userInfo.username])
+    const res = await GetUserFavoriteListAPI({ username: userInfo.username });
+    setUserFavorites(res.data);
+  }, [userInfo.username]);
 
   // 打开弹装执行获取收藏夹列表函数
   useEffect(() => {
-    if (userFavorites.length !== 0) return
+    if (userFavorites.length !== 0) return;
     if (openDialog) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      getUserFavorites()
+      getUserFavorites();
     }
-  }, [userInfo.username, openDialog, userFavorites.length, getUserFavorites])
+  }, [userInfo.username, openDialog, userFavorites.length, getUserFavorites]);
 
   // 收藏文章
   const handleCollectArticle = async (item: FavoriteInfo) => {
     if (userInfo.userId == 0) {
-      toast.info('请先登录!')
-      return
+      toast.info("请先登录!");
+      return;
     }
-    if (item.collectArticleIdList.includes(articleInfo?.id || 0)) return
-    await CollectArticleAPI(articleInfo!.id, item.id)
-    getUserFavorites()
-    setOpenDialog(false)
-    reFreshArticleInfoAction()
-  }
+    if (item.collectArticleIdList.includes(articleInfo?.id || 0)) return;
+    await CollectArticleAPI(articleInfo!.id, item.id);
+    getUserFavorites();
+    setOpenDialog(false);
+    reFreshArticleInfoAction();
+  };
 
   // 新建收藏夹
   const handleNewFavorite = () => {
-    getUserFavorites()
-  }
+    getUserFavorites();
+  };
 
   // 关注/取消关注用户
   const handleUpdateFollowUser = async (
     followedId: number,
     isFollow: boolean,
   ) => {
-    await UpdateFollowAPI(followedId, isFollow)
-    reFreshArticleInfoAction()
-  }
+    await UpdateFollowAPI(followedId, isFollow);
+    reFreshArticleInfoAction();
+  };
 
   // 分页获取文章评论
   const fetchComments = useCallback(
     async (reset = false, specifyPage?: number) => {
-      const currentPage = reset ? 1 : specifyPage ?? page
+      const currentPage = reset ? 1 : (specifyPage ?? page);
       const res = await GetArticleCommentAPI(
         currentPage,
         10,
         articleInfo?.id || 0,
-      )
+      );
       if (reset) {
-        setComments(res.data)
-        setPage(1)
+        setComments(res.data);
+        setPage(1);
       } else {
-        setComments(prev => [...prev, ...res.data])
+        setComments((prev) => [...prev, ...res.data]);
       }
     },
     [articleInfo?.id, page],
-  )
+  );
 
   // 打开弹窗调用分页获取文章评论函数
   useEffect(() => {
-    if (!openDrawer) return
+    if (!openDrawer) return;
     // 用于对评论操作时刷新评论
     if (needRefreshRef.current) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      fetchComments(true)
-      needRefreshRef.current = false
-      return
+      fetchComments(true);
+      needRefreshRef.current = false;
+      return;
     }
-    if (comments.length === 0) fetchComments(true)
-  }, [comments.length, fetchComments, openDrawer])
+    if (comments.length === 0) fetchComments(true);
+  }, [comments.length, fetchComments, openDrawer]);
 
   // page变化后获取文章评论
   useEffect(() => {
-    if (!openDrawer) return
-    if (page === 1) return
+    if (!openDrawer) return;
+    if (page === 1) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchComments()
-  }, [fetchComments, openDrawer, page])
+    fetchComments();
+  }, [fetchComments, openDrawer, page]);
 
   return (
     <div className="flex gap-4">
@@ -248,7 +249,7 @@ export default function ArticleDetailCard({
                   onClick={() =>
                     window.open(
                       `/creation/editor?id=${articleInfo.id}`,
-                      '_blank',
+                      "_blank",
                     )
                   }
                 >
@@ -272,7 +273,7 @@ export default function ArticleDetailCard({
                   onClick={() =>
                     window.open(
                       `/creation/editor?id=${articleInfo.id}`,
-                      '_blank',
+                      "_blank",
                     )
                   }
                 >
@@ -304,7 +305,7 @@ export default function ArticleDetailCard({
               className="w-[53px] h-5"
             />
             <p className="flex-1 break-all text-[#666]">
-              {articleInfo?.abstract || ''}
+              {articleInfo?.abstract || ""}
             </p>
           </div>
           {/* --- 内容渲染 --- */}
@@ -317,7 +318,7 @@ export default function ArticleDetailCard({
             >
               <MDEditor.Markdown
                 source={articleInfo?.content}
-                style={{ backgroundColor: 'transparent' }}
+                style={{ backgroundColor: "transparent" }}
               />
             </div>
           )}
@@ -329,7 +330,7 @@ export default function ArticleDetailCard({
             <div className="flex items-center gap-3">
               <Image
                 src={
-                  articleInfo?.avatar || 'https://picsum.photos/120/80?random=1'
+                  articleInfo?.avatar || "https://picsum.photos/120/80?random=1"
                 }
                 alt=""
                 width={8}
@@ -351,9 +352,17 @@ export default function ArticleDetailCard({
                       )
                     }
                   >
-                    {articleInfo?.isFollow ? '已关注' : '关注'}
+                    {articleInfo?.isFollow ? "已关注" : "关注"}
                   </p>
-                  <div className="flex items-center gap-1 text-[14px] text-[#555666] dark:text-white rounded-2xl px-4 py-1 border border-solid border-[#ccccd8] cursor-pointer hover:border hover:border-solid hover:border-gray-600">
+                  <div
+                    className="flex items-center gap-1 text-[14px] text-[#555666] dark:text-white rounded-2xl px-4 py-1 border border-solid border-[#ccccd8] cursor-pointer hover:border hover:border-solid hover:border-gray-600"
+                    onClick={() =>
+                      window.open(
+                        `/message?username=${articleInfo?.username}`,
+                        "_blank",
+                      )
+                    }
+                  >
                     <Icon icon="uil:message" size={16} />
                     <p>私信</p>
                   </div>
@@ -363,8 +372,8 @@ export default function ArticleDetailCard({
             <div className="flex items-center gap-4 text-[#989aa9]">
               <div
                 className={cn(
-                  'flex items-center gap-1 cursor-pointer',
-                  articleInfo?.isLike && 'text-[#fc5531]!',
+                  "flex items-center gap-1 cursor-pointer",
+                  articleInfo?.isLike && "text-[#fc5531]!",
                 )}
                 onClick={() =>
                   handleLikeArticle(articleInfo!.id, articleInfo!.isLike)
@@ -381,8 +390,8 @@ export default function ArticleDetailCard({
                 <DialogTrigger>
                   <div
                     className={cn(
-                      'flex items-center gap-1 cursor-pointer',
-                      articleInfo?.isCollect && 'text-[#fc5531]!',
+                      "flex items-center gap-1 cursor-pointer",
+                      articleInfo?.isCollect && "text-[#fc5531]!",
                     )}
                   >
                     <Icon icon="solar:star-bold" />
@@ -407,11 +416,11 @@ export default function ArticleDetailCard({
               <Drawer
                 direction="right"
                 open={openDrawer}
-                onOpenChange={open => {
+                onOpenChange={(open) => {
                   if (!articleInfo?.publicComment) {
-                    return
+                    return;
                   }
-                  setOpenDrawer(open)
+                  setOpenDrawer(open);
                 }}
               >
                 <DrawerTrigger>
@@ -430,12 +439,12 @@ export default function ArticleDetailCard({
                       articleInfo={articleInfo}
                       comments={comments}
                       reFreshArticleCommentAction={() => {
-                        fetchComments(true)
-                        reFreshArticleInfoAction()
+                        fetchComments(true);
+                        reFreshArticleInfoAction();
                       }}
-                      getMoreCommentsAction={() => setPage(prev => prev + 1)}
+                      getMoreCommentsAction={() => setPage((prev) => prev + 1)}
                       clearCommentsAction={() => {
-                        needRefreshRef.current = true
+                        needRefreshRef.current = true;
                       }}
                     />
                   </div>
@@ -461,7 +470,7 @@ export default function ArticleDetailCard({
                   <Image
                     src={
                       articleInfo.comment.avatar ||
-                      'https://picsum.photos/120/80?random=1'
+                      "https://picsum.photos/120/80?random=1"
                     }
                     alt=""
                     width={8}
@@ -488,52 +497,52 @@ export default function ArticleDetailCard({
         )}
       </div>
     </div>
-  )
+  );
 }
 
 // 生成树状目录
 function generateToc(
   headings: { id: string; text: string; level: number }[],
 ): TocItem[] {
-  const toc: TocItem[] = []
-  const stack: TocItem[] = []
-  headings.forEach(h => {
-    const item: TocItem = { ...h, children: [] }
+  const toc: TocItem[] = [];
+  const stack: TocItem[] = [];
+  headings.forEach((h) => {
+    const item: TocItem = { ...h, children: [] };
 
     while (stack.length && h.level <= stack[stack.length - 1].level) {
-      stack.pop()
+      stack.pop();
     }
 
     if (stack.length === 0) {
-      toc.push(item)
+      toc.push(item);
     } else {
-      stack[stack.length - 1].children!.push(item)
+      stack[stack.length - 1].children!.push(item);
     }
 
-    stack.push(item)
-  })
-  return toc
+    stack.push(item);
+  });
+  return toc;
 }
 
 // 目录组件
 function TocList({ toc }: { toc: TocItem[] }) {
   return (
     <ul className="space-y-1 w-full">
-      {toc.map(item => (
+      {toc.map((item) => (
         <TocNode key={item.id} item={item} />
       ))}
     </ul>
-  )
+  );
 }
 
 // 目录树点
 function TocNode({ item }: { item: TocItem }) {
-  const [isOpen, setIsOpen] = useState(false)
-  const hasChildren = item.children && item.children.length > 0
+  const [isOpen, setIsOpen] = useState(false);
+  const hasChildren = item.children && item.children.length > 0;
 
-  let paddingLeft = `${(item.level - 1) * 32}px`
+  let paddingLeft = `${(item.level - 1) * 32}px`;
   if (hasChildren) {
-    paddingLeft = `${(item.level - 1) * 32 - 18}px`
+    paddingLeft = `${(item.level - 1) * 32 - 18}px`;
   }
 
   return (
@@ -556,5 +565,5 @@ function TocNode({ item }: { item: TocItem }) {
       </div>
       {hasChildren && isOpen && <TocList toc={item.children!} />}
     </li>
-  )
+  );
 }

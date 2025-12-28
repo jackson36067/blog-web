@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import useUserStore from '@/stores/UserStore'
-import Icon from '../Icon'
-import ThemeToggle from '../ThemeToggle'
-import { Avatar, AvatarFallback } from '../ui/avatar'
+import useUserStore from "@/stores/UserStore";
+import Icon from "../Icon";
+import ThemeToggle from "../ThemeToggle";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   Dialog,
   DialogContent,
@@ -11,24 +11,30 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog'
-import Image from 'next/image'
-import LoginAndRegisterDialogContent from '../dialog/LoginAndRegisterDialogContent'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
-import AvatarHoverCardContent from './AvatarHoverCardContent'
-import useLoginPopupStatusStore from '@/stores/LoginPopupStatusStore'
-import { useRouter } from 'next/navigation'
+} from "../ui/dialog";
+import Image from "next/image";
+import LoginAndRegisterDialogContent from "../dialog/LoginAndRegisterDialogContent";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
+import AvatarHoverCardContent from "./AvatarHoverCardContent";
+import useLoginPopupStatusStore from "@/stores/LoginPopupStatusStore";
+import { useRouter } from "next/navigation";
+import useUnreadStore from "@/stores/HasUnreadStore";
 
 export default function Operate() {
-  const { userInfo } = useUserStore()
-  const { open, setOpen } = useLoginPopupStatusStore()
-  const router = useRouter()
+  const { userInfo } = useUserStore();
+  const { open, setOpen } = useLoginPopupStatusStore();
+  const router = useRouter();
+  const { hasUnread } = useUnreadStore();
   return (
     <div className="flex items-center gap-5">
       {open && <div className="fixed inset-0 bg-black/50 z-40" />}
       <button
         className="flex gap-2 text-white bg-[#fc5531] rounded-[20px] py-1 px-3 cursor-pointer outline-none"
-        onClick={() => window.open('/creation', '_blank')}
+        onClick={() => window.open("/creation", "_blank")}
       >
         <Icon
           icon="streamline-ultimate:pen-write"
@@ -38,12 +44,15 @@ export default function Operate() {
         写文章
       </button>
       <div
-        className="dark:text-white text-[#212121] cursor-pointer"
+        className="relative dark:text-white text-[#212121] cursor-pointer"
         onClick={() => {
-          router.push(`/message`)
+          router.push(`/message`);
         }}
       >
         <Icon icon="tabler:message" size="26" className="text-inherit" />
+        {hasUnread && (
+          <div className="absolute right-0 top-0 w-2.5 h-2.5 rounded-full bg-red-400"></div>
+        )}
       </div>
       <ThemeToggle />
       <div className="cursor-pointer">
@@ -51,13 +60,13 @@ export default function Operate() {
           <HoverCard>
             <HoverCardTrigger>
               <Image
-                src={userInfo.avatar || 'https://picsum.photos/120/80?random=1'}
+                src={userInfo.avatar || "https://picsum.photos/120/80?random=1"}
                 className="w-9 h-9 rounded-full"
                 alt=""
                 width={12}
                 height={12}
                 onClick={() => {
-                  router.push(`/my?username=${userInfo.username}`)
+                  router.push(`/my?username=${userInfo.username}`);
                 }}
               />
             </HoverCardTrigger>
@@ -73,7 +82,7 @@ export default function Operate() {
               </Avatar>
             </DialogTrigger>
             <DialogContent
-              onInteractOutside={e => e.preventDefault()} // 禁止点击遮罩层关闭
+              onInteractOutside={(e) => e.preventDefault()} // 禁止点击遮罩层关闭
             >
               <DialogHeader>
                 <DialogTitle></DialogTitle>
@@ -87,5 +96,5 @@ export default function Operate() {
         )}
       </div>
     </div>
-  )
+  );
 }

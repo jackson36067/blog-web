@@ -11,11 +11,15 @@ import Image from "next/image";
 
 export default function FanMessageItem({
   message,
+  handleDeleteMessageAction,
+  handleToggleFollowAction,
 }: {
   message: OtherMessageItem;
+  handleDeleteMessageAction: (messageId: number) => void;
+  handleToggleFollowAction: (userId: number, isFollow: boolean) => void;
 }) {
   return (
-    <div className="flex justify-between items-center group py-4 border-b border-solid border-gray-[#f0f0f3] dark:border-gray-200/20">
+    <div className="flex justify-between items-center group py-2 border-b border-solid border-gray-[#f0f0f3] dark:border-gray-200/20">
       <div className="flex items-center gap-4">
         <Image
           src={message.userAvatar}
@@ -43,13 +47,21 @@ export default function FanMessageItem({
             <div className="py-1 hover:bg-[#f0f0f3] dark:hover:bg-[#1e1e22] text-center">
               私信
             </div>
-            <div className="py-1 hover:bg-[#f0f0f3] dark:hover:bg-[#1e1e22] text-center">
+            <div
+              className="py-1 hover:bg-[#f0f0f3] dark:hover:bg-[#1e1e22] text-center"
+              onClick={() => handleDeleteMessageAction(message.id)}
+            >
               删除
             </div>
           </PopoverContent>
         </Popover>
-        <div className="border border-solid border-[#ccccd8] dark:border-gray-200/20 rounded-2xl px-5 py-1 cursor-pointer">
-          <p>{!message.isFollow ? "回关" : "已关注"}</p>
+        <div
+          className="border border-solid border-[#ccccd8] dark:border-gray-200/20 rounded-2xl px-5 py-1 cursor-pointer"
+          onClick={() =>
+            handleToggleFollowAction(message.userId, message.isFollow)
+          }
+        >
+          <p>{!message.isFollow ? "回关" : "互相关注"}</p>
         </div>
       </div>
     </div>

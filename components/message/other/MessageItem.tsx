@@ -8,10 +8,15 @@ import Image from "next/image";
 export default function MessageItem({
   type,
   message,
+  handleDeleteMessageAction,
 }: {
   type: number;
   message: OtherMessageItem;
+  handleDeleteMessageAction: (ids: number[]) => void;
 }) {
+  const handleDeleteMessage = async (id: number) => {
+    handleDeleteMessageAction([id]);
+  };
   return (
     <div className="flex justify-between p-3">
       <div className="flex-1 flex gap-3">
@@ -49,6 +54,7 @@ export default function MessageItem({
           icon="material-symbols-light:delete-outline"
           size={16}
           className="cursor-pointer"
+          hanldeOnClick={() => handleDeleteMessage(message.id)}
         />
         <p>{message.sendTime}</p>
       </div>

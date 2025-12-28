@@ -29,7 +29,7 @@ export interface ChatMessageItem {
 }
 
 export interface OtherMessageItem {
-  id: number;
+  id: number; // 消息id
   userId: number;
   username: string;
   userAvatar: string;
@@ -39,4 +39,11 @@ export interface OtherMessageItem {
   extra: string;
   title: string;
   isFollow: boolean;
+}
+
+export interface PrivateSendMessageItem {
+  sessionId: number;
+  message: ChatMessageItem;
+  sendTime: string;
+  chatTime: string;
 }
