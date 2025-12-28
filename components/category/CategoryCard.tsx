@@ -1,48 +1,70 @@
-'use client'
+"use client";
 
-import { GetCategoryListAPI } from '@/api/category'
-import { CategoryInfo } from '@/types/category'
-import { useEffect, useState } from 'react'
-import { Button } from '../ui/button'
+import { GetCategoryListAPI } from "@/api/category";
+import { CategoryInfo } from "@/types/category";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface CategoryCardProps {
-  title: string
-  changeTitle: (title: string) => void
+  title: string;
+  changeTitle: (title: string) => void;
 }
 
 export default function CategoryCard({
   title,
   changeTitle,
 }: CategoryCardProps) {
-  // 分类列表
-  const [categoryList, setCategoryList] = useState<CategoryInfo[]>([])
+  const [categoryList, setCategoryList] = useState<CategoryInfo[]>([]);
+
   useEffect(() => {
     const getCategoryList = async () => {
-      const res = await GetCategoryListAPI()
-      setCategoryList(res.data)
-    }
-    getCategoryList()
-  }, [])
+      const res = await GetCategoryListAPI();
+      setCategoryList(res.data);
+    };
+    getCategoryList();
+  }, []);
+
   return (
-    <div className="w-full py-2 rounded-sm">
-      <div className="flex items-center gap-10">
-        {categoryList.map(item => {
+    <div className="relative p-2 rounded-3xl border border-white/20 dark:border-white/10 bg-white/50 dark:bg-[#1a1a1a]/50 backdrop-blur-xl shadow-2xl">
+      <div className="flex flex-col gap-1">
+        {categoryList.map((item) => {
+          const isActive = title === item.title;
           return (
-            <Button
+            <button
               key={item.id}
-              variant={
-                title != null && title === item.title ? 'default' : 'outline'
-              }
-              className="rounded-full px-4 transition"
-              onClick={() => {
-                changeTitle(item.title)
-              }}
+              onClick={() => changeTitle(item.title)}
+              className={cn(
+                "relative flex items-center px-5 py-4 rounded-2xl text-sm font-medium transition-all duration-300 group",
+                isActive
+                  ? "text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
             >
-              {item.title}
-            </Button>
-          )
+              {/* 选中时的背景平滑滑动动画 */}
+              {isActive && (
+                <motion.div
+                  layoutId="activeCategory"
+                  className="absolute inset-0 bg-primary rounded-2xl shadow-lg shadow-primary/20"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+
+              <span className="relative z-10 flex items-center justify-between w-full">
+                {item.title}
+                <span
+                  className={cn(
+                    "text-[10px] opacity-50 group-hover:opacity-100 transition-opacity",
+                    isActive ? "text-white" : "",
+                  )}
+                >
+                  {isActive ? "●" : "○"}
+                </span>
+              </span>
+            </button>
+          );
         })}
       </div>
     </div>
-  )
+  );
 }

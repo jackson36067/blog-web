@@ -17,14 +17,15 @@ class WSClient {
   private url = "";
 
   private lockReconnect = false;
-  private heartbeatInterval = 20000; // 发送 ping 的间隔
+  private heartbeatInterval = 20000;
   private reconnectInterval = 3000;
 
   private heartbeatTimer: number | null = null;
-  private heartbeatTimeoutTimer: number | null = null; // 监控 pong 回包的计时器
   private reconnectTimer: number | null = null;
   private manualClose = false;
+  private heartbeatTimeoutTimer: number | null = null;
 
+  // 使用 Set 存储多个监听器，支持多组件同时监听
   private listeners = new Set<MessageListener>();
 
   private constructor() {}
@@ -35,7 +36,7 @@ class WSClient {
   }
 
   /**
-   * 建立连接：自动清理旧连接
+   * 建立连接：会自动清理旧连接
    */
   connect(options: WebSocketOptions) {
     if (
@@ -47,7 +48,7 @@ class WSClient {
       return;
     }
 
-    this.destroy(); // 切换用户前必须彻底断开
+    this.destroy(); // 彻底清理旧的状态
 
     this.userId = options.userId;
     this.url = options.url || `ws://localhost:8080/ws?userId=${options.userId}`;
@@ -61,10 +62,11 @@ class WSClient {
   }
 
   /**
-   * 订阅消息：供 UI 组件调用
+   * 订阅消息：组件挂载时调用
    */
   subscribe(callback: MessageListener) {
     this.listeners.add(callback);
+    // 返回取消订阅函数，方便在 useEffect 的 return 中调用
     return () => {
       this.listeners.delete(callback);
     };
@@ -76,35 +78,24 @@ class WSClient {
 
       this.ws.onopen = () => {
         console.log("[WS] 连接成功");
-        this.startHeartbeat(); // 开启心跳轮询
+        this.startHeartbeat();
         this.requestUnreadCount();
       };
 
       this.ws.onmessage = (event) => {
-        // 【核心控制】只要收到任何消息，立刻停止“死亡倒计时”
-        this.stopHeartbeatTimeout();
+        this.startHeartbeat(); // 收到任何消息都重置心跳计时器
 
         try {
           const data = JSON.parse(event.data);
 
-          // 1. 处理全局内置逻辑
+          // 1. 全局内置逻辑处理
           if (data.type === "has_unread") {
             useUnreadStore.getState().setHasUnread(data.data);
-            return;
           }
-          if (data.type === "pong") {
-            // console.log("[WS] 心跳正常");
-            return;
-          }
+          if (data.type === "pong") return;
 
-          // 2. 转发业务消息给所有订阅组件
-          this.listeners.forEach((listener) => {
-            try {
-              listener(data);
-            } catch (e) {
-              console.error("[WS] 订阅者处理消息报错:", e);
-            }
-          });
+          // 2. 通知所有外部订阅者（如聊天组件）
+          this.listeners.forEach((listener) => listener(data));
         } catch (err) {
           console.error("[WS] 解析消息失败", err);
         }
@@ -117,7 +108,7 @@ class WSClient {
       };
 
       this.ws.onerror = () => {
-        console.error("[WS] 连接发生异常");
+        console.error("[WS] 连接异常");
       };
     } catch (err) {
       console.error("[WS] 创建实例失败", err);
@@ -125,9 +116,6 @@ class WSClient {
     }
   }
 
-  /**
-   * 智能重连
-   */
   private reconnect() {
     if (this.lockReconnect || this.manualClose) return;
 
@@ -141,63 +129,45 @@ class WSClient {
     }, this.reconnectInterval);
   }
 
-  /**
-   * 心跳逻辑：发送 ping 并开启 pong 超时监控
-   */
   private startHeartbeat() {
-    this.stopHeartbeat(); // 清理旧的
-
+    this.stopHeartbeat();
     this.heartbeatTimer = window.setInterval(() => {
       if (this.ws?.readyState === WebSocket.OPEN) {
-        // 1. 发送 Ping
+        // 发送 ping
         this.ws.send(JSON.stringify({ type: "ping" }));
 
-        // 2. 开启超时监控：如果 5 秒内没触发 onmessage，说明连接已死
+        // --- 新增：心跳超时检测 ---
+        // 如果在心跳间隔的一半时间内没有任何消息返回，认为连接已断
+        if (this.heartbeatTimeoutTimer)
+          clearTimeout(this.heartbeatTimeoutTimer);
         this.heartbeatTimeoutTimer = window.setTimeout(() => {
-          console.warn("[WS] 心跳响应超时，连接可能已假死，强制断开重连");
           if (this.ws) {
-            this.ws.close(); // 触发 onclose 逻辑
+            console.warn("[WS] 心跳响应超时，强制断开重连");
+            this.ws.close(); // 触发 onclose 逻辑进入重连
           }
-        }, 5000);
-      } else {
-        this.stopHeartbeat();
+        }, 5000); // 5秒内没回 pong 就判定死亡
       }
     }, this.heartbeatInterval);
   }
 
-  /**
-   * 停止所有心跳相关的计时器
-   */
   private stopHeartbeat() {
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
       this.heartbeatTimer = null;
     }
-    this.stopHeartbeatTimeout();
-  }
-
-  /**
-   * 停止 pong 超时监控
-   */
-  private stopHeartbeatTimeout() {
     if (this.heartbeatTimeoutTimer) {
       clearTimeout(this.heartbeatTimeoutTimer);
       this.heartbeatTimeoutTimer = null;
     }
   }
 
-  /**
-   * 彻底销毁连接
-   */
   private destroy() {
     this.manualClose = true;
     this.stopHeartbeat();
-
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
-
     if (this.ws) {
       this.ws.onopen = null;
       this.ws.onmessage = null;
