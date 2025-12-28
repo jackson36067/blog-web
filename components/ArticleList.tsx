@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { ArticleInfo } from '@/types/article'
-import Article from './Article'
-import Pagination from './Pagination'
+import { ArticleInfo } from "@/types/article";
+import Article from "./Article";
+import Pagination from "./Pagination";
 
 interface ArticleListProps {
-  page: number
-  totalPage: number
-  onPageChange: (page: number) => void
-  articleList: ArticleInfo[]
-  showEdit?: boolean
+  page: number;
+  totalPage: number;
+  onPageChange: (page: number) => void;
+  articleList: ArticleInfo[];
+  showEdit?: boolean;
 }
 
 export default function ArticleList({
@@ -21,9 +21,9 @@ export default function ArticleList({
 }: ArticleListProps) {
   return (
     <div className="w-full">
-      {articleList.length > 0 ? (
+      {articleList.length > 0 && (
         <div>
-          {articleList.map(item => {
+          {articleList.map((item) => {
             return (
               <Article
                 articleInfo={item}
@@ -31,7 +31,7 @@ export default function ArticleList({
                 showAuthor
                 showEdit={showEdit}
               />
-            )
+            );
           })}
           {totalPage > 1 && (
             <Pagination
@@ -41,11 +41,7 @@ export default function ArticleList({
             />
           )}
         </div>
-      ) : (
-        <div className="w-full flex justify-center py-30 text-[#1d98d1]">
-          该分类暂无文章
-        </div>
       )}
     </div>
-  )
+  );
 }

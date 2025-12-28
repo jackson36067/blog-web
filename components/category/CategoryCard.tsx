@@ -26,7 +26,13 @@ export default function CategoryCard({
   }, []);
 
   return (
-    <div className="relative p-2 rounded-3xl border border-white/20 dark:border-white/10 bg-white/50 dark:bg-[#1a1a1a]/50 backdrop-blur-xl shadow-2xl">
+    <div
+      className={cn(
+        "relative p-2 rounded-3xl border border-white/20 dark:border-white/10",
+        "bg-white/50 dark:bg-[#1a1a1a]/50 backdrop-blur-xl shadow-2xl",
+        "max-h-[80vh] overflow-y-auto overflow-x-hidden",
+      )}
+    >
       <div className="flex flex-col gap-1">
         {categoryList.map((item) => {
           const isActive = title === item.title;
@@ -35,10 +41,10 @@ export default function CategoryCard({
               key={item.id}
               onClick={() => changeTitle(item.title)}
               className={cn(
-                "relative flex items-center px-5 py-4 rounded-2xl text-sm font-medium transition-all duration-300 group",
+                "relative flex items-center px-5 py-4 rounded-2xl text-sm font-medium transition-all duration-300 group outline-hidden",
                 isActive
                   ? "text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground",
+                  : "text-muted-foreground hover:text-foreground hover:bg-white/5",
               )}
             >
               {/* 选中时的背景平滑滑动动画 */}
