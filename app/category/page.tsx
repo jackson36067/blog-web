@@ -10,7 +10,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function CategoryPage() {
   const searchParams = useSearchParams();
-  const [title, setTitle] = useState<string>(searchParams.get("title") || "");
+  const [title, setTitle] = useState<string>(
+    searchParams.get("title") || "全部",
+  );
   const [page, setPage] = useState<number>(1);
   const pageSize = 5;
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -29,7 +31,7 @@ export default function CategoryPage() {
       const res = await GetArticleAPI({
         page,
         pageSize,
-        categoryTitle: title || "",
+        categoryTitle: title,
       });
       setCategoryArticleList(res.data.data);
       setTotalPages(res.data.totalPages);

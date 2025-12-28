@@ -3,7 +3,6 @@ import useUnreadStore from "@/stores/HasUnreadStore";
 interface WebSocketOptions {
   userId: number | string;
   url?: string;
-  heartbeatInterval?: number;
   reconnectInterval?: number;
 }
 
@@ -17,13 +16,9 @@ class WSClient {
   private url = "";
 
   private lockReconnect = false;
-  private heartbeatInterval = 20000;
   private reconnectInterval = 3000;
-
-  private heartbeatTimer: number | null = null;
   private reconnectTimer: number | null = null;
   private manualClose = false;
-  private heartbeatTimeoutTimer: number | null = null;
 
   // 使用 Set 存储多个监听器，支持多组件同时监听
   private listeners = new Set<MessageListener>();
@@ -39,6 +34,7 @@ class WSClient {
    * 建立连接：会自动清理旧连接
    */
   connect(options: WebSocketOptions) {
+    // 如果已有连接且用户一致，不再重复创建
     if (
       this.ws &&
       this.ws.readyState === WebSocket.OPEN &&
@@ -48,11 +44,10 @@ class WSClient {
       return;
     }
 
-    this.destroy(); // 彻底清理旧的状态
+    this.destroy(); // 彻底清理旧的状态和连接
 
     this.userId = options.userId;
     this.url = options.url || `ws://localhost:8080/ws?userId=${options.userId}`;
-    this.heartbeatInterval = options.heartbeatInterval || 20000;
     this.reconnectInterval = options.reconnectInterval || 3000;
     this.manualClose = false;
     this.lockReconnect = false;
@@ -63,10 +58,10 @@ class WSClient {
 
   /**
    * 订阅消息：组件挂载时调用
+   * @returns 返回取消订阅的函数
    */
   subscribe(callback: MessageListener) {
     this.listeners.add(callback);
-    // 返回取消订阅函数，方便在 useEffect 的 return 中调用
     return () => {
       this.listeners.delete(callback);
     };
@@ -78,13 +73,10 @@ class WSClient {
 
       this.ws.onopen = () => {
         console.log("[WS] 连接成功");
-        this.startHeartbeat();
         this.requestUnreadCount();
       };
 
       this.ws.onmessage = (event) => {
-        this.startHeartbeat(); // 收到任何消息都重置心跳计时器
-
         try {
           const data = JSON.parse(event.data);
 
@@ -92,9 +84,8 @@ class WSClient {
           if (data.type === "has_unread") {
             useUnreadStore.getState().setHasUnread(data.data);
           }
-          if (data.type === "pong") return;
 
-          // 2. 通知所有外部订阅者（如聊天组件）
+          // 2. 通知所有外部订阅者（如聊天组件、全局通知等）
           this.listeners.forEach((listener) => listener(data));
         } catch (err) {
           console.error("[WS] 解析消息失败", err);
@@ -103,7 +94,6 @@ class WSClient {
 
       this.ws.onclose = (e) => {
         console.log(`[WS] 连接关闭: ${e.code} ${e.reason}`);
-        this.stopHeartbeat();
         this.reconnect();
       };
 
@@ -129,46 +119,14 @@ class WSClient {
     }, this.reconnectInterval);
   }
 
-  private startHeartbeat() {
-    this.stopHeartbeat();
-    this.heartbeatTimer = window.setInterval(() => {
-      if (this.ws?.readyState === WebSocket.OPEN) {
-        // 发送 ping
-        this.ws.send(JSON.stringify({ type: "ping" }));
-
-        // --- 新增：心跳超时检测 ---
-        // 如果在心跳间隔的一半时间内没有任何消息返回，认为连接已断
-        if (this.heartbeatTimeoutTimer)
-          clearTimeout(this.heartbeatTimeoutTimer);
-        this.heartbeatTimeoutTimer = window.setTimeout(() => {
-          if (this.ws) {
-            console.warn("[WS] 心跳响应超时，强制断开重连");
-            this.ws.close(); // 触发 onclose 逻辑进入重连
-          }
-        }, 5000); // 5秒内没回 pong 就判定死亡
-      }
-    }, this.heartbeatInterval);
-  }
-
-  private stopHeartbeat() {
-    if (this.heartbeatTimer) {
-      clearInterval(this.heartbeatTimer);
-      this.heartbeatTimer = null;
-    }
-    if (this.heartbeatTimeoutTimer) {
-      clearTimeout(this.heartbeatTimeoutTimer);
-      this.heartbeatTimeoutTimer = null;
-    }
-  }
-
   private destroy() {
     this.manualClose = true;
-    this.stopHeartbeat();
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
     if (this.ws) {
+      // 断开前移除监听，防止触发 onclose 中的重连逻辑
       this.ws.onopen = null;
       this.ws.onmessage = null;
       this.ws.onerror = null;
@@ -191,6 +149,8 @@ class WSClient {
       } catch (err) {
         console.error("[WS] 发送失败", err);
       }
+    } else {
+      console.warn("[WS] 发送失败：连接未建立或正在重连");
     }
   }
 

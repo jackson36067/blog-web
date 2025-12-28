@@ -20,7 +20,7 @@ export default function CategoryCard({
   useEffect(() => {
     const getCategoryList = async () => {
       const res = await GetCategoryListAPI();
-      setCategoryList(res.data);
+      setCategoryList([{ id: 0, title: "全部" }, ...res.data]);
     };
     getCategoryList();
   }, []);
@@ -30,7 +30,7 @@ export default function CategoryCard({
       className={cn(
         "relative p-2 rounded-3xl border border-white/20 dark:border-white/10",
         "bg-white/50 dark:bg-[#1a1a1a]/50 backdrop-blur-xl shadow-2xl",
-        "max-h-[80vh] overflow-y-auto overflow-x-hidden",
+        "max-h-[76vh] overflow-y-auto overflow-x-hidden",
       )}
     >
       <div className="flex flex-col gap-1">

@@ -1,30 +1,31 @@
-'use client'
+"use client";
 
-import { useRouter } from 'next/navigation'
-import Icon from '../Icon'
+import { useRouter } from "next/navigation";
+import Icon from "../Icon";
 
-interface Props {
-  menu: Array<{ icon: string; label: string; link: string }>
-}
-
-export default function NavigationMenu(props: Props) {
-  const router = useRouter()
+export default function NavigationMenu(props: {
+  menu: Array<{ icon: string; label: string; link: string }>;
+}) {
+  const router = useRouter();
   return (
-    <div className="flex items-center gap-[15px] cursor-pointer">
-      {props.menu.map((item, index) => {
-        return (
-          <div
-            className="flex items-end text-[#212121] hover:text-gray-400 dark:text-white dark:hover:text-gray-500 gap-0.5"
-            key={index}
-            onClick={() => {
-              router.push(item.link)
-            }}
-          >
-            <Icon icon={item.icon} className="text-inherit" />
-            <p className="text-[12px] font-black">{item.label}</p>
-          </div>
-        )
-      })}
+    <div className="flex items-center gap-8">
+      {props.menu.map((item, index) => (
+        <div
+          className="group relative flex items-center gap-1.5 py-1 text-gray-600 dark:text-gray-300 hover:text-[#fc5531] dark:hover:text-[#fc5531] transition-all duration-300 cursor-pointer"
+          key={index}
+          onClick={() => router.push(item.link)}
+        >
+          <Icon
+            icon={item.icon}
+            size="18"
+            className="transition-transform group-hover:-translate-y-0.5"
+          />
+          <p className="text-[14px] font-bold tracking-tight">{item.label}</p>
+
+          {/* 悬停下划线动画 */}
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#fc5531] transition-all duration-300 group-hover:w-full rounded-full" />
+        </div>
+      ))}
     </div>
-  )
+  );
 }
