@@ -2,88 +2,98 @@ import {
   CreateArticleParams,
   GetArticleInfoParams,
   GetMyArticleInfoParams,
-} from '@/types/article'
-import httpInstance from '@/utils/http'
+  GetRecommendArticleParams,
+} from "@/types/article";
+import httpInstance from "@/utils/http";
+
+// 获取首页推荐文章列表
+export const GetRecommendArticleAPI = (params: GetRecommendArticleParams) => {
+  return httpInstance({
+    method: "GET",
+    url: "/article/recommend",
+    params,
+  });
+};
 
 // 根据条件分页获取文章列表
 export const GetArticleAPI = (params: GetArticleInfoParams) => {
   return httpInstance({
-    method: 'GET',
-    url: '/article/info',
+    method: "GET",
+    url: "/article/list",
     params,
-  })
-}
+  });
+};
 
 // 获取用户置顶文章列表
 export const GetUserTopArticleListAPI = () => {
   return httpInstance({
-    method: 'GET',
-    url: '/article/top',
-  })
-}
+    method: "GET",
+    url: "/article/top",
+  });
+};
 
 // 获取文章热门标签以及随机分类
 export const GetArticleHotTagsAndRandCategory = () => {
   return httpInstance({
-    method: 'GET',
-    url: '/article/meta',
-  })
-}
+    method: "GET",
+    url: "/article/meta",
+  });
+};
 
 // 获取用户个人文章
 export const GetMyArticleListAPI = (params: GetMyArticleInfoParams) => {
   return httpInstance({
-    method: 'GET',
-    url: '/article/my',
+    method: "GET",
+    url: "/article/my",
     params,
-  })
-}
+  });
+};
 
 // 统计用户文章的创作历程
 export const GetMyArticleCreateProcessAPI = () => {
   return httpInstance({
-    method: 'GET',
-    url: '/article/statistic',
-  })
-}
+    method: "GET",
+    url: "/article/statistic",
+  });
+};
 
 // 清除用户的浏览历史记录
 export const ClearUserBrowseHistoryAPI = () => {
   return httpInstance({
-    method: 'DELETE',
-    url: '/article/remove/browse',
-  })
-}
+    method: "DELETE",
+    url: "/article/remove/browse",
+  });
+};
 
 // 获取文章详情信息
 export const GetArticleDetailAPI = (articleId: number) => {
   return httpInstance({
-    method: 'GET',
+    method: "GET",
     url: `/article/detail/${articleId}`,
-  })
-}
+  });
+};
 
 // 点赞/取消点赞文章
 export const LikeArticleAPI = (articleId: number, isLike: boolean) => {
   return httpInstance({
-    method: 'POST',
+    method: "POST",
     url: `/article/like/${articleId}`,
     data: {
       isLike,
     },
-  })
-}
+  });
+};
 
 // 收藏文章
 export const CollectArticleAPI = (articleId: number, favoriteId: number) => {
   return httpInstance({
-    method: 'POST',
+    method: "POST",
     url: `/article/collect/${articleId}`,
     data: {
       favoriteId,
     },
-  })
-}
+  });
+};
 
 // 分页获取文章评论
 export const GetArticleCommentAPI = (
@@ -92,23 +102,23 @@ export const GetArticleCommentAPI = (
   articleId: number,
 ) => {
   return httpInstance({
-    method: 'GET',
+    method: "GET",
     url: `article/comment/${articleId}`,
     params: {
       page,
       pageSize,
     },
-  })
-}
+  });
+};
 
 // 发布文章接口
 export const PublishArticleAPI = (data: CreateArticleParams) => {
   return httpInstance({
-    method: 'POST',
-    url: '/article/publish',
+    method: "POST",
+    url: "/article/publish",
     data,
-  })
-}
+  });
+};
 
 // 更新文章基础信息
 export const UpdateArticleAPI = (
@@ -116,8 +126,8 @@ export const UpdateArticleAPI = (
   data: CreateArticleParams,
 ) => {
   return httpInstance({
-    method: 'PUT',
+    method: "PUT",
     url: `/article/update/${artilceId}`,
     data,
-  })
-}
+  });
+};

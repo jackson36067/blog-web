@@ -1,31 +1,31 @@
-'use client'
+"use client";
 
-import useUserStore from '@/stores/UserStore'
-import Image from 'next/image'
-import Icon from '../Icon'
-import { useRouter } from 'next/navigation'
-import { Camera, ChevronDownIcon } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import { updateUserFieldAPI, UploadFileAPI } from '@/api/user'
-import { toast } from 'sonner'
-import { cn } from '@/lib/utils'
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
-import { Label } from '../ui/label'
-import { Textarea } from '../ui/textarea'
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { Button } from '../ui/button'
-import { Calendar } from '../ui/calendar'
-import { zhCN } from 'date-fns/locale'
-import { formatDate } from '@/utils/date'
-import InterestSelector from './InterestCategory'
+import useUserStore from "@/stores/UserStore";
+import Image from "next/image";
+import Icon from "../Icon";
+import { useRouter } from "next/navigation";
+import { Camera, ChevronDownIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { updateUserFieldAPI, UploadFileAPI } from "@/api/user";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
+import { zhCN } from "date-fns/locale";
+import { formatDate } from "@/utils/date";
+import InterestSelector from "./InterestCategory";
 
 interface UserProfileProps {
-  _birthday: string
-  _username: string
-  _sex: number
-  _abstract: string
-  sinceLastUpdateUsernameDays: number
-  _hobbyTags: string[]
+  _birthday: string;
+  _username: string;
+  _sex: number;
+  _abstract: string;
+  sinceLastUpdateUsernameDays: number;
+  _hobbyTags: string[];
 }
 
 export default function UserProfile({
@@ -36,90 +36,91 @@ export default function UserProfile({
   sinceLastUpdateUsernameDays,
   _hobbyTags,
 }: UserProfileProps) {
-  const [birthday, setBirthday] = useState<string>('')
-  const [username, setUsername] = useState<string>('')
-  const [sex, setSex] = useState<number>(0)
-  const [abstract, setAbstract] = useState<string>('')
-  const [hobbyTags, setHobbyTags] = useState<string[]>([])
+  const [birthday, setBirthday] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [sex, setSex] = useState<number>(0);
+  const [abstract, setAbstract] = useState<string>("");
+  const [hobbyTags, setHobbyTags] = useState<string[]>([]);
 
-  const { userInfo, setUserInfo } = useUserStore()
-  const router = useRouter()
+  const { userInfo, setUserInfo, updateHobby } = useUserStore();
+  const router = useRouter();
   // 上传文件ref,用于吊起文件选择框
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
   // 展示编辑用户名按钮
   const [showEditUsernameButton, setShowEditUsernameButton] =
-    useState<boolean>(false)
+    useState<boolean>(false);
   // 日历弹窗状态
-  const [openCalendar, setOpenCalendar] = useState(false)
+  const [openCalendar, setOpenCalendar] = useState(false);
 
   useEffect(() => {
-    setBirthday(_birthday)
-    setUsername(_username)
-    setSex(_sex)
-    setAbstract(_abstract)
-    setHobbyTags(_hobbyTags)
-  }, [_birthday, _username, _sex, _abstract, _hobbyTags])
+    setBirthday(_birthday);
+    setUsername(_username);
+    setSex(_sex);
+    setAbstract(_abstract);
+    setHobbyTags(_hobbyTags);
+  }, [_birthday, _username, _sex, _abstract, _hobbyTags]);
 
   // 点击头像区域，触发文件上传
   const handleAvatarClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   // 选择文件后显示预览
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
     // 2MB 上限
     if (file.size > 1 * 1024 * 1024) {
-      toast.info('文件大小不能超过1MB')
-      return
+      toast.info("文件大小不能超过1MB");
+      return;
     }
     try {
-      const res = await UploadFileAPI(file)
+      const res = await UploadFileAPI(file);
       setUserInfo({
         ...userInfo,
         avatar: res.data,
-      })
+      });
       await updateUserFieldAPI(userInfo.userId, [
-        { field: 'avatar', value: res.data },
-      ])
+        { field: "avatar", value: res.data },
+      ]);
     } catch (err) {
-      console.error('上传失败:', err)
+      console.error("上传失败:", err);
     } finally {
-      e.target.value = '' // 防止选择相同文件不触发 onChange
+      e.target.value = ""; // 防止选择相同文件不触发 onChange
     }
-  }
+  };
 
   // 更新用户单个信息
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const UpdateUserInfo = async (field: string, value: any) => {
     try {
-      await updateUserFieldAPI(userInfo.userId, [{ field, value }])
+      await updateUserFieldAPI(userInfo.userId, [{ field, value }]);
     } catch (err) {
-      console.error(err)
-      return
+      console.error(err);
+      return;
     }
-    toast.info('更新成功')
-  }
+    toast.info("更新成功");
+  };
 
   // 修改用户兴趣标签 type:0删除 1添加
   const handleUpdateHobbyTag = async (tag: string, type: number) => {
-    let newTags = [...hobbyTags]
+    let newTags = [...hobbyTags];
     if (type === 0) {
-      newTags = hobbyTags.filter(item => item !== tag)
+      newTags = hobbyTags.filter((item) => item !== tag);
     } else if (type === 1) {
       if (hobbyTags.includes(tag)) {
-        toast.info('标签已存在')
-        return
+        toast.info("标签已存在");
+        return;
       }
-      newTags.push(tag)
+      newTags.push(tag);
     }
-    setHobbyTags(newTags)
+    updateHobby(newTags);
+    setHobbyTags(newTags);
     await updateUserFieldAPI(userInfo.userId, [
-      { field: 'hobbyTags', value: newTags },
-    ])
-    toast.info(type === 0 ? '标签已删除' : '标签已添加')
-  }
+      { field: "hobbyTags", value: newTags },
+    ]);
+    toast.info(type === 0 ? "标签已删除" : "标签已添加");
+  };
 
   return (
     <div>
@@ -130,7 +131,7 @@ export default function UserProfile({
             onClick={handleAvatarClick}
           >
             <Image
-              src={userInfo.avatar || 'https://picsum.photos/120/80?random=1'}
+              src={userInfo.avatar || "https://picsum.photos/120/80?random=1"}
               alt=""
               width={16}
               height={16}
@@ -159,7 +160,7 @@ export default function UserProfile({
               <div
                 className="flex justify-center items-center w-[94px] px-3 rounded-2xl bg-[#f2f2f2] dark:bg-gray-200/20 text-[#555666] dark:text-gray-300 cursor-pointer text-[14px]"
                 onClick={() => {
-                  router.push(`/my?username=${username}`)
+                  router.push(`/my?username=${username}`);
                 }}
               >
                 <p>个人主页</p>
@@ -191,9 +192,9 @@ export default function UserProfile({
                     <input
                       className="border border-solid border-[#dcdfe6] w-[360px] h-8 leading-10 px-[15px] rounded-lg outline-none"
                       value={username}
-                      onChange={e => setUsername(e.target.value)}
+                      onChange={(e) => setUsername(e.target.value)}
                       onFocus={() => {
-                        setShowEditUsernameButton(true)
+                        setShowEditUsernameButton(true);
                       }}
                     />
                     {!showEditUsernameButton ? (
@@ -203,16 +204,16 @@ export default function UserProfile({
                         <button
                           className="bg-[#fc5531] border border-solid border-[#fc5531] outline-none text-white px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                           onClick={() => {
-                            setEditing(false)
+                            setEditing(false);
                             if (sinceLastUpdateUsernameDays < 30) {
                               toast.info(
-                                '距离上次修改还未满 30 天，暂不可更改。',
-                              )
-                              setUsername(userInfo.username)
-                              return
+                                "距离上次修改还未满 30 天，暂不可更改。",
+                              );
+                              setUsername(userInfo.username);
+                              return;
                             }
-                            UpdateUserInfo('username', username)
-                            setUserInfo({ ...userInfo, username: username })
+                            UpdateUserInfo("username", username);
+                            setUserInfo({ ...userInfo, username: username });
                           }}
                         >
                           提交
@@ -220,8 +221,8 @@ export default function UserProfile({
                         <button
                           className="text-[#fc5531] border border-solid border-[#fc5531] outline-none px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                           onClick={() => {
-                            setShowEditUsernameButton(false)
-                            setEditing(false)
+                            setShowEditUsernameButton(false);
+                            setEditing(false);
                           }}
                         >
                           取消
@@ -229,12 +230,12 @@ export default function UserProfile({
                       </div>
                     )}
                   </div>
-                )
+                );
               }}
             </EditableItem>
             <EditableItem
               label="性别"
-              value={sex === 0 ? '男' : '女'}
+              value={sex === 0 ? "男" : "女"}
               labelBetweenShow={true}
             >
               {({ setEditing }) => {
@@ -243,7 +244,7 @@ export default function UserProfile({
                     <RadioGroup
                       className="flex flex-row!"
                       defaultValue={sex.toString()}
-                      onValueChange={value => setSex(Number(value))}
+                      onValueChange={(value) => setSex(Number(value))}
                     >
                       <div className="flex items-center gap-3">
                         <RadioGroupItem value="0" id="r1" />
@@ -258,8 +259,8 @@ export default function UserProfile({
                       <button
                         className="bg-[#fc5531] border border-solid border-[#fc5531] outline-none text-white px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {
-                          setEditing(false)
-                          UpdateUserInfo('sex', sex)
+                          setEditing(false);
+                          UpdateUserInfo("sex", sex);
                         }}
                       >
                         确认
@@ -267,14 +268,14 @@ export default function UserProfile({
                       <button
                         className="text-[#fc5531] border border-solid border-[#fc5531] outline-none px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {
-                          setEditing(false)
+                          setEditing(false);
                         }}
                       >
                         取消
                       </button>
                     </div>
                   </div>
-                )
+                );
               }}
             </EditableItem>
             <EditableItem
@@ -290,14 +291,14 @@ export default function UserProfile({
                       className="w-[798px] h-[86px] px-3 py-2"
                       placeholder="你很懒, 还没有添加简介"
                       value={abstract}
-                      onChange={e => setAbstract(e.target.value)}
+                      onChange={(e) => setAbstract(e.target.value)}
                     />
                     <div className="flex justify-end gap-4">
                       <button
                         className="bg-[#fc5531] border border-solid border-[#fc5531] outline-none text-white px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {
-                          setEditing(false)
-                          UpdateUserInfo('abstract', abstract)
+                          setEditing(false);
+                          UpdateUserInfo("abstract", abstract);
                         }}
                       >
                         提交
@@ -305,14 +306,14 @@ export default function UserProfile({
                       <button
                         className="text-[#fc5531] border border-solid border-[#fc5531] outline-none px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {
-                          setEditing(false)
+                          setEditing(false);
                         }}
                       >
                         取消
                       </button>
                     </div>
                   </div>
-                )
+                );
               }}
             </EditableItem>
             <EditableItem
@@ -331,7 +332,7 @@ export default function UserProfile({
                           id="date"
                           className="w-[360px] justify-between font-normal h-8"
                         >
-                          {birthday ? birthday : '请设置您的出生日期'}
+                          {birthday ? birthday : "请设置您的出生日期"}
                           <ChevronDownIcon />
                         </Button>
                       </PopoverTrigger>
@@ -343,9 +344,9 @@ export default function UserProfile({
                           mode="single"
                           selected={new Date(birthday)}
                           captionLayout="dropdown"
-                          onSelect={date => {
-                            setBirthday(formatDate(date || new Date()) || '')
-                            setOpenCalendar(false)
+                          onSelect={(date) => {
+                            setBirthday(formatDate(date || new Date()) || "");
+                            setOpenCalendar(false);
                           }}
                           locale={zhCN}
                         />
@@ -355,8 +356,8 @@ export default function UserProfile({
                       <button
                         className="bg-[#fc5531] border border-solid border-[#fc5531] outline-none text-white px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {
-                          setEditing(false)
-                          UpdateUserInfo('birthday', birthday)
+                          setEditing(false);
+                          UpdateUserInfo("birthday", birthday);
                         }}
                       >
                         确认
@@ -364,14 +365,14 @@ export default function UserProfile({
                       <button
                         className="text-[#fc5531] border border-solid border-[#fc5531] outline-none px-[22px] py-1 rounded-[20px] text-[12px] cursor-pointer"
                         onClick={() => {
-                          setEditing(false)
+                          setEditing(false);
                         }}
                       >
                         取消
                       </button>
                     </div>
                   </div>
-                )
+                );
               }}
             </EditableItem>
           </ul>
@@ -397,7 +398,7 @@ export default function UserProfile({
                     hanldeOnClick={() => handleUpdateHobbyTag(item, 0)}
                   />
                 </div>
-              )
+              );
             })}
           </div>
         ) : (
@@ -406,15 +407,15 @@ export default function UserProfile({
         <InterestSelector onTagSelect={handleUpdateHobbyTag} />
       </div>
     </div>
-  )
+  );
 }
 
 interface EditableItemProps {
-  label: string
-  value: string
-  children: (params: { setEditing: (v: boolean) => void }) => React.ReactNode
-  labelBetweenShow: boolean
-  noValueLabel?: string
+  label: string;
+  value: string;
+  children: (params: { setEditing: (v: boolean) => void }) => React.ReactNode;
+  labelBetweenShow: boolean;
+  noValueLabel?: string;
 }
 
 const EditableItem = ({
@@ -424,14 +425,14 @@ const EditableItem = ({
   labelBetweenShow,
   noValueLabel,
 }: EditableItemProps) => {
-  const [editing, setEditing] = useState(false)
+  const [editing, setEditing] = useState(false);
 
   return (
     <li className="flex items-center gap-10 group">
       <span className="flex w-14 justify-between">
         {labelBetweenShow
-          ? label.split('').map((item, index) => {
-              return <span key={index}>{item}</span>
+          ? label.split("").map((item, index) => {
+              return <span key={index}>{item}</span>;
             })
           : label}
       </span>
@@ -440,8 +441,8 @@ const EditableItem = ({
       {!editing && (
         <span
           className={cn(
-            !value && noValueLabel && 'text-[#999aaa]!',
-            'text-[#222226] dark:text-white',
+            !value && noValueLabel && "text-[#999aaa]!",
+            "text-[#222226] dark:text-white",
           )}
         >
           {value ? value : noValueLabel}
@@ -459,23 +460,23 @@ const EditableItem = ({
         <EditButton
           className="hidden group-hover:flex"
           onclick={() => {
-            setEditing(true)
+            setEditing(true);
           }}
         />
       )}
     </li>
-  )
-}
+  );
+};
 
 interface EditButtonProps {
-  className: string
-  onclick: () => void
+  className: string;
+  onclick: () => void;
 }
 const EditButton = ({ className, onclick }: EditButtonProps) => {
   return (
     <div
       className={cn(
-        'items-center gap-1 text-[#1d98d1] text-[14px] cursor-pointer',
+        "items-center gap-1 text-[#1d98d1] text-[14px] cursor-pointer",
         className,
       )}
       onClick={() => onclick()}
@@ -483,5 +484,5 @@ const EditButton = ({ className, onclick }: EditButtonProps) => {
       <Icon icon="mingcute:edit-line" className="text-inherit" size={17} />
       <p>编辑</p>
     </div>
-  )
-}
+  );
+};

@@ -1,30 +1,32 @@
-import { LoginResponse } from '@/types/login'
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { LoginResponse } from "@/types/login";
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 type State = {
-  userInfo: LoginResponse
-}
+  userInfo: LoginResponse;
+};
 
 type Actions = {
-  setUserInfo: (user: LoginResponse) => void
-  clearUserInfo: () => void
-  updateUserEmail: (email: string) => void
-}
+  setUserInfo: (user: LoginResponse) => void;
+  clearUserInfo: () => void;
+  updateUserEmail: (email: string) => void;
+  updateHobby: (hobby: string[]) => void;
+};
 
 const useUserStore = create<State & Actions>()(
   persist(
-    set => ({
+    (set) => ({
       userInfo: {
         userId: 0,
-        username: '',
-        nickname: '',
-        avatar: '',
-        token: '',
-        email: '',
+        username: "",
+        nickname: "",
+        avatar: "",
+        token: "",
+        email: "",
         codeAge: 0,
         fans: 0,
         following: 0,
         articleLikes: 0,
+        hobby: [],
       },
       setUserInfo: (user: LoginResponse) =>
         set({
@@ -39,36 +41,45 @@ const useUserStore = create<State & Actions>()(
             fans: user.fans,
             following: user.following,
             articleLikes: user.articleLikes,
+            hobby: user.hobby,
           },
         }),
       updateUserEmail: (email: string) =>
-        set(state => ({
+        set((state) => ({
           userInfo: {
             ...state.userInfo,
             email: email,
+          },
+        })),
+      updateHobby: (hobby: string[]) =>
+        set((state) => ({
+          userInfo: {
+            ...state.userInfo,
+            hobby: hobby,
           },
         })),
       clearUserInfo: () =>
         set({
           userInfo: {
             userId: 0,
-            username: '',
-            nickname: '',
-            avatar: '',
-            token: '',
-            email: '',
+            username: "",
+            nickname: "",
+            avatar: "",
+            token: "",
+            email: "",
             codeAge: 0,
             fans: 0,
             following: 0,
             articleLikes: 0,
+            hobby: [],
           },
         }),
     }),
     {
-      name: 'user',
+      name: "user",
       storage: createJSONStorage(() => localStorage),
     },
   ),
-)
+);
 
-export default useUserStore
+export default useUserStore;

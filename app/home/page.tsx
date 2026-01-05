@@ -1,8 +1,7 @@
-'use client'
+"use client";
 
-import ArticlePagination from '@/components/article/ArticlePagination'
-import ArticleSiderbar from '@/components/article/ArticleSiderbar'
-import LovePointer from '@/components/pointer'
+import ArticlePagination from "@/components/article/ArticlePagination";
+import LovePointer from "@/components/pointer";
 
 export default function ArticlePage() {
   return (
@@ -24,7 +23,7 @@ export default function ArticlePage() {
       {/* 左侧主内容 */}
       <ArticlePagination />
       {/* 右侧侧边栏 */}
-      <ArticleSiderbar />
+      {/* <ArticleSiderbar /> */}
     </div>
-  )
+  );
 }

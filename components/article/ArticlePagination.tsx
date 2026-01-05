@@ -1,33 +1,37 @@
-'use client'
+"use client";
 
-import { GetArticleAPI } from '@/api/article'
-import { ArticleInfo, GetArticleInfoParams } from '@/types/article'
-import { useEffect, useState } from 'react'
-import SearchInput from '../SearchInput'
-import ArticleList from '../ArticleList'
+import { GetRecommendArticleAPI } from "@/api/article";
+import { ArticleInfo, GetRecommendArticleParams } from "@/types/article";
+import { useEffect, useState } from "react";
+import SearchInput from "../SearchInput";
+import ArticleList from "../ArticleList";
+import useUserStore from "@/stores/UserStore";
 
 export default function ArticlePagination() {
-  const [articleInfo, setArticleInfo] = useState<ArticleInfo[]>([])
-  const [totalPages, setTotalPages] = useState<number>(5)
-  const [title, setTitle] = useState<string>('')
-  const [page, setPage] = useState<number>(1)
+  const { userInfo } = useUserStore();
+  const [articleInfo, setArticleInfo] = useState<ArticleInfo[]>([]);
+  const [totalPages, setTotalPages] = useState<number>(5);
+  const [title, setTitle] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
 
   useEffect(() => {
-    const getHomeArtilceList = async () => {
-      const params: GetArticleInfoParams = {
+    const getRecommendArticleList = async () => {
+      const params: GetRecommendArticleParams = {
         page,
         pageSize: 5,
+      };
+
+      if (userInfo.token != undefined && userInfo.token != "") {
+        params.userId = userInfo.userId;
+        params.HobbyTags = userInfo.hobby;
       }
 
-      if (title !== '') {
-        params.title = title
-      }
-      const res = await GetArticleAPI(params)
-      setArticleInfo(res.data.data)
-      setTotalPages(res.data.totalPages)
-    }
-    getHomeArtilceList()
-  }, [page, title])
+      const res = await GetRecommendArticleAPI(params);
+      setArticleInfo(res.data.data);
+      setTotalPages(res.data.totalPages);
+    };
+    getRecommendArticleList();
+  }, [page, userInfo]);
   return (
     <div className="flex-1 space-y-6">
       {/* 文章列表 */}
@@ -44,5 +48,5 @@ export default function ArticlePagination() {
         />
       </div>
     </div>
-  )
+  );
 }
