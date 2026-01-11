@@ -1,23 +1,22 @@
-'use client'
+"use client";
 
-import { CreateArticleParams } from '@/types/article'
-import { ArticleTagResponse } from '@/types/tag'
-import { CreationStep } from './CreationStep'
-import CreationStepOneContent from './CreationStepOneContent'
-import { useState } from 'react'
-import MDPlugins from '../Md'
-import CreationStepOperateBar from './CreationStepOperateBar'
+import { CreateArticleParams } from "@/types/article";
+import { ArticleTagResponse } from "@/types/tag";
+import { CreationStep } from "./CreationStep";
+import CreationStepOneContent from "./CreationStepOneContent";
+import { useState } from "react";
+import MDPlugins from "../Md";
+import CreationStepOperateBar from "./CreationStepOperateBar";
 
 export default function CreationTemplate({
   articleInfo,
-  articleTags,
   handleUpdateArticleInfoAction,
   handleUpdateArticleContentAction,
   handlePublishArticleAction,
   showDraftButton,
 }: {
-  articleInfo: CreateArticleParams
-  articleTags: ArticleTagResponse[]
+  articleInfo: CreateArticleParams;
+  articleTags: ArticleTagResponse[];
   handleUpdateArticleInfoAction: (
     title: string,
     abstract: string,
@@ -26,19 +25,18 @@ export default function CreationTemplate({
     coverage: string | undefined,
     visibility: 0 | 1 | 2,
     publicComment: boolean,
-  ) => void
-  handleUpdateArticleContentAction: (conten: string, type: number) => void
-  handlePublishArticleAction: (status: number) => void
-  showDraftButton: boolean
+  ) => void;
+  handleUpdateArticleContentAction: (conten: string, type: number) => void;
+  handlePublishArticleAction: (status: number) => void;
+  showDraftButton: boolean;
 }) {
-  const [currentStep, setCurrentStep] = useState<number>(1)
+  const [currentStep, setCurrentStep] = useState<number>(1);
   return (
     <div className="w-full">
       <CreationStep currentStep={currentStep} />
       {currentStep === 1 && (
         <CreationStepOneContent
           createArticleInfo={articleInfo}
-          articleTags={articleTags}
           transmitDataAction={(
             title,
             abstract,
@@ -55,9 +53,9 @@ export default function CreationTemplate({
               categoryName,
               coverage,
               visibility,
-              publicComment === '0',
-            )
-            setCurrentStep(prev => prev + 1)
+              publicComment === "0",
+            );
+            setCurrentStep((prev) => prev + 1);
           }}
         />
       )}
@@ -66,7 +64,7 @@ export default function CreationTemplate({
           <MDPlugins
             content={articleInfo.content}
             changeContentAction={(content, addType) => {
-              handleUpdateArticleContentAction(content, addType)
+              handleUpdateArticleContentAction(content, addType);
             }}
           />
           <CreationStepOperateBar
@@ -78,5 +76,5 @@ export default function CreationTemplate({
         </div>
       )}
     </div>
-  )
+  );
 }

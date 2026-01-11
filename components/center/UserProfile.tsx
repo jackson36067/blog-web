@@ -404,7 +404,12 @@ export default function UserProfile({
         ) : (
           <div className="px-6 mt-8">暂无兴趣标签,请选择</div>
         )}
-        <InterestSelector onTagSelect={handleUpdateHobbyTag} />
+        <div className="mt-6">
+          <InterestSelector
+            onTagSelect={handleUpdateHobbyTag}
+            selectedTags={hobbyTags}
+          />
+        </div>
       </div>
     </div>
   );

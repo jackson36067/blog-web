@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -10,50 +10,51 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '../ui/form'
-import { Input } from '../ui/input'
-import { Textarea } from '../ui/textarea'
-import { CreateArticleParams } from '@/types/article'
-import { ArticleTagResponse } from '@/types/tag'
-import MultiTagSelect from './MultiTagSelect'
-import Icon from '../Icon'
-import { useEffect, useState } from 'react'
-import AutoWidthInput from '../AutoWidthInput'
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
-import { Label } from '../ui/label'
-import ImageUploadPreview from '../ImageUpload'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '../ui/hover-card'
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Textarea } from "../ui/textarea";
+import { CreateArticleParams } from "@/types/article";
+import MultiTagSelect from "./MultiTagSelect";
+import Icon from "../Icon";
+import { useEffect, useState } from "react";
+import AutoWidthInput from "../AutoWidthInput";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
+import ImageUploadPreview from "../ImageUpload";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 const formSchema = z.object({
   title: z.string().min(2, {
-    message: '标题不能2个字',
+    message: "标题不能2个字",
   }),
   abstract: z.string().min(1, {
-    message: '摘要不能为空',
+    message: "摘要不能为空",
   }),
   tags: z
     .array(z.string())
     .min(1, {
-      message: '至少选择 1 个标签',
+      message: "至少选择 1 个标签",
     })
     .max(5, {
-      message: '最多选择 5 个标签',
+      message: "最多选择 5 个标签",
     }),
   categoryName: z.string().min(1, {
-    message: '文章分类不能为空',
+    message: "文章分类不能为空",
   }),
-  visibility: z.enum(['0', '1', '2']),
+  visibility: z.enum(["0", "1", "2"]),
   coverage: z.string().optional(),
   publicComment: z.string(),
-})
+});
 
 export default function CreationStepOneContent({
   createArticleInfo,
-  articleTags,
   transmitDataAction,
 }: {
-  createArticleInfo: CreateArticleParams
-  articleTags: ArticleTagResponse[]
+  createArticleInfo: CreateArticleParams;
   transmitDataAction: (
     title: string,
     abstract: string,
@@ -62,9 +63,9 @@ export default function CreationStepOneContent({
     coverag: string | undefined,
     visibility: 0 | 1 | 2,
     publicComment: string,
-  ) => void
+  ) => void;
 }) {
-  const [showCategoryTab, setShowCategoryTab] = useState<boolean>(false)
+  const [showCategoryTab, setShowCategoryTab] = useState<boolean>(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,11 +73,11 @@ export default function CreationStepOneContent({
       abstract: createArticleInfo.abstract,
       tags: createArticleInfo.tags,
       categoryName: createArticleInfo.categoryName,
-      visibility: String(createArticleInfo.visibility) as '0' | '1' | '2',
+      visibility: String(createArticleInfo.visibility) as "0" | "1" | "2",
       coverage: createArticleInfo.coverage,
-      publicComment: createArticleInfo.publicComment ? '0' : '1',
+      publicComment: createArticleInfo.publicComment ? "0" : "1",
     },
-  })
+  });
   // 后期渲染props
   useEffect(() => {
     form.reset({
@@ -84,11 +85,11 @@ export default function CreationStepOneContent({
       abstract: createArticleInfo.abstract,
       tags: createArticleInfo.tags,
       categoryName: createArticleInfo.categoryName,
-      visibility: String(createArticleInfo.visibility) as '0' | '1' | '2',
+      visibility: String(createArticleInfo.visibility) as "0" | "1" | "2",
       coverage: createArticleInfo.coverage,
-      publicComment: createArticleInfo.publicComment ? '0' : '1',
-    })
-  }, [createArticleInfo, form])
+      publicComment: createArticleInfo.publicComment ? "0" : "1",
+    });
+  }, [createArticleInfo, form]);
 
   const submit = form.handleSubmit((values: z.infer<typeof formSchema>) => {
     transmitDataAction(
@@ -99,8 +100,8 @@ export default function CreationStepOneContent({
       values.coverage,
       Number(values.visibility) as 0 | 1 | 2,
       values.publicComment,
-    )
-  })
+    );
+  });
   return (
     <div className="w-200 mx-auto bg-white dark:bg-[#212121] p-4 rounded-lg">
       <Form {...form}>
@@ -136,6 +137,10 @@ export default function CreationStepOneContent({
                 </FormLabel>
                 <FormControl>
                   <div className="flex items-center">
+                    <MultiTagSelect
+                      selected={field.value}
+                      onChange={field.onChange}
+                    />
                     <div className="flex items-center">
                       {field.value.map((item, index) => {
                         return (
@@ -149,19 +154,14 @@ export default function CreationStepOneContent({
                               size={14}
                               hanldeOnClick={() => {
                                 field.onChange(
-                                  field.value.filter(tag => tag !== item),
-                                )
+                                  field.value.filter((tag) => tag !== item),
+                                );
                               }}
                             />
                           </div>
-                        )
+                        );
                       })}
                     </div>
-                    <MultiTagSelect
-                      options={articleTags}
-                      selected={field.value}
-                      onChange={field.onChange}
-                    />
                   </div>
                 </FormControl>
                 <FormMessage />
@@ -180,7 +180,7 @@ export default function CreationStepOneContent({
                   </FormLabel>
                   <FormControl>
                     <ImageUploadPreview
-                      handleFileChangeAction={coverage =>
+                      handleFileChangeAction={(coverage) =>
                         field.onChange(coverage)
                       }
                       coverage={field.value}
@@ -204,7 +204,7 @@ export default function CreationStepOneContent({
                   <RadioGroup
                     {...field}
                     className="flex gap-4"
-                    onValueChange={value => field.onChange(value)}
+                    onValueChange={(value) => field.onChange(value)}
                   >
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="0" id="p1" />
@@ -256,7 +256,7 @@ export default function CreationStepOneContent({
                     {(showCategoryTab || field.value) && (
                       <AutoWidthInput
                         value={field.value}
-                        onChange={value => field.onChange(value)}
+                        onChange={(value) => field.onChange(value)}
                         initialWidth={40}
                         onClear={() => setShowCategoryTab(false)}
                       />
@@ -287,7 +287,7 @@ export default function CreationStepOneContent({
                   <RadioGroup
                     {...field}
                     className="flex gap-4"
-                    onValueChange={value => field.onChange(value)}
+                    onValueChange={(value) => field.onChange(value)}
                   >
                     <div className="flex items-center gap-2">
                       <RadioGroupItem value="0" id="r1" />
@@ -318,13 +318,13 @@ export default function CreationStepOneContent({
         </form>
       </Form>
     </div>
-  )
+  );
 }
 
 function FormLabelHoverContent({
-  hoverTitle = '必须填写',
+  hoverTitle = "必须填写",
 }: {
-  hoverTitle?: string
+  hoverTitle?: string;
 }) {
   return (
     <HoverCard>
@@ -339,5 +339,5 @@ function FormLabelHoverContent({
         <p>{hoverTitle}</p>
       </HoverCardContent>
     </HoverCard>
-  )
+  );
 }
