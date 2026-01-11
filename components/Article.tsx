@@ -1,16 +1,16 @@
-'use client'
+"use client";
 
-import { ArticleInfo } from '@/types/article'
-import Image from 'next/image'
-import Icon from './Icon'
-import { cn } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
+import { ArticleInfo } from "@/types/article";
+import Image from "next/image";
+import Icon from "./Icon";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 interface ArticleProps {
-  articleInfo: ArticleInfo
-  className?: string
-  showAuthor?: boolean
-  showEdit?: boolean
+  articleInfo: ArticleInfo;
+  className?: string;
+  showAuthor?: boolean;
+  showEdit?: boolean;
 }
 export default function Article({
   articleInfo,
@@ -18,7 +18,7 @@ export default function Article({
   showAuthor,
   showEdit,
 }: ArticleProps) {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <div
       className={cn(
@@ -33,7 +33,7 @@ export default function Article({
         className,
       )}
       onClick={() => {
-        router.push(`/article/detail?articleId=${articleInfo.id}`)
+        router.push(`/article/detail?articleId=${articleInfo.id}`);
       }}
     >
       {/* 封面图 */}
@@ -51,7 +51,6 @@ export default function Article({
       />
       {/* 内容 */}
       <div className="flex flex-col flex-1 space-y-2">
-        {/* 用户头像 + 名字（放最上面，信息权重最高） */}
         {showAuthor && (
           <div
             className="flex items-center gap-2 text-gray-900 dark:text-gray-100 hover:text-[#F53F3F]!"
@@ -59,7 +58,7 @@ export default function Article({
           >
             <Image
               src={
-                articleInfo.avatar ?? 'https://picsum.photos/120/80?random=2'
+                articleInfo.avatar ?? "https://picsum.photos/120/80?random=2"
               }
               alt="avatar"
               width={32}
@@ -67,12 +66,12 @@ export default function Article({
               className="w-6 h-6 rounded-full object-cover"
             />
             <span className="text-sm font-medium">
-              {articleInfo.username ?? '未命名用户'}
+              {articleInfo.username ?? "未命名用户"}
             </span>
           </div>
         )}
 
-        {/* 标题（视觉主角） */}
+        {/* 标题 */}
         <h3
           className="font-semibold text-lg leading-tight
     text-gray-900 dark:text-gray-100
@@ -87,7 +86,7 @@ export default function Article({
           {articleInfo.abstract}
         </p>
 
-        {/* 标签：小红书风小圆角标签 */}
+        {/* 标签 */}
         <div className="flex flex-wrap gap-2">
           {articleInfo.tags.map((item, index) => (
             <span
@@ -133,15 +132,15 @@ export default function Article({
       {showEdit && (
         <div
           className="opacity-0 group-hover:opacity-100 absolute right-4 bottom-2 text-[12px] text-gray-500 dark:text-gray-400"
-          onClick={e => {
+          onClick={(e) => {
             // 防止冒泡进入文章详情页
-            e.stopPropagation()
-            window.open(`/creation/editor?id=${articleInfo.id}`, '_blank')
+            e.stopPropagation();
+            window.open(`/creation/editor?id=${articleInfo.id}`, "_blank");
           }}
         >
           编辑
         </div>
       )}
     </div>
-  )
+  );
 }

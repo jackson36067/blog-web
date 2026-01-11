@@ -42,7 +42,6 @@ export default function CategoryPage() {
   return (
     <div className="max-w-[1400px] mx-auto px-4 py-10">
       <div className="flex flex-col md:flex-row gap-8 items-start">
-        {/* 左侧：玻璃拟态分类栏 - Sticky 效果 */}
         <aside className="w-full md:w-64 md:sticky md:top-24 z-10">
           <div className="pl-2 mb-4">
             <h2 className="text-2xl font-bold bg-linear-to-r from-primary to-purple-500 bg-clip-text text-transparent">
@@ -55,7 +54,6 @@ export default function CategoryPage() {
           <CategoryCard title={title} changeTitle={handleChangeCategory} />
         </aside>
 
-        {/* 右侧：便当盒布局文章列表 */}
         <main className="flex-1 min-w-0">
           <AnimatePresence mode="wait">
             <motion.div

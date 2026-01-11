@@ -1,5 +1,6 @@
 export interface ArticleTagResponse {
-  id: number
-  title: string
-  browseCount: number
+  id: number;
+  title: string;
+  browseCount: number;
+  children?: ArticleTagResponse[];
 }
