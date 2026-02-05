@@ -1,4 +1,4 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -6,15 +6,16 @@ const nextConfig: NextConfig = {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'jackson1.oss-cn-beijing.aliyuncs.com',
+        protocol: "http",
+        hostname: "jackson1.oss-cn-beijing.aliyuncs.com",
       },
       {
-        protocol: 'https',
-        hostname: 'picsum.photos',
+        protocol: "https",
+        hostname: "picsum.photos",
       },
     ],
   },
-}
+  output: "export",
+};
 
-export default nextConfig
+export default nextConfig;

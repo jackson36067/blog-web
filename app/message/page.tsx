@@ -2,6 +2,7 @@
 
 import Icon from "@/components/Icon";
 import MessagePageTab from "@/components/message/MessagePageTab";
+import { Suspense } from "react";
 
 export default function MessagePage() {
   return (
@@ -13,7 +14,9 @@ export default function MessagePage() {
           <p>消息设置</p>
         </div>
       </div>
-      <MessagePageTab />
+      <Suspense>
+        <MessagePageTab />
+      </Suspense>
     </div>
   );
 }

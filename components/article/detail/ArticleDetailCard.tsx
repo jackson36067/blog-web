@@ -6,12 +6,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Icon from "@/components/Icon";
 import useUserStore from "@/stores/UserStore";
 import {
   CollectArticleAPI,
   GetArticleCommentAPI,
+  GetArticleDetailAPI,
   LikeArticleAPI,
 } from "@/api/article";
 import {
@@ -45,13 +46,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
-export default function ArticleDetailCard({
-  articleInfo,
-  reFreshArticleInfoAction,
-}: {
-  articleInfo: ArticleInfo | null;
-  reFreshArticleInfoAction: () => void;
-}) {
+export default function ArticleDetailCard() {
   const { userInfo } = useUserStore();
   const router = useRouter();
   const { resolvedTheme } = useTheme();
@@ -63,6 +58,18 @@ export default function ArticleDetailCard({
   const needRefreshRef = useRef(false);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [mounted, setMounted] = useState(false);
+  const articleId = useSearchParams().get("articleId");
+  const [articleInfo, setArticleInfo] = useState<ArticleInfo | null>(null);
+
+  const getArticleDetail = useCallback(async () => {
+    const res = await GetArticleDetailAPI(Number(articleId));
+    setArticleInfo(res.data);
+  }, [articleId]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    getArticleDetail();
+  }, [articleId, getArticleDetail]);
 
   // 避免首次 hydration 主题不一致
   useEffect(() => {
@@ -133,7 +140,7 @@ export default function ArticleDetailCard({
       return;
     }
     await LikeArticleAPI(articleId, isLike);
-    reFreshArticleInfoAction();
+    getArticleDetail();
   };
 
   // 获取用户收藏夹列表
@@ -161,7 +168,7 @@ export default function ArticleDetailCard({
     await CollectArticleAPI(articleInfo!.id, item.id);
     getUserFavorites();
     setOpenDialog(false);
-    reFreshArticleInfoAction();
+    getArticleDetail();
   };
 
   // 新建收藏夹
@@ -175,7 +182,7 @@ export default function ArticleDetailCard({
     isFollow: boolean,
   ) => {
     await UpdateFollowAPI(followedId, isFollow);
-    reFreshArticleInfoAction();
+    getArticleDetail();
   };
 
   // 分页获取文章评论
@@ -440,7 +447,7 @@ export default function ArticleDetailCard({
                       comments={comments}
                       reFreshArticleCommentAction={() => {
                         fetchComments(true);
-                        reFreshArticleInfoAction();
+                        getArticleDetail();
                       }}
                       getMoreCommentsAction={() => setPage((prev) => prev + 1)}
                       clearCommentsAction={() => {

@@ -14,6 +14,7 @@ export interface GetArticleInfoParams {
   categoryTitle?: string;
   tags?: string[];
   userId?: number;
+  articleUserId?: number;
 }
 
 export interface ArticleInfo {
