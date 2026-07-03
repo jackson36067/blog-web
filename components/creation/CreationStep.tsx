@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 export function CreationStep({ currentStep }: { currentStep: number }) {
   return (
-    <div className="flex items-center justify-center gap-6 mt-2 mb-4">
+    <div className="mb-5 flex items-center justify-center gap-4 rounded-lg border border-slate-200/80 bg-white px-4 py-4 shadow-sm dark:border-white/10 dark:bg-[#181b20] sm:gap-6">
       {creationSteps.map((step, index) => {
         const isCompleted = currentStep > step.id
         const isActive = currentStep === step.id
@@ -13,20 +13,20 @@ export function CreationStep({ currentStep }: { currentStep: number }) {
             {/* 圆形节点 */}
             <div
               className={cn(
-                'w-8 h-8 rounded-full flex items-center justify-center border-2 transition font-medium cursor-pointer',
+                'flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border text-sm font-semibold transition',
 
                 // 完成状态
                 isCompleted &&
-                  'bg-[#e6f4ff] dark:bg-[#15325b]/50 border-transparent text-[#1677ff] dark:text-[#1668dc]',
+                  'border-blue-100 bg-blue-50 text-blue-600 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300',
 
                 // 当前步骤
                 isActive &&
-                  'border-transparent text-white bg-[#1677ff] dark:bg-[#1668dc]',
+                  'border-blue-600 bg-blue-600 text-white shadow-sm shadow-blue-600/20 dark:border-blue-500 dark:bg-blue-500',
 
                 // 未完成
                 !isCompleted &&
                   !isActive &&
-                  'border-transparent text-[#000000A6] dark:text-[#FFFFFFA6] bg-[#0000000A] dark:bg-[#FFFFFF14]',
+                  'border-slate-200 bg-slate-100 text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400',
               )}
             >
               {isCompleted ? '✓' : step.id}
@@ -35,7 +35,7 @@ export function CreationStep({ currentStep }: { currentStep: number }) {
             {/* 文本 */}
             <span
               className={cn(
-                'ml-2 text-sm transition text-[#1c1c1c] dark:text-white',
+                'ml-2 text-sm transition text-slate-800 dark:text-slate-100',
                 isActive && 'text-primary font-medium',
                 !isCompleted && !isActive && 'text-gray-400 dark:text-gray-400',
               )}
@@ -47,12 +47,12 @@ export function CreationStep({ currentStep }: { currentStep: number }) {
             {index < creationSteps.length - 1 && (
               <div
                 className={cn(
-                  'w-14 h-0.5 mx-4 transition',
+                  'mx-3 h-px w-12 transition sm:mx-4 sm:w-16',
                   isCompleted
-                    ? 'bg-[#1677ff]'
+                    ? 'bg-blue-500'
                     : isActive
-                    ? 'bg-[#999999]'
-                    : 'bg-gray-300',
+                    ? 'bg-slate-400'
+                    : 'bg-slate-200 dark:bg-white/10',
                 )}
               />
             )}

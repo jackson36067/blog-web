@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 interface Props {
   selectedTags: string[];
-  onTagSelect?: (tag: string, type: number) => void;
+  onTagSelect?: (tag: string, type?: number) => void;
   mode?: string;
   searchColumn?: (value: string) => void;
 }
@@ -13,13 +13,15 @@ interface Props {
 export default function InterestSelector({
   onTagSelect,
   selectedTags,
-  mode = "vertical", // horizontal模式水平摆放
+  mode = "vertical",
 }: Props) {
   const [tagList, setTagList] = useState<ArticleTagResponse[]>([]);
-  // 记录选择的标签
   const [selectedTagTree, setSeletedTagTree] =
     useState<ArticleTagResponse | null>(null);
-  // 获取标签树
+  const isVerticalMode = mode === "vertical";
+  const isFlatMode = mode === "flat";
+  const flatTags = tagList.flatMap((tag) => [tag, ...(tag.children ?? [])]);
+
   useEffect(() => {
     const getTagList = async () => {
       const res = await GetArticleTagListAPI();
@@ -29,47 +31,105 @@ export default function InterestSelector({
     getTagList();
   }, []);
 
-  return (
-    <div
-      className={`w-full flex gap-6 pl-6 pr-3 py-3 border border-solid border-gray-200 dark:border-gray-200/20 rounded-lg ${mode === "vertical" && "flex-col"}`}
-    >
-      <div
-        className={`flex gap-3 ${mode === "vertical" ? "flex-row flex-wrap" : "flex-col gap-5 max-h-70 w-40 overflow-y-auto overflow-x-hidden"}`}
-      >
-        {tagList.map((item) => {
-          return (
-            <div
-              key={item.id}
-              onClick={() => setSeletedTagTree(item)}
-              className={`
-                text-[#777888] hover:text-[#507999] cursor-pointer text-[14px]
-              ${selectedTagTree?.id === item.id && "text-[#507999]!"}
-            `}
-            >
-              {item.title}
-            </div>
-          );
-        })}
-      </div>
-      {/* 分类选择 */}
-      <div className="flex flex-wrap gap-3 content-start">
-        {selectedTagTree &&
-          selectedTagTree.children &&
-          selectedTagTree.children.map((item) => {
+  if (isFlatMode) {
+    return (
+      <div className="w-full rounded-lg border border-slate-200/80 bg-white p-4 dark:border-white/10 dark:bg-[#181b20]">
+        <div className="grid max-h-80 grid-cols-[repeat(auto-fill,minmax(92px,1fr))] gap-3 overflow-y-auto pr-1">
+          {flatTags.map((item) => {
+            const isSelected = selectedTags.includes(item.title);
+
             return (
-              <div
+              <button
+                type="button"
                 key={item.id}
-                onClick={() => onTagSelect?.(item.title, 1)}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  onTagSelect?.(item.title, 1);
+                }}
                 className={cn(
-                  "h-6 bg-[#ebf2f7] dark:bg-[#1a232b] border border-solid border-[#ebf2f7] dark:border-[#1a232b] rounded-[3px] text-[#507999] pr-1.5 pl-2 py-px cursor-pointer text-[14px] hover:bg-[#e0e9f0] dark:hover:bg-[#161d23]",
-                  selectedTags.includes(item.title) &&
-                    "bg-[#507999] text-white hover:bg-[#507999] hover:text-white",
+                  "flex min-h-10 cursor-pointer items-center justify-center rounded-md border px-3 py-2 text-center text-sm leading-5 transition-all",
+                  "border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600",
+                  "dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/20 dark:hover:bg-blue-400/10 dark:hover:text-blue-300",
+                  isSelected &&
+                    "border-blue-600 bg-blue-600 text-white shadow-sm shadow-blue-600/20 hover:border-blue-600 hover:bg-blue-600 hover:text-white dark:border-blue-500 dark:bg-blue-500",
                 )}
               >
                 {item.title}
-              </div>
+              </button>
             );
           })}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex w-full gap-5 rounded-lg border border-slate-200/80 bg-white p-4 dark:border-white/10 dark:bg-[#181b20]",
+        isVerticalMode ? "flex-col" : "min-h-72",
+      )}
+    >
+      <div
+        className={cn(
+          isVerticalMode
+            ? "flex flex-wrap gap-2"
+            : "flex max-h-72 w-40 shrink-0 flex-col gap-2 overflow-y-auto overflow-x-hidden pr-2",
+        )}
+      >
+        {tagList.map((item) => {
+          const isActive = selectedTagTree?.id === item.id;
+
+          return (
+            <button
+              type="button"
+              key={item.id}
+              onClick={() => setSeletedTagTree(item)}
+              className={cn(
+                "cursor-pointer rounded-md border px-3 py-2 text-center text-sm text-slate-600 transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:text-slate-300 dark:hover:border-blue-400/20 dark:hover:bg-blue-400/10 dark:hover:text-blue-300",
+                isVerticalMode ? "min-w-22" : "w-full",
+                isActive
+                  ? "border-blue-200 bg-blue-50 font-medium text-blue-600 shadow-sm dark:border-blue-400/30 dark:bg-blue-400/15 dark:text-blue-300"
+                  : "border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5",
+              )}
+            >
+              {item.title}
+            </button>
+          );
+        })}
+      </div>
+
+      <div
+        className={cn(
+          "grid flex-1 content-start gap-3",
+          isVerticalMode
+            ? "grid-cols-[repeat(auto-fill,minmax(96px,1fr))]"
+            : "grid-cols-[repeat(auto-fill,minmax(104px,1fr))]",
+        )}
+      >
+        {selectedTagTree?.children?.map((item) => {
+          const isSelected = selectedTags.includes(item.title);
+
+          return (
+            <button
+              type="button"
+              key={item.id}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onTagSelect?.(item.title, 1);
+              }}
+              className={cn(
+                "flex min-h-9 cursor-pointer items-center justify-center rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-center text-sm leading-5 text-slate-700 transition-all hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-blue-400/20 dark:hover:bg-blue-400/10 dark:hover:text-blue-300",
+                isSelected &&
+                  "border-blue-600 bg-blue-600 text-white shadow-sm shadow-blue-600/20 hover:border-blue-600 hover:bg-blue-600 hover:text-white dark:border-blue-500 dark:bg-blue-500",
+              )}
+            >
+              {item.title}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

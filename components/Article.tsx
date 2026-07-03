@@ -22,13 +22,10 @@ export default function Article({
   return (
     <div
       className={cn(
-        `flex gap-4 my-6 cursor-pointer relative group rounded-xl p-3
-     transition-all duration-300 ease-out
-     bg-white/60 dark:bg-white/5 backdrop-blur-sm
-     hover:-translate-y-1 hover:scale-[1.015]
-     hover:shadow-[0_8px_20px_-4px_rgba(0,0,0,0.15)]
-     dark:hover:shadow-[0_0_25px_-2px_rgba(0,255,255,0.25)]
-     hover:bg-white/80 dark:hover:bg-white/10
+        `group relative my-3 flex cursor-pointer flex-col gap-4 rounded-lg border border-transparent p-3
+     bg-white transition-all duration-200 ease-out
+     hover:-translate-y-0.5 hover:border-slate-200 hover:bg-slate-50/80 hover:shadow-sm
+     dark:bg-transparent dark:hover:border-white/10 dark:hover:bg-white/5 sm:flex-row
     `,
         className,
       )}
@@ -46,14 +43,14 @@ export default function Article({
         alt=""
         width={20}
         height={20}
-        className="w-32 h-25 rounded-lg object-cover transition-transform duration-300 group-hover:scale-105"
+        className="h-40 w-full rounded-lg object-cover transition-transform duration-300 group-hover:scale-[1.02] sm:h-28 sm:w-40"
         loading="eager"
       />
       {/* 内容 */}
-      <div className="flex flex-col flex-1 space-y-2">
+      <div className="flex min-w-0 flex-1 flex-col space-y-2">
         {showAuthor && (
           <div
-            className="flex items-center gap-2 text-gray-900 dark:text-gray-100 hover:text-[#F53F3F]!"
+            className="flex w-fit items-center gap-2 text-slate-600 transition-colors hover:text-blue-600 dark:text-slate-300 dark:hover:text-blue-400"
             onClick={() => router.push(`/my?username=${articleInfo.username}`)}
           >
             <Image
@@ -63,7 +60,7 @@ export default function Article({
               alt="avatar"
               width={32}
               height={32}
-              className="w-6 h-6 rounded-full object-cover"
+              className="h-6 w-6 rounded-full object-cover ring-1 ring-slate-200 dark:ring-white/10"
             />
             <span className="text-sm font-medium">
               {articleInfo.username ?? "未命名用户"}
@@ -74,15 +71,15 @@ export default function Article({
         {/* 标题 */}
         <h3
           className="font-semibold text-lg leading-tight
-    text-gray-900 dark:text-gray-100
+    text-slate-950 dark:text-slate-50
     transition-colors duration-300
-    group-hover:text-[#F53F3F] dark:group-hover:text-cyan-400"
+    group-hover:text-blue-600 dark:group-hover:text-blue-400"
         >
           {articleInfo.title}
         </h3>
 
         {/* 摘要 */}
-        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+        <p className="line-clamp-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
           {articleInfo.abstract}
         </p>
 
@@ -91,10 +88,10 @@ export default function Article({
           {articleInfo.tags.map((item, index) => (
             <span
               key={index}
-              className="px-2 py-0.5 bg-[#FFF2F2] dark:bg-gray-500/40 rounded-full 
-           text-[#FF4D4F] dark:text-gray-100 text-xs
+              className="rounded-md border border-blue-100 bg-blue-50 px-2 py-0.5
+           text-xs text-blue-600 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300
            transition-all duration-300
-           group-hover:scale-[1.05] group-hover:bg-[#ffe8e8]"
+           group-hover:border-blue-200 group-hover:bg-blue-100 dark:group-hover:bg-blue-400/15"
             >
               #{item}
             </span>
@@ -102,7 +99,7 @@ export default function Article({
         </div>
 
         {/* 底部所有统计信息 */}
-        <div className="flex flex-wrap gap-4 text-xs transition-all duration-300 group-hover:text-[#F53F3F] dark:group-hover:text-cyan-300 pt-1">
+        <div className="flex flex-wrap gap-4 pt-1 text-xs text-slate-500 transition-colors duration-300 group-hover:text-slate-700 dark:text-slate-400 dark:group-hover:text-slate-200">
           <div className="flex items-center gap-1">
             <Icon icon="iconoir:clock" size={14} />
             <span>{articleInfo.createdAt}</span>

@@ -59,15 +59,15 @@ export default function MDPlugins({
   }
 
   return (
-    <div className="w-full pb-25">
+    <div className="w-full pb-28">
       <MDEditor
-        className="w-full!"
+        className="w-full! border-0! shadow-none!"
         value={content}
         onChange={val => changeContentAction(val || '', 0)}
         previewOptions={{
           rehypePlugins: [[rehypeSanitize]],
         }}
-        height={700}
+        height={720}
         data-color-mode={theme === 'dark' ? 'dark' : 'light'}
         textareaProps={{
           placeholder: '请输入文章内容',

@@ -60,20 +60,11 @@ export default function CreationEditorComponentPage() {
     }, 200);
   };
   return (
-    <CreationTemplate
-      articleInfo={articleInfo}
-      articleTags={artilceTags}
-      handleUpdateArticleInfoAction={(
-        title,
-        abstract,
-        tags,
-        categoryName,
-        coverage,
-        visibility,
-        publicComment,
-      ) => {
-        setArticleInfo((prev) => ({
-          ...prev,
+    <div className="min-h-[calc(100vh-4.5rem)] w-full bg-[#f5f7fb] px-4 py-6 dark:bg-[#0f1115]">
+      <CreationTemplate
+        articleInfo={articleInfo}
+        articleTags={artilceTags}
+        handleUpdateArticleInfoAction={(
           title,
           abstract,
           tags,
@@ -81,18 +72,29 @@ export default function CreationEditorComponentPage() {
           coverage,
           visibility,
           publicComment,
-        }));
-      }}
-      handleUpdateArticleContentAction={(content, addType) =>
-        setArticleInfo((prev) => {
-          if (addType === 1) {
-            return { ...prev, content: prev.content + content };
-          }
-          return { ...prev, content };
-        })
-      }
-      handlePublishArticleAction={publishArticle}
-      showDraftButton={false}
-    />
+        ) => {
+          setArticleInfo((prev) => ({
+            ...prev,
+            title,
+            abstract,
+            tags,
+            categoryName,
+            coverage,
+            visibility,
+            publicComment,
+          }));
+        }}
+        handleUpdateArticleContentAction={(content, addType) =>
+          setArticleInfo((prev) => {
+            if (addType === 1) {
+              return { ...prev, content: prev.content + content };
+            }
+            return { ...prev, content };
+          })
+        }
+        handlePublishArticleAction={publishArticle}
+        showDraftButton={false}
+      />
+    </div>
   );
 }

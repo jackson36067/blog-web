@@ -33,19 +33,21 @@ export default function ArticlePagination() {
     getRecommendArticleList();
   }, [page, userInfo]);
   return (
-    <div className="flex-1 space-y-6">
+    <div className="mx-auto w-full max-w-5xl flex-1 space-y-6">
       {/* 文章列表 */}
-      <div className="bg-white dark:bg-[#212121] shadow rounded-lg p-3">
-        <div className="flex justify-between items-center border-b border-solid border-b-gray-200 pb-4">
+      <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-sm dark:border-white/10 dark:bg-[#181b20]">
+        <div className="flex flex-col gap-3 border-b border-slate-200/80 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-white/10">
           <p className="font-bold text-[16px]">文章列表</p>
           <SearchInput value={title} onValueChange={setTitle} />
         </div>
-        <ArticleList
-          articleList={articleInfo}
-          page={page}
-          totalPage={totalPages}
-          onPageChange={setPage}
-        />
+        <div className="px-3 py-2 sm:px-4">
+          <ArticleList
+            articleList={articleInfo}
+            page={page}
+            totalPage={totalPages}
+            onPageChange={setPage}
+          />
+        </div>
       </div>
     </div>
   );

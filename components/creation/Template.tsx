@@ -32,7 +32,7 @@ export default function CreationTemplate({
 }) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   return (
-    <div className="w-full">
+    <div className="mx-auto w-full max-w-5xl">
       <CreationStep currentStep={currentStep} />
       {currentStep === 1 && (
         <CreationStepOneContent
@@ -60,7 +60,7 @@ export default function CreationTemplate({
         />
       )}
       {currentStep === 2 && (
-        <div>
+        <div className="overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-sm dark:border-white/10 dark:bg-[#181b20]">
           <MDPlugins
             content={articleInfo.content}
             changeContentAction={(content, addType) => {

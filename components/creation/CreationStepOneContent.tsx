@@ -103,15 +103,15 @@ export default function CreationStepOneContent({
     );
   });
   return (
-    <div className="w-200 mx-auto bg-white dark:bg-[#212121] p-4 rounded-lg">
+    <div className="mx-auto w-full max-w-5xl rounded-lg border border-slate-200/80 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#181b20]">
       <Form {...form}>
-        <form onSubmit={submit} className="space-y-8">
+        <form onSubmit={submit} className="space-y-7">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
-              <FormItem className="flex items-center">
-                <FormLabel className="flex items-center gap-1">
+              <FormItem className="grid gap-2 sm:grid-cols-[128px_1fr] sm:items-center">
+                <FormLabel className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">
                   <p>博文标题</p>
                   <FormLabelHoverContent />
                 </FormLabel>
@@ -119,7 +119,7 @@ export default function CreationStepOneContent({
                   <Input
                     placeholder="请输入博文标题"
                     {...field}
-                    className="w-84"
+                    className="h-10 max-w-xl rounded-lg border-slate-200 bg-slate-50/80 focus-visible:border-blue-500 focus-visible:ring-blue-500/15 dark:border-white/10 dark:bg-white/5"
                   />
                 </FormControl>
                 <FormMessage />
@@ -130,23 +130,23 @@ export default function CreationStepOneContent({
             control={form.control}
             name="tags"
             render={({ field }) => (
-              <FormItem className="flex items-center">
-                <FormLabel className="flex items-center gap-1">
+              <FormItem className="grid gap-2 sm:grid-cols-[128px_1fr] sm:items-center">
+                <FormLabel className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">
                   <p>文章标签</p>
                   <FormLabelHoverContent />
                 </FormLabel>
                 <FormControl>
-                  <div className="flex items-center">
+                  <div className="flex flex-wrap items-center gap-2">
                     <MultiTagSelect
                       selected={field.value}
                       onChange={field.onChange}
                     />
-                    <div className="flex items-center">
+                    <div className="flex flex-wrap items-center gap-2">
                       {field.value.map((item, index) => {
                         return (
                           <div
                             key={index}
-                            className="flex items-center gap-1 px-2 bg-[#267dcc0d] text-[#006fff] border border-solid border-[#80B7FF] rounded-[3px] text-[12px] cursor-pointer ml-2 first:ml-0 last:mr-2"
+                            className="flex cursor-pointer items-center gap-1 rounded-md border border-blue-100 bg-blue-50 px-2 py-1 text-[12px] text-blue-600 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-300"
                           >
                             <span>{item}</span>
                             <Icon
@@ -172,9 +172,9 @@ export default function CreationStepOneContent({
             control={form.control}
             name="coverage"
             render={({ field }) => (
-              <FormItem className="flex flex-col items-end">
-                <div className="flex items-start gap-2 w-full">
-                  <FormLabel className="flex items-center gap-1">
+              <FormItem className="grid gap-2 sm:grid-cols-[128px_1fr] sm:items-start">
+                <div className="contents">
+                  <FormLabel className="flex items-center gap-1 pt-2 text-sm font-medium text-slate-700 dark:text-slate-200">
                     <p>添加封面</p>
                     <FormLabelHoverContent hoverTitle="可不填写" />
                   </FormLabel>
@@ -195,15 +195,15 @@ export default function CreationStepOneContent({
             control={form.control}
             name="publicComment"
             render={({ field }) => (
-              <FormItem className="flex items-center">
-                <FormLabel className="flex items-center gap-1">
+              <FormItem className="grid gap-2 sm:grid-cols-[128px_1fr] sm:items-center">
+                <FormLabel className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">
                   <p>公开评论</p>
                   <FormLabelHoverContent />
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
                     {...field}
-                    className="flex gap-4"
+                    className="flex flex-wrap gap-4"
                     onValueChange={(value) => field.onChange(value)}
                   >
                     <div className="flex items-center gap-2">
@@ -224,9 +224,9 @@ export default function CreationStepOneContent({
             control={form.control}
             name="abstract"
             render={({ field }) => (
-              <FormItem className="flex flex-col items-end">
-                <div className="w-full flex items-start gap-2">
-                  <FormLabel className="flex items-center gap-1">
+              <FormItem className="grid gap-2 sm:grid-cols-[128px_1fr] sm:items-start">
+                <div className="contents">
+                  <FormLabel className="flex items-center gap-1 pt-2 text-sm font-medium text-slate-700 dark:text-slate-200">
                     <p>博文摘要</p>
                     <FormLabelHoverContent />
                   </FormLabel>
@@ -234,7 +234,7 @@ export default function CreationStepOneContent({
                     <Textarea
                       placeholder="请输入博文摘要"
                       {...field}
-                      className="flex-1"
+                      className="min-h-28 rounded-lg border-slate-200 bg-slate-50/80 focus-visible:border-blue-500 focus-visible:ring-blue-500/15 dark:border-white/10 dark:bg-white/5"
                     />
                   </FormControl>
                 </div>
@@ -246,13 +246,13 @@ export default function CreationStepOneContent({
             control={form.control}
             name="categoryName"
             render={({ field }) => (
-              <FormItem className="flex items-center">
-                <FormLabel className="flex items-center gap-1">
+              <FormItem className="grid gap-2 sm:grid-cols-[128px_1fr] sm:items-center">
+                <FormLabel className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">
                   <p>分类专栏</p>
                   <FormLabelHoverContent />
                 </FormLabel>
                 <FormControl>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     {(showCategoryTab || field.value) && (
                       <AutoWidthInput
                         value={field.value}
@@ -262,7 +262,7 @@ export default function CreationStepOneContent({
                       />
                     )}
                     <div
-                      className="flex gap-2 items-center px-2 py-1 border border-solid border-[#e8e8e8] dark:border-[#2a2a2a] rounded-lg text-[#555666] text-[12px] cursor-pointer hover:bg-[#f4f8fc] hover:text-[#26a2e2] dark:hover:bg-[#1c1f26] dark:hover:text-[#4cb9ff] dark:text-[#d1d5db]"
+                      className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[12px] text-slate-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-blue-400/10 dark:hover:text-blue-300"
                       onClick={() => setShowCategoryTab(true)}
                     >
                       <Icon icon="ri:add-line" size={16} />
@@ -278,15 +278,15 @@ export default function CreationStepOneContent({
             control={form.control}
             name="visibility"
             render={({ field }) => (
-              <FormItem className="flex items-center">
-                <FormLabel className="flex items-center gap-1">
+              <FormItem className="grid gap-2 sm:grid-cols-[128px_1fr] sm:items-center">
+                <FormLabel className="flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-200">
                   <p>可见范围</p>
                   <FormLabelHoverContent />
                 </FormLabel>
                 <FormControl>
                   <RadioGroup
                     {...field}
-                    className="flex gap-4"
+                    className="flex flex-wrap gap-4"
                     onValueChange={(value) => field.onChange(value)}
                   >
                     <div className="flex items-center gap-2">
@@ -307,9 +307,9 @@ export default function CreationStepOneContent({
               </FormItem>
             )}
           />
-          <div className="flex justify-end items-center">
+          <div className="flex items-center justify-end border-t border-slate-100 pt-5 dark:border-white/10">
             <button
-              className=" bg-[#fc5531] text-white cursor-pointer px-4 py-px rounded-xl mr-4"
+              className="mr-4 cursor-pointer rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-colors hover:bg-blue-700"
               type="submit"
             >
               下一步

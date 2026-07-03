@@ -10,9 +10,38 @@ const httpInstance = axios.create({
   paramsSerializer: (params) => qs.stringify(params, { indices: false }),
 });
 
+export const HTTP_LOADING_EVENT = "http-loading-change";
+
+let pendingRequests = 0;
+
+const emitLoadingChange = () => {
+  if (typeof window === "undefined") return;
+
+  window.dispatchEvent(
+    new CustomEvent(HTTP_LOADING_EVENT, {
+      detail: {
+        loading: pendingRequests > 0,
+        pendingRequests,
+      },
+    }),
+  );
+};
+
+const startLoading = () => {
+  pendingRequests += 1;
+  emitLoadingChange();
+};
+
+const stopLoading = () => {
+  pendingRequests = Math.max(0, pendingRequests - 1);
+  emitLoadingChange();
+};
+
 // 请求拦截
 httpInstance.interceptors.request.use(
   (config) => {
+    startLoading();
+
     const urls = ["/login"];
     if (!urls.includes(config.url!)) {
       const token: string = useMemberStore.getState().userInfo.token || "";
@@ -23,6 +52,7 @@ httpInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    stopLoading();
     return Promise.reject(error);
   },
 );
@@ -30,10 +60,13 @@ httpInstance.interceptors.request.use(
 // 响应拦截
 httpInstance.interceptors.response.use(
   (config) => {
+    stopLoading();
     if (config.data.message) toast.success(config.data.message);
     return config.data;
   },
   (error) => {
+    stopLoading();
+
     if (error.response.data.code === 401 || error.response.data.code === 403) {
       useMemberStore.getState().clearUserInfo();
     }

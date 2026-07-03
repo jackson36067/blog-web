@@ -22,32 +22,37 @@ export default function MultiTagSelect({
   const [open, setOpen] = useState(false);
 
   const toggleValue = (value: string) => {
-    if (selected.length >= 7) {
-      toast.info("最多选择7个标签");
+    if (selected.includes(value)) {
+      onChange(selected.filter((v) => v !== value));
+      return;
+    }
+
+    if (selected.length >= 5) {
+      toast.info("最多选择5个标签");
       setOpen(false);
       return;
     }
-    if (selected.includes(value)) {
-      onChange(selected.filter((v) => v !== value));
-    } else {
-      onChange([...selected, value]);
-    }
+
+    onChange([...selected, value]);
   };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div className="flex gap-2 items-center px-2 py-1 border border-solid border-[#e8e8e8] dark:border-[#2a2a2a] rounded-lg text-[#555666] text-[12px] cursor-pointer hover:bg-[#f4f8fc] hover:text-[#26a2e2] dark:hover:bg-[#1c1f26] dark:hover:text-[#4cb9ff] dark:text-[#d1d5db]">
+        <button
+          type="button"
+          className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-[12px] text-slate-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-blue-400/10 dark:hover:text-blue-300"
+        >
           <Icon icon="ri:add-line" size={16} />
-          <p>添加文章标签</p>
-        </div>
+          <span>添加文章标签</span>
+        </button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-140 px-3">
+      <PopoverContent className="w-150 rounded-lg border-slate-200 px-3 shadow-lg dark:border-white/10">
         <InterestSelector
           onTagSelect={toggleValue}
           selectedTags={selected}
-          mode="horizon"
+          mode="flat"
         />
       </PopoverContent>
     </Popover>

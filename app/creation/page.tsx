@@ -45,7 +45,7 @@ export default function CreationPage() {
   }
 
   return (
-    <div className="w-full">
+    <div className="min-h-[calc(100vh-4.5rem)] w-full bg-[#f5f7fb] px-4 py-6 dark:bg-[#0f1115]">
       <CreationTemplate
         articleInfo={createArticleInfo}
         articleTags={artilceTags}

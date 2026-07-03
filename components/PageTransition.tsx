@@ -1,49 +1,62 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { Loader2 } from "lucide-react";
-import useUserStore from "@/stores/UserStore";
+import { HTTP_LOADING_EVENT } from "@/utils/http";
+
+type HttpLoadingEvent = CustomEvent<{
+  loading: boolean;
+  pendingRequests: number;
+}>;
 
 export default function PageTransition() {
   const pathname = usePathname();
-  const { userInfo } = useUserStore();
   const [showOverlay, setShowOverlay] = useState(false);
 
-  // 封装一个触发动画的方法
-  const triggerLoading = useCallback(() => {
+  useEffect(() => {
     NProgress.configure({ showSpinner: false });
-    NProgress.start();
-    setShowOverlay(true);
 
-    const timer = setTimeout(() => {
+    const handleLoadingChange = (event: Event) => {
+      const { loading } = (event as HttpLoadingEvent).detail;
+
+      if (loading) {
+        setShowOverlay(true);
+        return;
+      }
+
       setShowOverlay(false);
-      NProgress.done();
-    }, 500);
+    };
 
-    return () => clearTimeout(timer);
+    window.addEventListener(HTTP_LOADING_EVENT, handleLoadingChange);
+
+    return () => {
+      window.removeEventListener(HTTP_LOADING_EVENT, handleLoadingChange);
+    };
   }, []);
 
   useEffect(() => {
-    // 路由变化时触发
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    triggerLoading();
-  }, [pathname, triggerLoading]);
+    NProgress.configure({ showSpinner: false });
+    NProgress.start();
 
-  useEffect(() => {
-    // 监听 userInfo 中某个字段变化时触发动画
-    if (userInfo.token) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      triggerLoading();
-    }
-  }, [userInfo.token, triggerLoading]);
+    const timer = window.setTimeout(() => {
+      NProgress.done();
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timer);
+      NProgress.done();
+    };
+  }, [pathname]);
 
   return (
     showOverlay && (
-      <div className="fixed inset-0 z-1030 bg-white/60 backdrop-blur-md flex items-center justify-center">
-        <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
+      <div className="pointer-events-none fixed inset-0 z-1030 flex items-center justify-center">
+        <div className="flex h-14 w-14 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-lg">
+          <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
+        </div>
       </div>
     )
   );
